@@ -33,11 +33,6 @@
   
   <main>
 
-    <div class="column ">
-      <input class="input is-rounded" type="text" placeholder="Rounded input">
-    </div>
-
-    
 
     <section class="section">
       <div class="container">
@@ -62,6 +57,7 @@
   </main>
   
   <style>
+
     #userItem {
     background-color: rgba(94, 127, 132, 0.418);
     padding-bottom: 30px;
