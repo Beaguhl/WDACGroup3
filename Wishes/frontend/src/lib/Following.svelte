@@ -33,14 +33,11 @@
   
   <main>
 
-    <div class="columns is-centered">
-      <div class="column is-half">
-          <input class="input is-rounded" type="text" placeholder="🔍 Search for users">
-      </div>
+    <div class="column ">
+      <input class="input is-rounded" type="text" placeholder="Rounded input">
     </div>
 
     
-
 
     <section class="section">
       <div class="container">
@@ -78,3 +75,5 @@
       border-radius: 20px;
     }
   </style>
+  
+
