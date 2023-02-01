@@ -32,6 +32,8 @@
   </script>
   
   <main>
+
+
     <section class="section">
       <div class="container">
           <div class="columns is-multiline is-8 is-variable">
@@ -55,6 +57,16 @@
   </main>
   
   <style>
+
+    #userItem {
+    background-color: rgba(94, 127, 132, 0.418);
+    padding-bottom: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 25px;
+    border-radius: 25px;
+  }
+  
     #profilePicture {
       border-radius: 20px;
     }
