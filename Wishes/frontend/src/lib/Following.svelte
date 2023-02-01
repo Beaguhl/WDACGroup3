@@ -33,7 +33,6 @@
   
   <main>
 
-  
 
     <section class="section">
       <div class="container">
@@ -58,6 +57,7 @@
   </main>
   
   <style>
+
     #userItem {
     background-color: rgba(94, 127, 132, 0.418);
     padding-bottom: 30px;
