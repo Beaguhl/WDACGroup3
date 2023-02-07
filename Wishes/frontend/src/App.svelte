@@ -1,3 +1,4 @@
+
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
@@ -53,3 +54,4 @@
 	}
 
 </style>
+
