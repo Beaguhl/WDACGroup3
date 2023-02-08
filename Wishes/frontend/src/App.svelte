@@ -1,5 +1,6 @@
 
 <script>
+	// @ts-ignore
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/SearchUsers.svelte'
