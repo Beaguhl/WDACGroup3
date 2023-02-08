@@ -5,6 +5,10 @@
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/SearchUsers.svelte'
 	import FindProducts from './lib/FindProducts.svelte'
+	import DropdownMenu from './lib/DropdownMenu.svelte'
+	import NavBar from './lib/NavBar.svelte'
+	import NavItem from './lib/NavItem.svelte'
+	import Button from './lib/Button.svelte';
 </script>
 
 
@@ -16,8 +20,15 @@
 			<nav class="navBar">
 				<Link class="Links" to="/FindWishes">Find Wishes</Link>
 				<Link class="Links" to="/FindUsers">Find Users</Link>
-				<Link class="Links" to="/Login">PlaceHolder</Link>
 			</nav>
+			<NavBar>
+				<NavItem>
+					<span slot="trigger">
+						<Button></Button>
+					</span>
+					<DropdownMenu></DropdownMenu>
+				</NavItem>
+			</NavBar>
 	</div>
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
