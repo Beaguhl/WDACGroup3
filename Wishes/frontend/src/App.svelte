@@ -2,7 +2,8 @@
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
-	import SearchUsers from './lib/SearchUsers.svelte';
+	import SearchUsers from './lib/SearchUsers.svelte'
+	import FindProducts from './lib/FindProducts.svelte'
 </script>
 
 
@@ -20,6 +21,7 @@
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
+		<Route path="/FindWishes" component="{FindProducts}"></Route>
 	</main>
 </Router>
 
