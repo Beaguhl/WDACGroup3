@@ -2,6 +2,8 @@
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
+	import SearchUsers from './lib/SearchUsers.svelte'
+	import FindProducts from './lib/FindProducts.svelte'
 </script>
 
 
@@ -16,9 +18,11 @@
 				<Link class="Links" to="/Login">PlaceHolder</Link>
 			</nav>
 	</div>
-	<div>
-		<StartPage></StartPage>
-	</div>
+	<main>
+		<Route path="/" component="{StartPage}"></Route>
+		<Route path="/FindUsers" component="{SearchUsers}"></Route>
+		<Route path="/FindWishes" component="{FindProducts}"></Route>
+	</main>
 </Router>
 
 
@@ -31,10 +35,17 @@
 		width: 100%;
 	}
 
+	main{
+		z-index: 1;
+		width: 100vw;
+	}
+
 	.mainDiv{
 		display: flex;
-		width: 80vw;
-		background-color: gray;
+		width: 100vw;
+		height: 13vh;
+		background-color: purple;
+		z-index: 2;
 	}
 
 

@@ -31,8 +31,8 @@
 
 	.mainDiv{	
 		display: flex;
-		width: 80vw;
-		background-color: gray;
+		width: 100vw;
+		background-color: lightgray;
 	}
 
 	.squareContainer{
@@ -43,21 +43,22 @@
 	.title{
 		display: flex;
 		justify-content: center;
-		
+		color: black;
 	}
 
 	.mainContent{
 		display: flex;
 		justify-content: center;
+		color: black;
 	}
 
 	.square{
 		margin-bottom: 10%;
 		height: 300px;
 		width: 300px;
-		background-color: gray;
+		background-color: lightgray;
 		border-radius: 20px;
-		box-shadow: 5px 5px 10px 2px;
+		box-shadow: 5px 5px 10px 2px gray;
 	}
 
 </style>
