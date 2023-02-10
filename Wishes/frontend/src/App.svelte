@@ -33,7 +33,7 @@
 						<span slot="trigger">
 							Login
 						</span>
-						<DropdownMenu></DropdownMenu>
+							<DropdownMenu></DropdownMenu>
 					</NavItem>
 				</NavBar>
 			</div>
@@ -81,6 +81,7 @@
 		justify-content: space-around;
 		align-items: flex-start;
 		width: 100%;
+		z-index: 1;
 	}
 
 	.wishes{

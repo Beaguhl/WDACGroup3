@@ -33,7 +33,7 @@
 	<div class="squareContainer">
 		{#each arrayOfProducts as product}
 			<div class="square">
-				<h1>
+				<h1 class="test">
 					{product.productName}
 				</h1>
 			</div>
@@ -55,6 +55,10 @@
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 		grid-gap: 5%;
 		float: left;
+	}
+
+	.test{
+		z-index: 1;
 	}
 
 	.square{

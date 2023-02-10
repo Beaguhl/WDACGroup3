@@ -27,9 +27,6 @@
 	{#if activeMenu === 'main'}
 		<div class="menu" in:fly={{ x: -400 }} out:fly={{ x: -400 }} bind:this={menuEl}>
 			<Input bind:inputUsername on:input={handleInput}/>
-			
-			<MenuItem>Login</MenuItem>
-			<MenuItem on:click={() => activeMenu = "settings"}>Settings</MenuItem>
 		</div>
 	{/if}
 
@@ -60,6 +57,7 @@
 		padding: 1rem;
 		overflow: hidden;
 		transition: height var(--speed) ease;
+		z-index: 3;
 	}
 	
 	.stack {

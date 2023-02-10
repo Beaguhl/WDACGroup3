@@ -24,12 +24,5 @@
 
     .loginButton{
         float: right;
-    }
-        
-    #search-icon {
-        position: absolute;
-        left: 10px;
-        top: 10px;
-        font-size: 1.2rem;
     }	
 </style>
