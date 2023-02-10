@@ -1,5 +1,6 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
+	// @ts-ignore
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/SearchUsers.svelte'

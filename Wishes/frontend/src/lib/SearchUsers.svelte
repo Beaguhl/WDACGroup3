@@ -1,4 +1,4 @@
-<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css">-->
+
 
 <script>
 
@@ -32,9 +32,10 @@
   </script>
   <main>
 
+    <!----------- search bar ---------->
     <div class="columns is-centered">
       <div class="column is-half">
-          <input class="input is-rounded" type="text" placeholder="🔍 Search for users">
+        <input id="search" type="text" placeholder="Search..">
       </div>
     </div>
 
@@ -115,4 +116,14 @@
 		margin-right: 2%;
     background-color: rgba(94, 127, 132, 0.418);
 	}
+
+    #search {
+      padding: 6px;
+      border: none;
+      margin-top: 8px;
+      margin-right: 16px;
+      font-size: 17px;
+
+    }
+
   </style>
