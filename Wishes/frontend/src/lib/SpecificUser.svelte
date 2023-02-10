@@ -1,5 +1,6 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css
-">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
 <script>
 
    class WishList {
@@ -42,9 +43,10 @@
 
 <!------------ HTML code ----------->
 
+
+
 <!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 
-<body>
   <div class="mainGrid">
 
     <div class="leftColumn">
@@ -99,9 +101,10 @@
       </div>
     </div>
   </div>
-</body>
+
 
 <style>
+
 
   .mainGrid{
     display: grid;
@@ -111,7 +114,7 @@
     grid-gap: 120px;
     background-color: aqua;
     border-radius: 10px;
-   
+
   }
 
   .leftColumn{

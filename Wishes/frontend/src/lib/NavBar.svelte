@@ -6,7 +6,7 @@
 
 <style>
     .navbar{
-        height: var(--nav-size);
+        height: 100%;
         background-color: var(--bg);
         padding: 0 1rem;
         border-bottom: var(--border);
