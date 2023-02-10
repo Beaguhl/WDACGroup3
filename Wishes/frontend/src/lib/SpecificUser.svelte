@@ -1,5 +1,6 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css
-">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
 <script>
 
    class WishList {
@@ -42,13 +43,20 @@
 
 <!------------ HTML code ----------->
 
+
+
 <!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 
   <div class="mainGrid">
 
     <div class="leftColumn">
-      <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
-      <p>user name</p>
+      <div class="test">
+        <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
+      </div>
+      <div class="test">
+        <p>user name</p>
+      </div>
+      
       <!-- if not following -->
       <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
       <!-- if following -->
@@ -101,11 +109,10 @@
 
 <style>
 
-  .followButton {
+  .test{
     display: flex;
+    align-items: flex-end;
     justify-content: center;
-    align-items: center;
-    text-align: center;
   }
 
   .mainGrid{
@@ -113,6 +120,12 @@
     grid-template-columns: 2fr 2fr;
     background-color: aqua;
     border-radius: 10px;
+  }
+
+  .leftColumn{
+    text-align: center;
+    margin-left: 50px;
+    margin-top: 10%;
   }
 
   .title{
