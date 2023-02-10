@@ -110,7 +110,7 @@
     flex-wrap: wrap;*/
     grid-gap: 120px;
     background-color: aqua;
-    border-radius:6%;
+    border-radius: 10px;
    
   }
 
@@ -196,7 +196,8 @@
     object-fit: cover;
     margin-left: 50px;
     margin-right: 50px;
-    margin-top: 80px;    
+    margin-top: 80px;  
+    border-radius: 10px;  
   }
 
   #wishListObject{
@@ -205,8 +206,5 @@
     margin: 50px;
   }
 
-  #profilePic {
-    border-radius: 10%;
-  }
 
 </style>
