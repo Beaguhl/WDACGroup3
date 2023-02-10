@@ -22,7 +22,10 @@
 			<nav class="navBar link">
 				<Link class="Links" to="/FindWishes">Find Wishes</Link>
 				<Link class="Links" to="/FindUsers">Find Users</Link>
-				<Link class="Links" to="/spec">Spec</Link>
+
+
+				<Link class="Links" to="/SpecificUser">Specific user</Link>
+
 			</nav>
 			<div>
 				<NavBar>
@@ -40,7 +43,7 @@
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
 		<Route path="/FindWishes" component="{FindProducts}"></Route>
-		<Route path="/spec" component="{SpecificUser}"></Route>
+		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
 	</main>
 </Router>
 
