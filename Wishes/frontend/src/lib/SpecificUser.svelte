@@ -50,8 +50,13 @@
   <div class="mainGrid">
 
     <div class="leftColumn">
-      <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
-      <p>user name</p>
+      <div class="test">
+        <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
+      </div>
+      <div class="test">
+        <p>user name</p>
+      </div>
+      
       <!-- if not following -->
       <button><i class="fa-solid fa-plus"></i> Follow </button>
       <!-- if following -->
@@ -105,6 +110,11 @@
 
 <style>
 
+  .test{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
 
   .mainGrid{
     display: grid;
@@ -119,6 +129,8 @@
 
   .leftColumn{
     text-align: center;
+    margin-left: 50px;
+    margin-top: 10%;
   }
 
   .title{
