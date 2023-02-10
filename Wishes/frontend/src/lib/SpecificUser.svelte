@@ -58,7 +58,7 @@
       </div>
       
       <!-- if not following -->
-      <button><i class="fa-solid fa-plus"></i> Follow </button>
+      <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
       <!-- if following -->
       <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
     </div>
@@ -107,7 +107,6 @@
     </div>
   </div>
 
-
 <style>
 
   .test{
@@ -119,12 +118,8 @@
   .mainGrid{
     display: grid;
     grid-template-columns: 2fr 2fr;
-    /*flex-direction: row;
-    flex-wrap: wrap;*/
-    grid-gap: 120px;
     background-color: aqua;
     border-radius: 10px;
-
   }
 
   .leftColumn{
@@ -141,6 +136,15 @@
     /*margin: 30px 0;*/
   }
 
+  .leftColumn {
+    text-align: center;
+    max-width: 450px;
+  }
+
+  .followButton {
+    align-items: center;
+  }
+
   #increasedItem {
     padding-bottom: 15px;
     background-color: brown;
@@ -155,19 +159,17 @@
     text-align: start;
   }
 
-  body {
-    display: flex;
-    align-items: center;
+  :global(body) {
+    
     background-color:coral;
     justify-content: center;
     flex-direction: column;
-    height: 100vh;
-    width: 100vw;
+
+    
     
   }
 
   .wishList {
-    /*width: 450px;*/
     padding: 18px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -202,23 +204,19 @@
   }
 
   #profilePic{
-    text-align: center;
     max-width: 100%;
     max-height: 100%;
-    display: block;
     width: 350px;  
     height: auto; 
     object-fit: cover;
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-top: 80px;  
-    border-radius: 10px;  
+    margin-top: 80px;
+    border-radius: 10px; 
   }
 
   #wishListObject{
     text-align: center;
-    object-fit: cover;
     margin: 50px;
+    max-width: 450px;
   }
 
 
