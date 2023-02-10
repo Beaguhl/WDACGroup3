@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css">
-
 <script>
    
 
@@ -42,16 +40,16 @@
 
 <!------------ HTML code ----------->
 
-  <div class="box">  
+  <div id="container" class="box">  
     <div class="columns">
     <div class="column">
 
       <figure class="image" >
-        <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
+        <img id="imgContainer" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
       </figure>
-      <h5 class="subtitle is-5" id="userName">User Name</h5>
+      <h5 class="subtitle is-5 followerAndName" id="userName">User Name</h5>
       <div>
-        <button id="follow"> </button>
+        <button class="followerAndName" id="follow"> </button>
       </div>
     </div>
     <div class="column is-one-fifth">
@@ -104,6 +102,23 @@
   
 
 <style>
+
+  #container{
+    display: grid;
+    grid-template-areas:
+    "picture list"
+    "nameAndFollow list";
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 2fr 1fr;
+  }
+
+  #imgContainer{
+    grid-area: picture;
+  }
+
+  .followerAndName{
+    grid-area: nameAndFollow;
+  }
 
   #follow {
     margin-bottom: 20px;
