@@ -10,6 +10,7 @@
 	import NavItem from './lib/NavItem.svelte'
 	import SpecificUser from './lib/SpecificUser.svelte'
 	import IconButton from './lib/IconButton.svelte'
+	import MyFriends from './lib/MyFriends.svelte'
 
 </script>
 
@@ -23,6 +24,7 @@
 				<Link class="Links" to="/FindWishes">Find Wishes</Link>
 				<Link class="Links" to="/FindUsers">Find Users</Link>
 
+				<Link class="Links" to="/MyFriends">My Friends</Link>
 
 				<Link class="Links" to="/SpecificUser">Specific user</Link>
 
@@ -44,6 +46,8 @@
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
 		<Route path="/FindWishes" component="{FindProducts}"></Route>
 		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+		<Route path="/MyFriends" component="{MyFriends}"></Route>
+
 	</main>
 </Router>
 
