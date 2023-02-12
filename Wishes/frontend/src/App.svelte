@@ -10,6 +10,11 @@
 	import NavItem from './lib/NavItem.svelte'
 	import SpecificUser from './lib/SpecificUser.svelte'
 	import IconButton from './lib/IconButton.svelte'
+  import LoggedInDropDown from './lib/LoggedInDropDown.svelte';
+	import Following from './lib/Following.svelte'
+	import MyWishList from './lib/MyWishList.svelte'
+	import Followers from './lib/Followers.svelte'
+
 	import SpecificProduct from './lib/SpecificProduct.svelte';
 
 	import { onMount } from 'svelte';
@@ -28,6 +33,7 @@ window.addEventListener('popstate', () => {
   currentRoute = window.location.pathname;
 });
 
+
 </script>
 
 
@@ -40,6 +46,7 @@ window.addEventListener('popstate', () => {
 			<h1 class="wishes">
 				<Link class="Links" to="/">Wishes</Link>
 			</h1>
+
 		</button>
 			<nav class="navBar">
 				<button class="testButton {$findWishesColor}" on:click={() => {
@@ -55,6 +62,14 @@ window.addEventListener('popstate', () => {
 					<Link class="Links" to="/FindUsers">Find Users</Link>
 				</button>
 				
+
+			<nav class="navBar link">
+				<Link class="Links" to="/FindWishes">Find Wishes</Link>
+				<Link class="Links" to="/FindUsers">Find Users</Link>
+				<Link class="MyFriends" to="/MyFriends"></Link>
+
+				<Link class="Links" to="/SpecificUser">Specific user</Link>
+
 			</nav>
 			
 
@@ -75,7 +90,8 @@ window.addEventListener('popstate', () => {
 						<span slot="trigger">
 							Login
 						</span>
-							<DropdownMenu></DropdownMenu>
+							<!-- <DropdownMenu></DropdownMenu> -->
+							<LoggedInDropDown></LoggedInDropDown>
 					</NavItem>
 				</NavBar>
 			</div>
@@ -86,7 +102,13 @@ window.addEventListener('popstate', () => {
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
 		<Route path="/FindWishes" component="{FindProducts}"></Route>
 		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+
 		<Route path="/SpecificProduct" compenent="{SpecificProduct}"></Route>
+
+		<Route path="/Following" component="{Following}"></Route>
+		<Route path="/MyWishList" component="{MyWishList}"></Route>
+		<Route path="/Followers" component="{Followers}"></Route>
+
 	</main>
 </Router>
 
@@ -98,6 +120,8 @@ window.addEventListener('popstate', () => {
 		padding: 0;
 		height: 100vh;
 		width: 100%;
+		background: #151616;
+
 	}
 
 
