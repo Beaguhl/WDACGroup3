@@ -10,19 +10,59 @@
 	import NavItem from './lib/NavItem.svelte'
 	import SpecificUser from './lib/SpecificUser.svelte'
 	import IconButton from './lib/IconButton.svelte'
-    import LoggedInDropDown from './lib/LoggedInDropDown.svelte';
+  import LoggedInDropDown from './lib/LoggedInDropDown.svelte';
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
+
+	import SpecificProduct from './lib/SpecificProduct.svelte';
+
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	let currentRoute = '';
+
+onMount(async () => {
+  currentRoute = window.location.pathname;
+});
+
+const findWishesColor = writable('white')
+const findUsersColor = writable('white')
+
+window.addEventListener('popstate', () => {
+  currentRoute = window.location.pathname;
+});
+
 
 </script>
 
 
 <Router>
 	<div class="mainDiv">
+		<button on:click={() => {
+			findUsersColor.set('white')
+			findWishesColor.set('white')
+		}}>
 			<h1 class="wishes">
 				<Link class="Links" to="/">Wishes</Link>
 			</h1>
+
+		</button>
+			<nav class="navBar">
+				<button class="testButton {$findWishesColor}" on:click={() => {
+					findWishesColor.set('aqua');
+					findUsersColor.set('white')
+				}}>
+					<Link class="Links" to="/FindWishes">Find Wishes</Link>
+				</button>
+				<button class="testButton {$findUsersColor}" on:click={() => {
+					findUsersColor.set('aqua')
+					findWishesColor.set('white')
+				}}>
+					<Link class="Links" to="/FindUsers">Find Users</Link>
+				</button>
+				
+
 			<nav class="navBar link">
 				<Link class="Links" to="/FindWishes">Find Wishes</Link>
 				<Link class="Links" to="/FindUsers">Find Users</Link>
@@ -31,6 +71,19 @@
 				<Link class="Links" to="/SpecificUser">Specific user</Link>
 
 			</nav>
+			
+
+			{#if $findWishesColor === 'aqua'}
+				<script>
+					buttonColor.set('aqua');
+				</script>
+			{/if}
+
+			{#if $findWishesColor === 'white'}
+				<script>
+					buttonColor.set('white');
+				</script>
+			{/if}
 			<div>
 				<NavBar>
 					<NavItem>
@@ -49,6 +102,9 @@
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
 		<Route path="/FindWishes" component="{FindProducts}"></Route>
 		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+
+		<Route path="/SpecificProduct" compenent="{SpecificProduct}"></Route>
+
 		<Route path="/Following" component="{Following}"></Route>
 		<Route path="/MyWishList" component="{MyWishList}"></Route>
 		<Route path="/Followers" component="{Followers}"></Route>
@@ -68,8 +124,21 @@
 
 	}
 
-	.link > :global(a){
-		text-decoration: none;
+
+	.link:hover :global(a){
+		color: purple
+	}
+
+	.link:visited :global(a){
+		background-color: aqua;
+	}
+
+	.findWishes:link, .findWishes:visited :global(a){
+		color: aqua;
+	}
+
+	.findWishes:hover :global(a){
+		color: purple;
 	}
 
 	main{
@@ -119,5 +188,12 @@
 		font-family: Helvetica;
 	}
 
+	.white{
+		background-color: white;
+	}
+
+	.aqua {
+		background-color: aqua;
+	}
 </style>
 

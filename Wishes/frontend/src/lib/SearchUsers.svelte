@@ -15,6 +15,7 @@
 
 	onMount(getData);
 
+	console.log("NU KOMMER users" + users)
 
  
 	
@@ -23,72 +24,51 @@
 </script>
   
 
-	<!----------- search bar ---------->
-	<div class="search">
-		<input id="search" type="text" placeholder="Search..">
-	</div>
-	<Router>
-		<section>
-			<div class="container">
-				<div class="squareContainer">
-					{#if users}
-						{#each users as user}
-							<div class="column is-4-tablet is-3-desktop square">
-								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser">
-										<div class="profilePicture">
-											<img class="imageSize" src="{user.image}" alt="">
-										</div> 
-										<div class="text">
-											{user.username}
-										</div>
-									</Link> 
-								</section>   
-							</div> 
-						{/each}
-					{/if}
-				</div>
+<!----------- search bar ---------->
+<div class="search">
+	<input id="search" type="text" placeholder="Search..">
+</div>
+<Router>
+	<section>
+		<div class="container">
+			<div class="squareContainer">
+				{#if users}
+					{#each users as user}
+						<div class="column is-4-tablet is-3-desktop square">
+							<section class="container" id="userItem">
+								<Link class="Links" to="/SpecificUser">
+									<div class="profilePicture">
+										<img class="imageSize" src="{user.image}" alt="">
+									</div> 
+									<div class="text">
+										{user.username}
+									</div>
+								</Link> 
+							</section>   
+						</div> 
+					{/each}
+				{/if}
 			</div>
-		</section>
+		</div>
+	</section>
 
-		<main>
-			<Route path="/SpecificUser" component="{SpecificUser}"></Route>
-		</main>
-	</Router>
+	<main>
+		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+	</main>
+</Router>
 	
 
-  
-  
-  <style>
-	/*#userItem {
-	background-color: rgba(94, 127, 132, 0.418);
-	padding-bottom: 30px;
-	padding-left: 20px;
-	padding-right: 20px;
-	padding-top: 25px;
-	border-radius: 25px;
-  }*/
-  
-	.imageSize{
-	  width: 10vw;
-	  height: 20vh;
-	}
+<style>
 
-	.white{
-	  color: white;
+	.imageSize{
+		width: 10vw;
+		height: 20vh;
 	}
 
 	.profilePicture{
 	  margin-top: 10%;
 	  display: flex;
 	  justify-content: center;
-	}
-
-	#profilePicture {
-	  border-radius: 10%;
-	  width: 100%;
-	  padding-left: 10px;
-	  padding-right: 10px;
 	}
 
 	.container{
@@ -108,8 +88,6 @@
 	  font-weight: bolder;
 	  color: black;
 	}
-
-   
 
 	.squareContainer{
 		display: grid;
@@ -150,6 +128,4 @@
 	  text-align: center;
 	}
 
-
-
-  </style>
+</style>
