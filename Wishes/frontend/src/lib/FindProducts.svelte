@@ -1,47 +1,58 @@
 <script>
 
-	class Product{
-		constructor(id, productName){
-			this.id = id
-			this.productName = productName
-		}
+	import {Router, Link, Route} from 'svelte-routing'
+	import SpecificUser from "./SpecificUser.svelte";
+	import {onMount} from 'svelte'
+
+	let products;
+
+	async function getData() {
+	const response = await fetch('../../dummyData.json');
+	const data = await response.json();
+	products = data;
 	}
 
-	let arrayOfProducts = []
-
-	arrayOfProducts.push(new Product(1, "Product 1"))
-	arrayOfProducts.push(new Product(2, "Product 2"))
-	arrayOfProducts.push(new Product(3, "Product 3"))
-	arrayOfProducts.push(new Product(4, "Product 4"))
-	arrayOfProducts.push(new Product(5, "Product 5"))
-	arrayOfProducts.push(new Product(6, "Product 6"))
-	arrayOfProducts.push(new Product(7, "Product 7"))
-	arrayOfProducts.push(new Product(8, "Product 8"))
-	arrayOfProducts.push(new Product(9, "Product 9"))
-	arrayOfProducts.push(new Product(9, "Product 10"))
-	arrayOfProducts.push(new Product(9, "Product 11"))
-	arrayOfProducts.push(new Product(9, "Product 12"))
+	onMount(getData);
 </script>
 
 
 <div>
-
 	<h1>
 		PlaceHolder
 	</h1>
-
-	<div class="squareContainer">
-		{#each arrayOfProducts as product}
-			<div class="square">
-				<h1 class="test">
-					{product.productName}
-				</h1>
-			</div>
-		{/each}
+	<div class="container">
+		<div class="squareContainer">
+			{#if products}
+				{#each products as product}
+					<div class="column is-4-tablet is-3-desktop square">
+						<section id="userItem">
+							<Link class="Links" to="/SpecificUser">
+								<div class="profilePicture">
+									<img class="imageSize" src="{product.image}" alt="">
+								</div> 
+								<div class="text">
+									{product.username}
+								</div>
+							</Link> 
+						</section>   
+					</div> 
+				{/each}
+			{/if}
+		</div>
 	</div>
 </div>
 
 <style>
+
+	.imageSize{
+		width: 10vw;
+		height: 20vh;
+	}
+
+	.container{
+	  grid-template-rows: 1fr 1fr;
+	  color: black;
+	}
 
 	.squareContainer{
 		display: grid;
@@ -57,8 +68,19 @@
 		float: left;
 	}
 
-	.test{
-		z-index: 1;
+	.profilePicture{
+	  margin-top: 10%;
+	  display: flex;
+	  justify-content: center;
+	}
+
+	.text{
+	  display: flex;
+	  justify-content: center;
+	  margin-top: 4%;
+	  font-size: x-large;
+	  font-weight: bolder;
+	  color: black;
 	}
 
 	.square{
@@ -70,6 +92,7 @@
 		margin-bottom: 5%;
 		margin-left: 6%;
 		margin-right: 2%;
+		background-color: rgba(94, 127, 132, 0.418);
 	}
 	
 </style>
