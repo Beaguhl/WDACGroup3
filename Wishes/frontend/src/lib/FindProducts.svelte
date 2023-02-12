@@ -1,46 +1,50 @@
 <script>
 
 	import {Router, Link, Route} from 'svelte-routing'
-	import SpecificUser from "./SpecificUser.svelte";
+	import SpecificProduct from "./SpecificProduct.svelte";
 	import {onMount} from 'svelte'
 
-	let products;
+	let users;
 
 	async function getData() {
 	const response = await fetch('../../dummyData.json');
 	const data = await response.json();
-	products = data;
+	users = data;
 	}
 
+	
 	onMount(getData);
+	console.log("nu kommer users" + users)
 </script>
 
-
-<div>
-	<h1>
-		PlaceHolder
-	</h1>
-	<div class="container">
-		<div class="squareContainer">
-			{#if products}
-				{#each products as product}
-					<div class="column is-4-tablet is-3-desktop square">
-						<section id="userItem">
-							<Link class="Links" to="/SpecificUser">
-								<div class="profilePicture">
-									<img class="imageSize" src="{product.image}" alt="">
-								</div> 
-								<div class="text">
-									{product.username}
-								</div>
-							</Link> 
-						</section>   
-					</div> 
-				{/each}
-			{/if}
+<Router>
+	<section>
+		<div class="container">
+			<div class="squareContainer">
+				
+				{#if users}
+					{#each users as product}
+						<div class="column is-4-tablet is-3-desktop square">
+							<section class="container" id="userItem">
+								<Link class="Links" to="/SpecificUser">
+									<div class="profilePicture">
+										<img class="imageSize" src="{product.image}" alt="">
+									</div> 
+									<div class="text">
+										{product.username}
+									</div>
+								</Link> 
+							</section>   
+						</div> 
+					{/each}
+				{/if}
+			</div>
 		</div>
-	</div>
-</div>
+	</section>
+	<main>
+		<Route path="/SpecificProduct" component="{SpecificProduct}"></Route>
+	</main>
+</Router>
 
 <style>
 
