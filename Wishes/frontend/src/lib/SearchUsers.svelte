@@ -1,119 +1,117 @@
 
 
 <script>
+	import {Router, Link, Route} from 'svelte-routing'
+	import SpecificUser from "./SpecificUser.svelte";
+	import {onMount} from 'svelte'
 
-  
-    import {Router, Link, Route} from 'svelte-routing'
-    import SpecificUser from "./SpecificUser.svelte";
-    import {onMount} from 'svelte'
+	let users;
 
-    let users;
+	async function getData() {
+	const response = await fetch('../../dummyData.json');
+	const data = await response.json();
+	users = data;
+	}
 
-async function getData() {
-  const response = await fetch('../../dummyData.json');
-  const data = await response.json();
-  users = data;
-}
-
-onMount(getData);
+	onMount(getData);
 
 
  
-    
+	
 
 
-  </script>
+</script>
   
 
-    <!----------- search bar ---------->
-      <div class="search">
-        <input id="search" type="text" placeholder="Search..">
-      </div>
-      
-    <Router>
-      <section class="section">
-        <div class="container">
-            <div class="columns is-multiline is-8 is-variable squareContainer">
-              <div class="white">
-                
-                
-              </div>
-                {#if users}
-                  {#each users as user}
-                    <div class="column is-4-tablet is-3-desktop square">
-                        <section class="container" id="userItem">
-                          <Link class="Links" to="/SpecificUser">
-                            <div class="profilePicture">
-                              <img src="{user.image}" alt="">
-                            </div> 
-                            
-                            <div class="text">{user.username}</div>    
-                            
-                          </Link> 
-                        </section>   
-                    </div> 
-                  {/each}
-                 {/if}
-            </div>
-        </div>
-      </section>
+	<!----------- search bar ---------->
+	<div class="search">
+		<input id="search" type="text" placeholder="Search..">
+	</div>
+	<Router>
+		<section>
+			<div class="container">
+				<div class="squareContainer">
+					{#if users}
+						{#each users as user}
+							<div class="column is-4-tablet is-3-desktop square">
+								<section class="container" id="userItem">
+									<Link class="Links" to="/SpecificUser">
+										<div class="profilePicture">
+											<img class="imageSize" src="{user.image}" alt="">
+										</div> 
+										<div class="text">
+											{user.username}
+										</div>
+									</Link> 
+								</section>   
+							</div> 
+						{/each}
+					{/if}
+				</div>
+			</div>
+		</section>
 
-      <main>
-        <Route path="/SpecificUser" component="{SpecificUser}"></Route>
-      </main>
-    </Router>
-    
+		<main>
+			<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+		</main>
+	</Router>
+	
 
   
   
   <style>
-    /*#userItem {
-    background-color: rgba(94, 127, 132, 0.418);
-    padding-bottom: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 25px;
-    border-radius: 25px;
+	/*#userItem {
+	background-color: rgba(94, 127, 132, 0.418);
+	padding-bottom: 30px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 25px;
+	border-radius: 25px;
   }*/
   
-    .white{
-      color: white;
-    }
+	.imageSize{
+	  width: 10vw;
+	  height: 20vh;
+	}
 
-    .profilePicture{
-      margin-top: 10%;
-      display: flex;
-      justify-content: center;
-    }
+	.white{
+	  color: white;
+	}
 
-    #profilePicture {
-      border-radius: 10%;
-      width: 100%;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
+	.profilePicture{
+	  margin-top: 10%;
+	  display: flex;
+	  justify-content: center;
+	}
 
-    .container{
-      grid-template-rows: 1fr 1fr;
-      color: black;
-    }
+	#profilePicture {
+	  border-radius: 10%;
+	  width: 100%;
+	  padding-left: 10px;
+	  padding-right: 10px;
+	}
 
-    .container :hover {
-      color: rgb(151, 28, 172);
-    }
+	.container{
+	  grid-template-rows: 1fr 1fr;
+	  color: black;
+	}
 
-    .text{
-      display: flex;
-      justify-content: center;
-      margin-top: 4%;
-      font-size: x-large;
-      font-weight: bolder;
-      color: black;
-    }
+	.container :hover {
+	  color: rgb(151, 28, 172);
+	}
+
+	.text{
+	  display: flex;
+	  justify-content: center;
+	  margin-top: 4%;
+	  font-size: x-large;
+	  font-weight: bolder;
+	  color: black;
+	}
 
    
 
-    .squareContainer{
+	.squareContainer{
 		display: grid;
 		height: 70vh;
 		width: 100vw;
@@ -136,21 +134,21 @@ onMount(getData);
 		margin-bottom: 5%;
 		margin-left: 6%;
 		margin-right: 2%;
-    background-color: rgba(94, 127, 132, 0.418);
+	background-color: rgba(94, 127, 132, 0.418);
 	}
 
-    #search {
-      padding: 6px;
-      border: none;
-      margin: 3%;
-      font-size: 17px;
-      background-color: blue;
-      border-radius: 10px;
-    }
+	#search {
+	  padding: 6px;
+	  border: none;
+	  margin: 3%;
+	  font-size: 17px;
+	  background-color: blue;
+	  border-radius: 10px;
+	}
 
-    .search {
-      text-align: center;
-    }
+	.search {
+	  text-align: center;
+	}
 
 
 
