@@ -10,6 +10,10 @@
 	import NavItem from './lib/NavItem.svelte'
 	import SpecificUser from './lib/SpecificUser.svelte'
 	import IconButton from './lib/IconButton.svelte'
+    import LoggedInDropDown from './lib/LoggedInDropDown.svelte';
+	import Following from './lib/Following.svelte'
+	import MyWishList from './lib/MyWishList.svelte'
+	import Followers from './lib/Followers.svelte'
 
 </script>
 
@@ -22,7 +26,7 @@
 			<nav class="navBar link">
 				<Link class="Links" to="/FindWishes">Find Wishes</Link>
 				<Link class="Links" to="/FindUsers">Find Users</Link>
-
+				<Link class="MyFriends" to="/MyFriends"></Link>
 
 				<Link class="Links" to="/SpecificUser">Specific user</Link>
 
@@ -33,7 +37,8 @@
 						<span slot="trigger">
 							Login
 						</span>
-							<DropdownMenu></DropdownMenu>
+							<!-- <DropdownMenu></DropdownMenu> -->
+							<LoggedInDropDown></LoggedInDropDown>
 					</NavItem>
 				</NavBar>
 			</div>
@@ -44,6 +49,10 @@
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
 		<Route path="/FindWishes" component="{FindProducts}"></Route>
 		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+		<Route path="/Following" component="{Following}"></Route>
+		<Route path="/MyWishList" component="{MyWishList}"></Route>
+		<Route path="/Followers" component="{Followers}"></Route>
+
 	</main>
 </Router>
 
@@ -55,6 +64,8 @@
 		padding: 0;
 		height: 100vh;
 		width: 100%;
+		background: #151616;
+
 	}
 
 	.link > :global(a){
