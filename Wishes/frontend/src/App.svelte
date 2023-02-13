@@ -10,24 +10,25 @@
 	import NavItem from './lib/NavItem.svelte'
 	import SpecificUser from './lib/SpecificUser.svelte'
 	import IconButton from './lib/IconButton.svelte'
-  import LoggedInDropDown from './lib/LoggedInDropDown.svelte';
+	import LoggedInDropDown from './lib/LoggedInDropDown.svelte'
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
 
-	import SpecificProduct from './lib/SpecificProduct.svelte';
+	import SpecificProduct from './lib/SpecificProduct.svelte'
 
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let currentRoute = '';
+	let currentRoute = ''
 
 onMount(async () => {
   currentRoute = window.location.pathname;
 });
 
-const findWishesColor = writable('white')
-const findUsersColor = writable('white')
+const findWishesColor = writable('darkgray')
+const findUsersColor = writable('darkgray')
+const wishesColor = writable('darkgray')
 
 window.addEventListener('popstate', () => {
   currentRoute = window.location.pathname;
@@ -39,9 +40,10 @@ window.addEventListener('popstate', () => {
 
 <Router>
 	<div class="mainDiv">
-		<button on:click={() => {
-			findUsersColor.set('white')
-			findWishesColor.set('white')
+		<button class="{$wishesColor}" on:click={() => {
+			wishesColor.update(color => 'darkgray')
+			findWishesColor.update(color => 'darkgray')
+			findUsersColor.update(color => 'darkgray')
 		}}>
 			<h1 class="wishes">
 				<Link class="Links" to="/">Wishes</Link>
@@ -49,29 +51,27 @@ window.addEventListener('popstate', () => {
 
 		</button>
 			<nav class="navBar">
-				<button class="testButton {$findWishesColor}" on:click={() => {
-					findWishesColor.set('aqua');
-					findUsersColor.set('white')
-				}}>
-					<Link class="Links" to="/FindWishes">Find Wishes</Link>
-				</button>
+				<Link class="Links" to="/FindUsers">
+					<button class="testButton {$findWishesColor}" on:click={() => {
+						findWishesColor.update(color => color === 'darkgray' ? 'gray' : 'darkgray')
+						findUsersColor.update(color => 'darkgray')
+						wishesColor.update(color => 'darkgray')
+					}}>
+						Find Wishes
+					</button>
+			</Link>
+			<Link class="Links" to="/FindWishes">
 				<button class="testButton {$findUsersColor}" on:click={() => {
-					findUsersColor.set('aqua')
-					findWishesColor.set('white')
+					findUsersColor.update(color => color === 'darkgray' ? 'gray' : 'darkgray')
+					findWishesColor.update(color => 'darkgray')
+					wishesColor.update(color => 'darkgray')
 				}}>
-					<Link class="Links" to="/FindUsers">Find Users</Link>
+					Find Wishes
 				</button>
-				
 
-				<Link class="Links" to="/FindWishes">Find Wishes</Link>
-				<Link class="Links" to="/FindUsers">Find Users</Link>
-				<Link class="MyFriends" to="/MyFriends"></Link>
-
-				<Link class="Links" to="/SpecificUser">Specific user</Link>
+			</Link>
 
 			</nav>
-			
-
 			
 			<div>
 				<NavBar>
@@ -177,12 +177,19 @@ window.addEventListener('popstate', () => {
 		font-family: Helvetica;
 	}
 
-	.white{
-		background-color: white;
+	button{
+		background-color: darkgray;
+		color: white;
+		padding: 10px 20px;
+		border-radius: 5px;
+		border: none;
+		cursor: pointer;
+		font-size: 16px;
 	}
 
-	.aqua {
-		background-color: aqua;
+	.gray{
+		background-color: gray;;
 	}
+
 </style>
 
