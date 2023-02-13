@@ -63,7 +63,6 @@ window.addEventListener('popstate', () => {
 				</button>
 				
 
-			<nav class="navBar link">
 				<Link class="Links" to="/FindWishes">Find Wishes</Link>
 				<Link class="Links" to="/FindUsers">Find Users</Link>
 				<Link class="MyFriends" to="/MyFriends"></Link>
@@ -73,17 +72,7 @@ window.addEventListener('popstate', () => {
 			</nav>
 			
 
-			{#if $findWishesColor === 'aqua'}
-				<script>
-					buttonColor.set('aqua');
-				</script>
-			{/if}
-
-			{#if $findWishesColor === 'white'}
-				<script>
-					buttonColor.set('white');
-				</script>
-			{/if}
+			
 			<div>
 				<NavBar>
 					<NavItem>
