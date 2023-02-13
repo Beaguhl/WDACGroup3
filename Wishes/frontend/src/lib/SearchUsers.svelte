@@ -5,9 +5,9 @@
 	import SpecificUser from "./SpecificUser.svelte";
 	import {onMount} from 'svelte'
 
-  import { writable } from 'svelte/store';
+  import { get, writable } from 'svelte/store';
 
-let show = writable(true);
+let show = writable(false);
 
 	let users;
 
@@ -15,44 +15,31 @@ let show = writable(true);
     const response = await fetch('../../dummyData.json');
     const data = await response.json();
     users = data;
-    console.log("Data loaded: ", data);
 	}
 
 	onMount(getData);
 
-  function funcToRun () {
-    document.addEventListener("DOMContentLoaded", async function(event) {
+  async function funcToRun () {
     await getData()
-    const userItem = document.getElementById("userItem")
-
-    console.log("now it should work: " + userItem.innerHTML)
-    event.preventDefault()
-  })
+    const userItem = document.getElementById("userItem");
+    console.log("now it should work: " + userItem.innerHTML);
   }
 
-
-$: if (show) {
-  funcToRun();
-}
-
-
-
+  onMount(() => {
+    getData();
+    funcToRun();
+  });
   
-
-  
-
-  
-  
-  
-	
-  
-  
-  
-
 
 </script>
   
 <body>
+
+  <div>search users</div>
+
+  
+
+  
   <!----------- search bar ---------->
 <div class="search" id="fan">
 	<input id="search" type="text" placeholder="Search..">
