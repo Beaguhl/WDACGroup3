@@ -68,11 +68,11 @@ window.addEventListener('popstate', () => {
 				}}>
 					Find Wishes
 				</button>
+
 			</Link>
 
 			</nav>
 			
-
 			<div>
 				<NavBar>
 					<NavItem>

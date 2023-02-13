@@ -5,45 +5,79 @@
 	import SpecificUser from "./SpecificUser.svelte";
 	import {onMount} from 'svelte'
 
+  import { writable } from 'svelte/store';
+
+let show = writable(true);
+
 	let users;
 
 	async function getData() {
-	const response = await fetch('../../dummyData.json');
-	const data = await response.json();
-	users = data;
+    const response = await fetch('../../dummyData.json');
+    const data = await response.json();
+    users = data;
+    console.log("Data loaded: ", data);
 	}
 
 	onMount(getData);
 
-	console.log("NU KOMMER users" + users)
+  function funcToRun () {
+    document.addEventListener("DOMContentLoaded", async function(event) {
+    await getData()
+    const userItem = document.getElementById("userItem")
 
- 
+    console.log("now it should work: " + userItem.innerHTML)
+    event.preventDefault()
+  })
+  }
+
+
+$: if (show) {
+  funcToRun();
+}
+
+
+
+  
+
+  
+
+  
+  
+  
 	
+  
+  
+  
 
 
 </script>
   
-
-<!----------- search bar ---------->
-<div class="search">
+<body>
+  <!----------- search bar ---------->
+<div class="search" id="fan">
 	<input id="search" type="text" placeholder="Search..">
 </div>
-<Router>
+
 	<section>
-		<div class="container">
+		<div class="container" id="hej">
 			<div class="squareContainer">
 				{#if users}
 					{#each users as user}
 						<div class="column is-4-tablet is-3-desktop square">
 							<section class="container" id="userItem">
-								<Link class="Links" to="/SpecificUser">
-									<div class="profilePicture">
-										<img class="imageSize" src="{user.image}" alt="">
-									</div> 
-									<div class="text">
-										{user.username}
-									</div>
-								</Link> 
+                <Router>
+                  <Link class="Links" to="/SpecificUser">
+                    <div class="profilePicture" id="profilePicture">
+                      <img class="imageSize" src="{user.image}" alt="">
+                    </div> 
+                    <div class="text">
+                      {user.username}
+                    </div>
+                  </Link> 
+                	<main>
+                    <Route path="/SpecificUser" component="{SpecificUser}"></Route>
+                  </main>
+                </Router>
 							</section>   
 						</div> 
 					{/each}
@@ -52,10 +86,9 @@
 		</div>
 	</section>
 
-	<main>
-		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
-	</main>
-</Router>
+
+</body>
+
 	
 
 <style>
@@ -63,6 +96,7 @@
 	.imageSize{
 		width: 10vw;
 		height: 20vh;
+    border-radius: 10px;
 	}
 
 	.profilePicture{
