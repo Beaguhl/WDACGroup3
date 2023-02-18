@@ -19,6 +19,9 @@
 
 <Router>
 	<section>
+		<div>
+			find products
+		</div>
 		<div class="container">
 			<div class="squareContainer">
 				
@@ -31,7 +34,7 @@
 										<img class="imageSize" src="{product.image}" alt="">
 									</div> 
 									<div class="text">
-										{product.username}
+										{product.username + "yyy"}
 									</div>
 								</Link> 
 							</section>   

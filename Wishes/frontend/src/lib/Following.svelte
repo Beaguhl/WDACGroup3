@@ -50,7 +50,7 @@
 											<img class="imageSize" src="{user.image}" alt="">
 										</div> 
 										<div class="text">
-											{user.username + user.id}
+											{user.username}
 										</div>
 									</Link> 
 								</section>   
@@ -82,6 +82,8 @@
 	.imageSize{
 	  width: 10vw;
 	  height: 20vh;
+	  border-radius: 10px;
+
 	}
 
 	.white{

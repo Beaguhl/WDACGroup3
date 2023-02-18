@@ -22,18 +22,16 @@
 
 </script>
   
-    <div>
-        my friends
-    </div>
+<div>
+	find users
+</div>
 	<!----------- search bar ---------->
 	<div class="search">
 		<input id="search" type="text" placeholder="Search..">
 	</div>
 	<Router>
 		<section>
-			<div>
-				followers
-			</div>
+			
 			<div class="container">
 				<div class="squareContainer">
 					{#if users}
