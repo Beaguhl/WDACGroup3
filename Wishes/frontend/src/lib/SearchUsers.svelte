@@ -4,10 +4,15 @@
 	import {Router, Link, Route} from 'svelte-routing'
 	import SpecificUser from "./SpecificUser.svelte";
 	import {onMount} from 'svelte'
+    import { text } from 'svelte/internal';
 
-  import { get, writable } from 'svelte/store';
+  /*console.log(itemHTMLString)
+      
+      let str = itemHTMLString
 
-let show = writable(false);
+      let result = str.match(/<div class="text s-wXI9jz76GbCS" id="text">\w*</);
+    
+      console.log(result);*/
 
 	let users;
 
@@ -17,13 +22,38 @@ let show = writable(false);
     users = data;
 	}
 
-	onMount(getData);
-
+  // gets documents object every time a single page is shown
   async function funcToRun () {
     await getData()
-    const userItem = document.getElementById("userItem");
-    console.log("now it should work: " + userItem.innerHTML);
+    const arrayOfUserItems = document.getElementsByClassName("userItem")
+
+
+    
+
+    for (let i = 0; i < arrayOfUserItems.length; i+=1){
+
+      const userItem = arrayOfUserItems[i];
+      const textElements = userItem.getElementsByClassName("text");
+      
+      for (let j = 0; j < textElements.length; j++) {
+        const textElement = textElements[j];
+        console.log("textelement: " + textElement.innerHTML)
+        const innerText = textElement.innerHTML
+
+        let str = '<div class="text s-wXI9jz76GbCS" id="text">' + innerText + '</div>'
+        textElements[j].innerHTML = str
+
+
+        arrayOfUserItems[i].addEventListener("mouseover", function(){
+          
+        })
+
+      }
   }
+
+}
+  
+  
 
   onMount(() => {
     getData();
@@ -37,9 +67,7 @@ let show = writable(false);
 
   <div>search users</div>
 
-  
 
-  
   <!----------- search bar ---------->
 <div class="search" id="fan">
 	<input id="search" type="text" placeholder="Search..">
@@ -51,13 +79,13 @@ let show = writable(false);
 				{#if users}
 					{#each users as user}
 						<div class="column is-4-tablet is-3-desktop square">
-							<section class="container" id="userItem">
+							<section class="container userItem" id="userItem">
                 <Router>
                   <Link class="Links" to="/SpecificUser">
                     <div class="profilePicture" id="profilePicture">
                       <img class="imageSize" src="{user.image}" alt="">
                     </div> 
-                    <div class="text">
+                    <div class="text" id="text" >
                       {user.username}
                     </div>
                   </Link> 
