@@ -4,6 +4,9 @@
 	import SpecificUser from "./SpecificUser.svelte";
 	import {onMount} from 'svelte'
 
+
+	
+
 	let users;
 
 	async function getData() {
@@ -15,14 +18,20 @@
 	onMount(getData);
 
 
- 
-	
 
+	function getPropsi ({ location, href, isPartiallyCurrent, isCurrent }) {
+		const isActive = href === "/" ? isCurrent : isPartiallyCurrent || isCurrent;
+
+		if (isActive) {
+			return {users}
+		}
+		return {};
+	}
 
 </script>
   
     <div>
-        my friends
+        Following
     </div>
 	<!----------- search bar ---------->
 	<div class="search">
@@ -36,12 +45,12 @@
 						{#each users as user}
 							<div class="column is-4-tablet is-3-desktop square">
 								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser">
+									<Link class="Links" to="/SpecificUser/{user.id}" state={user}>
 										<div class="profilePicture">
 											<img class="imageSize" src="{user.image}" alt="">
 										</div> 
 										<div class="text">
-											{user.username}
+											{user.username + user.id}
 										</div>
 									</Link> 
 								</section>   

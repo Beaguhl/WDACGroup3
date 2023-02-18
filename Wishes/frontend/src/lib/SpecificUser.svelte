@@ -2,8 +2,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
 <script>
+    import SearchUsers from "./SearchUsers.svelte";
 
-   class WishList {
+    
+
+    class WishList {
           constructor(itemName, purchased) {
               this.itemName = itemName;
               this.purchased = purchased;
@@ -39,6 +42,13 @@
   
   })
 
+
+  export let location;
+
+    const user = location.state;
+
+
+
 </script>
 
 <!------------ HTML code ----------->
@@ -54,7 +64,7 @@
         <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
       </div>
       <div class="test">
-        <p>user name</p>
+        <p>{user.username}</p>
       </div>
       
       <!-- if not following -->
@@ -66,7 +76,7 @@
     <!-- hela högra columnen -->
     <div id="wishListObject">
       <p class="title">
-        User Name's Wish List
+        {user.username}'s Wish List
       </p>
       
       <!-- lista med wishes -->

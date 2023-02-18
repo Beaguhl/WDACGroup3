@@ -37,7 +37,7 @@
 						{#each users as user}
 							<div class="column is-4-tablet is-3-desktop square">
 								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser">
+									<Link class="Links" to="/SpecificUser/{user.id}">
 										<div class="profilePicture">
 											<img class="imageSize" src="{user.image}" alt="">
 										</div> 

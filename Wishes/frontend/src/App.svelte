@@ -1,6 +1,5 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
-	// @ts-ignore
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/SearchUsers.svelte'
@@ -16,6 +15,8 @@
 	import Followers from './lib/Followers.svelte'
 
 	import SpecificProduct from './lib/SpecificProduct.svelte'
+
+
 
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -90,7 +91,7 @@ window.addEventListener('popstate', () => {
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/FindUsers" component="{SearchUsers}"></Route>
 		<Route path="/FindWishes" component="{FindProducts}"></Route>
-		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+		<Route path="SpecificUser/:id" component="{SpecificUser}"></Route>
 
 		<Route path="/SpecificProduct" compenent="{SpecificProduct}"></Route>
 
