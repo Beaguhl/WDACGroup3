@@ -3,19 +3,25 @@
 
 <script>
 
-   class Product {
-          constructor(itemName, purchased) {
-              this.itemName = itemName;
-              this.purchased = purchased;
+   class Information {
+          constructor(itemName, itemPrice, itemImage, itemShortDescription, itemInWishList) {
+              this.itemName = itemName
+              this.itemPrice = itemPrice
+              this.itemImage = itemImage
+              this.itemShortDescription = itemShortDescription
+              this.itemInWishList = itemInWishList
           }
       }
   
-    var arrayOfWishes = []
+    var productDescription
   
-    arrayOfWishes.push(new Product("A horse", "Ricky229")) 
-    arrayOfWishes.push(new Product("5000 $", ""))
-    arrayOfWishes.push(new Product("Food", "")) 
-    arrayOfWishes.push(new Product("A new iPhone", "user_2883"))
+    productDescription = new Information(
+      "Horse", 
+      500, 
+      "https://www.fauna-flora.org/app/uploads/2017/09/rhino_shutterstock_60362779-scaled-e1655220982564.jpg", 
+      "It is a unicorn",
+      true)
+   
   
   document.addEventListener ("DOMContentLoaded", function() {
 
@@ -39,6 +45,8 @@
   
   })
 
+
+
 </script>
 
 <!------------ HTML code ----------->
@@ -47,65 +55,32 @@
 
 <!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 
-  <div class="mainGrid">
-
-    <div class="leftColumn">
-      <div class="test">
-        <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
-      </div>
-      <div class="test">
-        <p>specific product</p>
-      </div>
-      
-      <!-- if not following -->
-      <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
-      <!-- if following -->
-      <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
+<div class="mainGrid">
+ 
+  <div class="leftColumn">
+    <h1 class="title">
+      {productDescription.itemName}
+    </h1>
+    <div class="test">
+      <img id="profilePic" src="{productDescription.itemImage}" alt="">
     </div>
-
-    <!-- hela högra columnen -->
-    <div id="wishListObject">
-      <p class="title">
-        User Name's Wish List
-      </p>
+    <p>
+      {productDescription.itemShortDescription}
+    </p>
+    <p>
+      ${productDescription.itemPrice}
+    </p>
+    <div class="test">
+    </div>
+    <!-- lista med wishes -->
+    <div class="wishList">
       
-      <!-- lista med wishes -->
-      <div class="wishList">
-        {#each arrayOfWishes as wish}
-        <div class="item">
 
-          <div class="item-btn">
-            <!-- dessa if satser är inte de snygaste men får duga för frontend sålänge -->
-            {#if wish.purchased}
-              <i class="fa-regular fa-square-check"></i>
-            {:else}
-              <i class="fa-regular fa-square"></i>
-            {/if}
-            
-          </div>
-          
-          <p id="itemTitle">{wish.itemName}</p>
-
-          <!-- om en item är köpt ska en knapp komma upp, annars inte -->
-          {#if wish.purchased}
-            <div class="item-btn">
-              <i id="closed" class="fa-solid fa-chevron-down"></i>
-              <!--<i class="fa-solid fa-xmark"></i>   when increased item view is open it should have this symbol instead of chevron-down -->
-            </div>
-            <span></span>
-
-            <!-- increased item view -->
-            <div id="increasedItem">
-              <div id="buyer">Bought by: {wish.purchased}</div>
-            </div>
-
-          {/if}
-        </div>
-        {/each}
-
-      </div>
     </div>
   </div>
+
+</div>
+
 
 <style>
 
@@ -118,7 +93,6 @@
   .mainGrid{
     display: grid;
     grid-template-columns: 2fr 2fr;
-    background-color: aqua;
     border-radius: 10px;
   }
 
