@@ -14,7 +14,6 @@
 
 	
 	onMount(getData);
-	console.log("nu kommer produkterna " + products)
 </script>
 
 <Router>
