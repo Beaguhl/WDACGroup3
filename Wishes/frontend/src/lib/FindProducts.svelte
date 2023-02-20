@@ -1,19 +1,20 @@
 <script>
 
 	import {Router, Link, Route} from 'svelte-routing'
+	import SpecificProduct from './SpecificProduct.svelte';
 	import {onMount} from 'svelte'
 
 	let products;
 
 	async function getData() {
-	const response = await fetch('../../dummyData.json');
+	const response = await fetch('../../dummyDataProducts.json');
 	const data = await response.json();
 	products = data;
 	}
 
 	
 	onMount(getData);
-	console.log("nu kommer users" + products)
+	console.log("nu kommer produkterna " + products)
 </script>
 
 <Router>
@@ -25,14 +26,14 @@
 					{#each products as product}
 						<div class="column is-4-tablet is-3-desktop square">
 							<section class="container" id="userItem">
-<!--Här ska Link vara-->
+<!--Här ska Link vara-->		<Link class="Links" to="/SpecificProduct/{product.id}">
 									<div class="profilePicture">
 										<img class="imageSize" src="{product.image}" alt="">
 									</div> 
 									<div class="text">
-										{product.username}
+										{product.name}
 									</div>
-								
+								</Link>
 							</section>   
 						</div> 
 					{/each}
@@ -42,6 +43,7 @@
 	</section>
 	<main>
 <!-- Här ska Route vara -->
+		<Route path="SpecificProduct" component="{SpecificProduct}"></Route>
 	</main>
 </Router>
 

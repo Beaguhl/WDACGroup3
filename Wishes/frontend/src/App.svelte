@@ -97,7 +97,7 @@ window.addEventListener('popstate', () => {
 		<Route path="/FindProducts" component="{FindProducts}"></Route>
 		<Route path="/SpecificUser/:id" component="{SpecificUser}"></Route>
 
-		<Route path="/SpecificProduct" component="{SpecificProduct}"></Route>
+		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
 
 		<Route path="/Following" component="{Following}"></Route>
 		<Route path="/MyWishList" component="{MyWishList}"></Route>
