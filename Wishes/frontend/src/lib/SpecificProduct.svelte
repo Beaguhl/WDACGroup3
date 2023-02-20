@@ -115,24 +115,6 @@
     max-width: 450px;
   }
 
-  .followButton {
-    align-items: center;
-  }
-
-  #increasedItem {
-    padding-bottom: 15px;
-    /*background-color: brown;*/
-    padding-top: 1%;
-  }
-
-  #itemTitle {
-    text-align: center;
-  }
-
-  #buyer {
-    text-align: start;
-  }
-
   :global(body) {
     justify-content: center;
     flex-direction: column;
@@ -144,33 +126,6 @@
     border-radius: 5px;
     background-color: blanchedalmond;
   }
-  
-  #itemTitle{
-    text-align: start;
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: 1px;
-  }
-
-  .item{
-    border-radius: 5px;
-    align-items: center;
-    display: grid;
-    grid-template-columns: 1fr 4fr 1fr;
-    background-color: brown;
-    margin-top: 15px;
-  }
-
-  .item-btn{
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
-
-  .item-btn i {
-    font-size: 18px;
-  }
 
   #profilePic{
     max-width: 100%;
@@ -181,12 +136,5 @@
     margin-top: 80px;
     border-radius: 10px; 
   }
-
-  #wishListObject{
-    text-align: center;
-    margin: 50px;
-    max-width: 450px;
-  }
-
-
+  
 </style>
