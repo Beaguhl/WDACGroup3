@@ -61,17 +61,21 @@ window.addEventListener('popstate', () => {
 						Find Users
 					</button>
 			</Link>
-			<Link class="Links" to="/FindWishes">
+			<Link class="Links" to="/FindProducts">
 				<button class="testButton {$findUsersColor}" on:click={() => {
 					findUsersColor.update(color => color === 'darkgray' ? 'gray' : 'darkgray')
 					findWishesColor.update(color => 'darkgray')
 					wishesColor.update(color => 'darkgray')
 				}}>
-					Find Wishes
+					Find Products
 				</button>
 
 			</Link>
 
+			<Link class="Links" to="/SpecificProduct">
+				Product
+			</Link>
+			
 			</nav>
 			
 			<div>
@@ -90,10 +94,10 @@ window.addEventListener('popstate', () => {
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/FindUsers" component="{FindUsers}"></Route>
-		<Route path="/FindWishes" component="{FindProducts}"></Route>
-		<Route path="SpecificUser/:id" component="{SpecificUser}"></Route>
+		<Route path="/FindProducts" component="{FindProducts}"></Route>
+		<Route path="/SpecificUser/:id" component="{SpecificUser}"></Route>
 
-		<Route path="/SpecificProduct" compenent="{SpecificProduct}"></Route>
+		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
 
 		<Route path="/Following" component="{Following}"></Route>
 		<Route path="/MyWishList" component="{MyWishList}"></Route>
