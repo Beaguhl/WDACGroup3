@@ -86,15 +86,21 @@ window.addEventListener('popstate', () => {
 				<Link class="Links" to="/FindUsers">
 					<button class="testButton" id="findUsers">Find Users</button>		
 			</Link>
+
 			<Link class="Links" to="/FindWishes">
 				<button class="testButton" id="findWishes" 
 					
 				>
 					Find Wishes
+
 				</button>
 
 			</Link>
 
+			<Link class="Links" to="/SpecificProduct">
+				Product
+			</Link>
+			
 			</nav>
 			
 			<div>
@@ -113,10 +119,10 @@ window.addEventListener('popstate', () => {
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/FindUsers" component="{FindUsers}"></Route>
-		<Route path="/FindWishes" component="{FindProducts}"></Route>
-		<Route path="SpecificUser/:id" component="{SpecificUser}"></Route>
+		<Route path="/FindProducts" component="{FindProducts}"></Route>
+		<Route path="/SpecificUser/:id" component="{SpecificUser}"></Route>
 
-		<Route path="/SpecificProduct" compenent="{SpecificProduct}"></Route>
+		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
 
 		<Route path="/Following" component="{Following}"></Route>
 		<Route path="/MyWishList" component="{MyWishList}"></Route>

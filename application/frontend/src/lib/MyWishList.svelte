@@ -1,7 +1,6 @@
 <script>
 
 	import {Router, Link, Route} from 'svelte-routing'
-	import SpecificProduct from "./SpecificProduct.svelte";
 	import {onMount} from 'svelte'
 
 	let users;
@@ -28,7 +27,7 @@
 					{#each users as product}
 						<div class="column is-4-tablet is-3-desktop square">
 							<section class="container" id="userItem">
-								<Link class="Links" to="/SpecificUser">
+								<Link class="Links" to="/SpecificUser"> <!--FEL!-->
 									<div class="profilePicture">
 										<img class="imageSize" src="{product.image}" alt="">
 									</div> 
@@ -44,7 +43,7 @@
 		</div>
 	</section>
 	<main>
-		<Route path="/SpecificProduct" component="{SpecificProduct}"></Route>
+<!--Route-->
 	</main>
 </Router>
 

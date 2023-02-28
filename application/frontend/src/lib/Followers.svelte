@@ -80,21 +80,10 @@
 	  border-radius: 10px;
 	}
 
-	.white{
-	  color: white;
-	}
-
 	.profilePicture{
 	  margin-top: 10%;
 	  display: flex;
 	  justify-content: center;
-	}
-
-	#profilePicture {
-	  border-radius: 10%;
-	  width: 100%;
-	  padding-left: 10px;
-	  padding-right: 10px;
 	}
 
 	.container{
