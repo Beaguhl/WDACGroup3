@@ -3,7 +3,9 @@
 
 <script>
 
-   class WishList {
+    
+
+    class WishList {
           constructor(itemName, purchased) {
               this.itemName = itemName;
               this.purchased = purchased;
@@ -36,14 +38,29 @@
       }
 
     }*/
+
+    const expandButton = document.getElementById("expand")
+    expandButton.addEventListener("click", function(){
+      console.log("hej")
+    })
+
   
   })
+
+  
+
+  
+
+  export let location;
+
+  const user = location.state;
+
+  console.log(user)
+
 
 </script>
 
 <!------------ HTML code ----------->
-
-
 
 <!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 
@@ -54,7 +71,7 @@
         <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
       </div>
       <div class="test">
-        <p>user name</p>
+        <p>{user.username + "specific user"}</p>
       </div>
       
       <!-- if not following -->
@@ -66,7 +83,7 @@
     <!-- hela högra columnen -->
     <div id="wishListObject">
       <p class="title">
-        User Name's Wish List
+        {user.username}'s Wish List
       </p>
       
       <!-- lista med wishes -->
@@ -88,7 +105,7 @@
 
           <!-- om en item är köpt ska en knapp komma upp, annars inte -->
           {#if wish.purchased}
-            <div class="item-btn">
+            <div class="item-btn" id="expand">
               <i id="closed" class="fa-solid fa-chevron-down"></i>
               <!--<i class="fa-solid fa-xmark"></i>   when increased item view is open it should have this symbol instead of chevron-down -->
             </div>
@@ -118,13 +135,12 @@
   .mainGrid{
     display: grid;
     grid-template-columns: 2fr 2fr;
-    background-color: aqua;
     border-radius: 10px;
   }
 
   .leftColumn{
     text-align: center;
-    margin-left: 50px;
+    margin-left: 70px;
     margin-top: 10%;
   }
 

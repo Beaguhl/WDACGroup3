@@ -1,11 +1,9 @@
 
+
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
 	import SpecificUser from "./SpecificUser.svelte";
 	import {onMount} from 'svelte'
-
-
-	
 
 	let users;
 
@@ -18,34 +16,29 @@
 	onMount(getData);
 
 
+ 
+	
 
-	function getPropsi ({ location, href, isPartiallyCurrent, isCurrent }) {
-		const isActive = href === "/" ? isCurrent : isPartiallyCurrent || isCurrent;
-
-		if (isActive) {
-			return {users}
-		}
-		return {};
-	}
 
 </script>
   
-    <div>
-        Following
-    </div>
+<div>
+	find users
+</div>
 	<!----------- search bar ---------->
 	<div class="search">
 		<input id="search" type="text" placeholder="Search..">
 	</div>
 	<Router>
 		<section>
+			
 			<div class="container">
 				<div class="squareContainer">
 					{#if users}
 						{#each users as user}
 							<div class="column is-4-tablet is-3-desktop square">
 								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser/{user.id}" state={user}>
+									<Link class="Links" to="/SpecificUser/{user.id}">
 										<div class="profilePicture">
 											<img class="imageSize" src="{user.image}" alt="">
 										</div> 
@@ -83,7 +76,6 @@
 	  width: 10vw;
 	  height: 20vh;
 	  border-radius: 10px;
-
 	}
 
 	.profilePicture{

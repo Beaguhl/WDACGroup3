@@ -1,9 +1,8 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
-	// @ts-ignore
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
-	import SearchUsers from './lib/SearchUsers.svelte'
+	import SearchUsers from './lib/FindUsers.svelte'
 	import FindProducts from './lib/FindProducts.svelte'
 	import DropdownMenu from './lib/DropdownMenu.svelte'
 	import NavBar from './lib/NavBar.svelte'
@@ -14,8 +13,10 @@
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
-
+    import FindUsers from './lib/FindUsers.svelte';
 	import SpecificProduct from './lib/SpecificProduct.svelte'
+
+
 
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -57,20 +58,24 @@ window.addEventListener('popstate', () => {
 						findUsersColor.update(color => 'darkgray')
 						wishesColor.update(color => 'darkgray')
 					}}>
-						Find Wishes
+						Find Users
 					</button>
 			</Link>
-			<Link class="Links" to="/FindWishes">
+			<Link class="Links" to="/FindProducts">
 				<button class="testButton {$findUsersColor}" on:click={() => {
 					findUsersColor.update(color => color === 'darkgray' ? 'gray' : 'darkgray')
 					findWishesColor.update(color => 'darkgray')
 					wishesColor.update(color => 'darkgray')
 				}}>
-					Find Wishes
+					Find Products
 				</button>
 
 			</Link>
 
+			<Link class="Links" to="/SpecificProduct">
+				Product
+			</Link>
+			
 			</nav>
 			
 			<div>
@@ -88,11 +93,11 @@ window.addEventListener('popstate', () => {
 	</div>
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
-		<Route path="/FindUsers" component="{SearchUsers}"></Route>
-		<Route path="/FindWishes" component="{FindProducts}"></Route>
-		<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+		<Route path="/FindUsers" component="{FindUsers}"></Route>
+		<Route path="/FindProducts" component="{FindProducts}"></Route>
+		<Route path="/SpecificUser/:id" component="{SpecificUser}"></Route>
 
-		<Route path="/SpecificProduct" compenent="{SpecificProduct}"></Route>
+		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
 
 		<Route path="/Following" component="{Following}"></Route>
 		<Route path="/MyWishList" component="{MyWishList}"></Route>

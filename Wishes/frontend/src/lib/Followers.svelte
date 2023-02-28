@@ -31,13 +31,16 @@
 	</div>
 	<Router>
 		<section>
+			<div>
+				followers
+			</div>
 			<div class="container">
 				<div class="squareContainer">
 					{#if users}
 						{#each users as user}
 							<div class="column is-4-tablet is-3-desktop square">
 								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser">
+									<Link class="Links" to="/SpecificUser/{user.id}">
 										<div class="profilePicture">
 											<img class="imageSize" src="{user.image}" alt="">
 										</div> 
@@ -74,23 +77,13 @@
 	.imageSize{
 	  width: 10vw;
 	  height: 20vh;
-	}
-
-	.white{
-	  color: white;
+	  border-radius: 10px;
 	}
 
 	.profilePicture{
 	  margin-top: 10%;
 	  display: flex;
 	  justify-content: center;
-	}
-
-	#profilePicture {
-	  border-radius: 10%;
-	  width: 100%;
-	  padding-left: 10px;
-	  padding-right: 10px;
 	}
 
 	.container{
