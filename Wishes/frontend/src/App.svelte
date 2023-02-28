@@ -27,25 +27,56 @@ onMount(async () => {
   currentRoute = window.location.pathname;
 });
 
-const findWishesColor = writable('darkgray')
-const findUsersColor = writable('darkgray')
-const wishesColor = writable('darkgray')
 
 window.addEventListener('popstate', () => {
   currentRoute = window.location.pathname;
 });
 
+	
+
+
+	document.addEventListener ("DOMContentLoaded", function() {
+
+		const findUsers = document.getElementById("findUsers")
+		const findWishes = document.getElementById("findWishes")
+		const homeButton = document.getElementById("homeButton")
+
+		var arrOfNavItems = []
+		arrOfNavItems.push(findUsers)
+		arrOfNavItems.push(findWishes)
+
+		makeStandard()
+
+		function makeStandard(){
+			findUsers.style.textDecoration = ""
+			findWishes.style.textDecoration = ""
+			homeButton.style.textDecoration = ""
+		}
+
+		findUsers.addEventListener("click", function(){
+			makeStandard()
+			findUsers.style.textDecoration = "underline"
+		})
+
+		findWishes.addEventListener("click", function() {
+			makeStandard()
+			findWishes.style.textDecoration = "underline"
+
+		})
+
+		homeButton.addEventListener("click", function() {
+			makeStandard()
+			homeButton.style.textDecoration = "underline"
+		})
+
+	})
 
 </script>
 
 
 <Router>
 	<div class="mainDiv">
-		<button class="{$wishesColor}" on:click={() => {
-			wishesColor.update(color => 'darkgray')
-			findWishesColor.update(color => 'darkgray')
-			findUsersColor.update(color => 'darkgray')
-		}}>
+		<button id="homeButton">
 			<h1 class="wishes">
 				<Link class="Links" to="/">Wishes</Link>
 			</h1>
@@ -53,21 +84,15 @@ window.addEventListener('popstate', () => {
 		</button>
 			<nav class="navBar">
 				<Link class="Links" to="/FindUsers">
-					<button class="testButton {$findWishesColor}" on:click={() => {
-						findWishesColor.update(color => color === 'darkgray' ? 'gray' : 'darkgray')
-						findUsersColor.update(color => 'darkgray')
-						wishesColor.update(color => 'darkgray')
-					}}>
-						Find Users
-					</button>
+					<button class="testButton" id="findUsers">Find Users</button>		
 			</Link>
-			<Link class="Links" to="/FindProducts">
-				<button class="testButton {$findUsersColor}" on:click={() => {
-					findUsersColor.update(color => color === 'darkgray' ? 'gray' : 'darkgray')
-					findWishesColor.update(color => 'darkgray')
-					wishesColor.update(color => 'darkgray')
-				}}>
-					Find Products
+
+			<Link class="Links" to="/FindWishes">
+				<button class="testButton" id="findWishes" 
+					
+				>
+					Find Wishes
+
 				</button>
 
 			</Link>
@@ -163,6 +188,7 @@ window.addEventListener('popstate', () => {
 		width: fit-content;
 		float: left;
 		margin-left: 5%;
+		
 	}
 
 	:root {
