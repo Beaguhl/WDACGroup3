@@ -7,7 +7,7 @@
 	let products;
 
 	async function getData() {
-	const response = await fetch('../../dummyDataProducts.json');
+	const response = await fetch('../../dummyData.json');
 	const data = await response.json();
 	products = data;
 	}
@@ -30,7 +30,7 @@
 										<img class="imageSize" src="{product.image}" alt="">
 									</div> 
 									<div class="text">
-										{product.name}
+										{product.username}
 									</div>
 								</Link>
 							</section>   

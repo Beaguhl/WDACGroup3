@@ -87,11 +87,9 @@ window.addEventListener('popstate', () => {
 					<button class="testButton" id="findUsers">Find Users</button>		
 			</Link>
 
-			<Link class="Links" to="/FindWishes">
-				<button class="testButton" id="findWishes" 
-					
-				>
-					Find Wishes
+			<Link class="Links" to="/FindProducts">
+				<button class="testButton" id="findProducts">
+					Find Products
 
 				</button>
 
