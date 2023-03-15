@@ -5,4 +5,6 @@
 
 /*SELECT * FROM WishList*/
 
-SELECT * FROM Product
+/*SELECT * FROM Product*/
+
+/*SELECT * FROM WishListProduct*/
