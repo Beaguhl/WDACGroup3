@@ -46,17 +46,24 @@ INSERT INTO WishList (userID) VALUES (3);
 
 CREATE TABLE IF NOT EXISTS Product (
 	productID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	wishListID INT,
-	productName VARCHAR(50) NOT NULL,
-	description TEXT NOT NULL,
-	purchased Boolean, 
+	productName VARCHAR(20) NOT NULL,
+	description VARCHAR(50) NOT NULL
+);
+
+INSERT INTO Product (productName, description) VALUES ("fanta", "en annan god dricka");
+INSERT INTO Product (productName, description) VALUES ("Loka", "en god dricka");
+
+CREATE TABLE IF NOT EXISTS WishListProduct (
+	productID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	wishListID INT NOT NULL,
+	purchased Boolean NOT NULL, 
 	userPurchased INT,
 	FOREIGN KEY (wishListID) REFERENCES WishList(wishListID)
 );
 
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 1, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
 
-INSERT INTO Product (wishListID, productName, description, purchased, userPurchased) VALUES (1, "Loka", "en god dricka", FALSE, NULL);
-INSERT INTO Product (wishListID, productName, description, purchased, userPurchased) VALUES (1, "Godis", "smakens", TRUE, 2);
 
 
 
