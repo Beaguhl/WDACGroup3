@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS User (
+CREATE TABLE IF NOT EXISTS Users (
 	userID INT PRIMARY KEY AUTO_INCREMENT,
 	username VARCHAR(24),
 	password CHAR(60),
@@ -7,11 +7,11 @@ CREATE TABLE IF NOT EXISTS User (
 );
 
 
-INSERT INTO User (username, password, admin)
+INSERT INTO Users (username, password, admin)
 VALUES ("jocke", "$2b$12$8OEo/.3aeIJXnz1CviYSdevFwYtFAQXfHyGSewYy4oacVU5R4KjcS", TRUE);
-INSERT INTO User (username, password, admin)
+INSERT INTO Users (username, password, admin)
 VALUES ("ellen", "$2b$12$eXGwfoAHUOiUX7KkhFhKQezMlpXGRGpYE137r2kYwWGNrQmSyv5wm", TRUE);
-INSERT INTO User (username, password, admin)
+INSERT INTO Users (username, password, admin)
 VALUES ("nisse", "$2b$12$RKGQ6juzBi7GyPkEAjTHeObnAcRV973C1f7vU4H4LgPMOPu/W/6Vq", FALSE);
 
 

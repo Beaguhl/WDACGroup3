@@ -129,7 +129,7 @@ app.get("/users", async function(request, response){
 	try{
 		const connection = await pool.getConnection()
 		
-		const query = "SELECT * FROM User"
+		const query = "SELECT * FROM Users"
 		const users = await connection.query(query)
 
 		response.status(200).json(users)
@@ -147,7 +147,7 @@ app.get("/user/:id", async function(request, response){
 	try {
 		const connection = await pool.getConnection()
 
-		const query = "SELECT * FROM User WHERE userID = ?"
+		const query = "SELECT * FROM Users WHERE userID = ?"
 		const values = [id]
 		const user = await connection.query(query, values)
 
