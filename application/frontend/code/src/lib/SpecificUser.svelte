@@ -19,110 +19,92 @@
     arrayOfWishes.push(new WishList("Food", "")) 
     arrayOfWishes.push(new WishList("A new iPhone", "user_2883"))
   
-  document.addEventListener ("DOMContentLoaded", function() {
+  export let id;
+  let isFetchingUser = true
+  let failedToFetchUser = false
+  let user = null
 
-    // ------------------- following button, som laggar -------------
-    var follow = false
-    /*document.getElementById("follow").addEventListener("click", ToggleFollow)
-    
-    function ToggleFollow() {
+  async function loadUser(){
+    try {
+      const response = await fetch("http://localhost:8080/specificUser/" + id)
       
-      var followOrNot = document.getElementById("follow")
-      
-      if (follow){
-        followOrNot.innerHTML = "Following ✔️"
-        follow = false
-      } else {
-        followOrNot.innerHTML = "✚ Follow"
-        follow = true
+      switch(response.status) {
+        
+        case 200:
+          isFetchingUser = false
+          user = await response.json()
+          console.log(user)
+          break
+        
+        case 404:
+          isFetchingUser = false
+
       }
 
-    }*/
-
-    const expandButton = document.getElementById("expand")
-    expandButton.addEventListener("click", function(){
-      console.log("hej")
-    })
-
+    } catch (error) {
+      failedToFetchUser = true
+    }
+  }
   
-  })
-
-  
-
-  
-
-  export let location;
-
-  const user = location.state;
-
-  console.log(user)
-
+  loadUser()
 
 </script>
 
 <!------------ HTML code ----------->
 
-<!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
+{#if isFetchingUser}
+  <p>Wait, fetching data...</p>
+{:else if failedToFetchUser}
+  <p>Couldn't fetch user. Check your Internet connection.</p>
+{:else if user}
+  {#each user as singleUser}
+    <div class="mainGrid">
+        <div class="leftColumn">
+          <div class="test">
+            <p>{singleUser.username}</p>
 
-  <div class="mainGrid">
-
-    <div class="leftColumn">
-      <div class="test">
-        <img id="profilePic" src="https://preview.redd.it/v0caqchbtn741.jpg?auto=webp&s=c5d05662a039c031f50032e22a7c77dfcf1bfddc" alt="">
-      </div>
-      <div class="test">
-        <p>{user.username + "specific user"}</p>
-      </div>
-      
-      <!-- if not following -->
-      <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
-      <!-- if following -->
-      <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
-    </div>
-
-    <!-- hela högra columnen -->
-    <div id="wishListObject">
-      <p class="title">
-        {user.username}'s Wish List
-      </p>
-      
-      <!-- lista med wishes -->
-      <div class="wishList">
-        {#each arrayOfWishes as wish}
-        <div class="item">
-
-          <div class="item-btn">
-            <!-- dessa if satser är inte de snygaste men får duga för frontend sålänge -->
-            {#if wish.purchased}
-              <i class="fa-regular fa-square-check"></i>
-            {:else}
-              <i class="fa-regular fa-square"></i>
-            {/if}
-            
           </div>
           
-          <p id="itemTitle">{wish.itemName}</p>
-
-          <!-- om en item är köpt ska en knapp komma upp, annars inte -->
-          {#if wish.purchased}
-            <div class="item-btn" id="expand">
-              <i id="closed" class="fa-solid fa-chevron-down"></i>
-              <!--<i class="fa-solid fa-xmark"></i>   when increased item view is open it should have this symbol instead of chevron-down -->
-            </div>
-            <span></span>
-
-            <!-- increased item view -->
-            <div id="increasedItem">
-              <div id="buyer">Bought by: {wish.purchased}</div>
-            </div>
-
-          {/if}
+          <!-- if not following -->
+          <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
+          <!-- if following -->
+          <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
         </div>
-        {/each}
 
+        <!-- hela högra columnen -->
+        <div id="wishListObject">
+          <p class="title">
+            {singleUser.username}'s Wish List
+          </p>
+          
+          <!-- lista med wishes -->
+          <div class="wishList">
+            {#each arrayOfWishes as wish}
+            <div class="item">
+
+              <div class="item-btn">
+                {#if wish.purchased}
+                  <i class="fa-regular fa-square-check"></i>
+                {:else}
+                  <i class="fa-regular fa-square"></i>
+                {/if}
+                
+              </div>
+              
+              <p id="itemTitle">{wish.itemName}</p>
+
+            </div>
+            {/each}
+
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+  {/each}
+  
+{:else}
+<p>Did not find any user with the given id</p>
+{/if}
+  
 
 <style>
 
@@ -163,7 +145,7 @@
 
   #increasedItem {
     padding-bottom: 15px;
-    background-color: brown;
+    background-color: rgb(255, 255, 255);
     padding-top: 1%;
   }
 
@@ -177,7 +159,7 @@
 
   :global(body) {
     
-    background-color:coral;
+    background-color:rgb(255, 255, 255);
     justify-content: center;
     flex-direction: column;
 
@@ -189,7 +171,7 @@
     padding: 18px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    background-color: blanchedalmond;
+    background-color: rgb(151, 191, 235);
   }
   
   #itemTitle{
@@ -204,7 +186,7 @@
     align-items: center;
     display: grid;
     grid-template-columns: 1fr 4fr 1fr;
-    background-color: brown;
+    background-color: rgb(255, 255, 255);
     margin-top: 15px;
   }
 

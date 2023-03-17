@@ -1,26 +1,10 @@
 <script>
 	import SpecificUser from "./SpecificUser.svelte";
 	
-	
-	//import {onMount} from 'svelte';
 	import {Router, Link, Route} from 'svelte-routing';
 	const fetchUsersPromise = fetch("http://localhost:8080/findUsers", { // backend runs on 8080
 		method: "GET"
 	}) 
-
-	async function test() {
-		const response = await fetchUsersPromise
-		const users = await response.json()
-	}
-	/*let users;
-
-	async function getData() {
-	const response = await fetch('../../dummyData.json');
-	const data = await response.json();
-	users = data;
-	}
-
-	onMount(getData);*/
 
 </script>
   
@@ -40,24 +24,29 @@
 						<p>Wait, I'm loading</p>
 					{:then response} 
 
-					{#await  response.json() then users}
-
+						{#await  response.json() then users}
 							{#if users}
-								{#each users as user}
-									<div class="column is-4-tablet is-3-desktop square">
-										<section class="container" id="userItem">
-											<Link class="Links" to="/SpecificUser/{user.id}">
-												<div class="profilePicture">
-													<img class="imageSize" src="{user.image}" alt="">
-												</div> 
-												<div class="text">
-													{user.username}
-												</div>
-											</Link> 
-										</section>   
-									</div> 
-								{/each}
+								<div class="list">  
+									<ul>
+										{#each users as user}
+										<li>
+											<section class="container" id="userItem">
+												<Link class="Links" to="/specificUser/{user.userID}">
+													<div class="text">
+														{user.username}
+														{user.userID}
+													</div>
+												</Link> 
+											</section>   
+										</li>
+										{/each}
+									</ul>
+								</div>
+							{:else}
+								<p>No users found</p>
 							{/if}
+							
+
 							
 						{/await}
 
@@ -88,6 +77,16 @@
 	padding-top: 25px;
 	border-radius: 25px;
   }*/
+
+  .search {
+	  text-align: center;
+	}
+
+  ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
 
   p {
 	color: white
@@ -120,7 +119,7 @@
 	  margin-top: 4%;
 	  font-size: x-large;
 	  font-weight: bolder;
-	  color: black;
+	  color: white;
 	}
 
    

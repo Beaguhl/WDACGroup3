@@ -1,7 +1,6 @@
 //import express from 'express'
 const express = require('express')
 const { createPool } = require ('mariadb')
-//import FindUsers from './FindUsers.svelte';
 //import { renderToString } from 'svelte/ssr';
 
 
@@ -122,34 +121,45 @@ app.use(function(request, response, next){
 	next()
 })
 
+app.get("/", function(request, response){
+	response.send("It works")
+})
 
-app.get("/FindUsers", async function(request, response){
-	
-	console.log("Hello there hi")
-	
+app.get("/findUsers", async function(request, response){	
 	try{
-		
 		const connection = await pool.getConnection()
 		
 		const query = "SELECT * FROM User"
-		
 		const users = await connection.query(query)
 
-		
 		response.status(200).json(users)
 		
-	
-		
-	}catch(error){
+	} catch(error) {
 		console.log(error)
 		response.status(500).end() // 500 = server error
 	}
 	
 })
 
-app.get("/", function(request, response){
-	response.send("It works")
+app.get("/specificUser/:id", async function(request, response){
+	const id = parseInt(request.params.id)
+
+	try {
+		const connection = await pool.getConnection()
+
+		const query = "SELECT * FROM User WHERE userID = 1"
+		const user = await connection.query(query)
+
+		response.status(200).json(user)
+
+	} catch(error) {
+		console.log(error)
+		response.status(404).end()
+	}
+
 })
+
+
 
 //app.listen(8080)
 app.listen(8080, () => {
