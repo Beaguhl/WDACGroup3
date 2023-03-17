@@ -113,6 +113,14 @@ const app = express()
 
 app.use(express.json())
 
+app.use(function(request, response, next){
+	response.set("Access-Control-Allow-Origin", "http://localhost:5173")
+	response.set("Access-Control-Allow-Methods", "*")
+	response.set("Access-Control-Allow-Headers", "*")
+	response.set("Access-Control-Expose-Headers", "*")
+
+	next()
+})
 
 
 app.get("/FindUsers", async function(request, response){
@@ -126,9 +134,11 @@ app.get("/FindUsers", async function(request, response){
 		const query = "SELECT * FROM User"
 		
 		const users = await connection.query(query)
-		
-		response.status(200).json(users) // 200 = OK
 
+		
+		response.status(200).json(users)
+		
+	
 		
 	}catch(error){
 		console.log(error)

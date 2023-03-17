@@ -40,7 +40,7 @@
 						<p>Wait, I'm loading</p>
 					{:then response} 
 
-						{#await  response.json() then users}
+					{#await  response.json() then users}
 
 							{#if users}
 								{#each users as user}
@@ -88,6 +88,10 @@
 	padding-top: 25px;
 	border-radius: 25px;
   }*/
+
+  p {
+	color: white
+  }
   
 	.imageSize{
 	  width: 10vw;
