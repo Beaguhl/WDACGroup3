@@ -1,6 +1,8 @@
 //import express from 'express'
 const express = require('express')
 const { createPool } = require ('mariadb')
+//import FindUsers from './FindUsers.svelte';
+//import { renderToString } from 'svelte/ssr';
 
 
 
@@ -78,7 +80,9 @@ const enteredPassword = 'mypassword';
   }
 });*/
 
-
+//-----------------------------------------------------
+//-----------------------------------------------------
+//-----------------------------------------------------
 const pool = createPool({
 	host: "db",
 	port: 3306,
@@ -87,21 +91,31 @@ const pool = createPool({
 	database: "abc",
 })
 
-/*const pool = createPool({
-	host: "localhost",
-	port: 5555,
-	username: "root",
-	password: "abc123",
-	database: "abc",
-})*/
-
 pool.on('error', function(error){
 	console.log("Error from pool", error)
 })
 
+
+
+/*const users = [{
+    id: 1,
+    username: "fakeJocke"
+}, {
+    id: 2,
+    username: "fakeEllen"
+}, {
+    id: 3,
+    username: "fakeNisse"
+}]*/
+
+
 const app = express()
 
-app.get("/humans", async function(request, response){
+app.use(express.json())
+
+
+
+app.get("/FindUsers", async function(request, response){
 	
 	console.log("Hello there hi")
 	
@@ -109,15 +123,16 @@ app.get("/humans", async function(request, response){
 		
 		const connection = await pool.getConnection()
 		
-		const query = "SELECT * FROM humans ORDER BY name"
+		const query = "SELECT * FROM User"
 		
-		const humans = await connection.query(query)
+		const users = await connection.query(query)
 		
-		response.status(200).json(humans)
+		response.status(200).json(users) // 200 = OK
+
 		
 	}catch(error){
 		console.log(error)
-		response.status(500).end()
+		response.status(500).end() // 500 = server error
 	}
 	
 })
@@ -126,4 +141,7 @@ app.get("/", function(request, response){
 	response.send("It works")
 })
 
-app.listen(8080)
+//app.listen(8080)
+app.listen(8080, () => {
+	console.log('Server started on port 8080')
+  })

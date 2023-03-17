@@ -16,8 +16,6 @@
     import FindUsers from './lib/FindUsers.svelte';
 	import SpecificProduct from './lib/SpecificProduct.svelte'
 
-
-
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -38,18 +36,18 @@ window.addEventListener('popstate', () => {
 	document.addEventListener ("DOMContentLoaded", function() {
 
 		const findUsers = document.getElementById("findUsers")
-		const findWishes = document.getElementById("findWishes")
+		const findProducts = document.getElementById("findProducts")
 		const homeButton = document.getElementById("homeButton")
 
 		var arrOfNavItems = []
 		arrOfNavItems.push(findUsers)
-		arrOfNavItems.push(findWishes)
+		arrOfNavItems.push(findProducts)
 
 		makeStandard()
 
 		function makeStandard(){
 			findUsers.style.textDecoration = ""
-			findWishes.style.textDecoration = ""
+			findProducts.style.textDecoration = ""
 			homeButton.style.textDecoration = ""
 		}
 
@@ -58,9 +56,9 @@ window.addEventListener('popstate', () => {
 			findUsers.style.textDecoration = "underline"
 		})
 
-		findWishes.addEventListener("click", function() {
+		findProducts.addEventListener("click", function() {
 			makeStandard()
-			findWishes.style.textDecoration = "underline"
+			findProducts.style.textDecoration = "underline"
 
 		})
 

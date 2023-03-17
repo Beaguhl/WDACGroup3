@@ -1,11 +1,18 @@
-
-
 <script>
-	import {Router, Link, Route} from 'svelte-routing'
 	import SpecificUser from "./SpecificUser.svelte";
-	import {onMount} from 'svelte'
+	
+	
+	//import {onMount} from 'svelte';
+	import {Router, Link, Route} from 'svelte-routing';
+	const fetchUsersPromise = fetch("http://localhost:8080/findUsers", { // backend runs on 8080
+		method: "GET"
+	}) 
 
-	let users;
+	async function test() {
+		const response = await fetchUsersPromise
+		const users = await response.json()
+	}
+	/*let users;
 
 	async function getData() {
 	const response = await fetch('../../dummyData.json');
@@ -13,12 +20,7 @@
 	users = data;
 	}
 
-	onMount(getData);
-
-
- 
-	
-
+	onMount(getData);*/
 
 </script>
   
@@ -34,22 +36,37 @@
 			
 			<div class="container">
 				<div class="squareContainer">
-					{#if users}
-						{#each users as user}
-							<div class="column is-4-tablet is-3-desktop square">
-								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser/{user.id}">
-										<div class="profilePicture">
-											<img class="imageSize" src="{user.image}" alt="">
-										</div> 
-										<div class="text">
-											{user.username}
-										</div>
-									</Link> 
-								</section>   
-							</div> 
-						{/each}
-					{/if}
+					{#await fetchUsersPromise}
+						<p>Wait, I'm loading</p>
+					{:then response} 
+
+						{#await  response.json() then users}
+
+							{#if users}
+								{#each users as user}
+									<div class="column is-4-tablet is-3-desktop square">
+										<section class="container" id="userItem">
+											<Link class="Links" to="/SpecificUser/{user.id}">
+												<div class="profilePicture">
+													<img class="imageSize" src="{user.image}" alt="">
+												</div> 
+												<div class="text">
+													{user.username}
+												</div>
+											</Link> 
+										</section>   
+									</div> 
+								{/each}
+							{/if}
+							
+						{/await}
+
+					{:catch}
+
+					 <p>Something went wrong, try again</p>
+						
+					{/await}
+					
 				</div>
 			</div>
 		</section>
