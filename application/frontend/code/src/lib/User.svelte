@@ -26,7 +26,7 @@
 
   async function loadUser(){
     try {
-      const response = await fetch("http://localhost:8080/specificUser/" + id)
+      const response = await fetch("http://localhost:8080/user/" + id)
       
       switch(response.status) {
         

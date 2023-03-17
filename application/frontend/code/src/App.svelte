@@ -2,18 +2,18 @@
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
-	import SearchUsers from './lib/FindUsers.svelte'
+	import SearchUsers from './lib/Users.svelte'
 	import FindProducts from './lib/FindProducts.svelte'
 	import DropdownMenu from './lib/DropdownMenu.svelte'
 	import NavBar from './lib/NavBar.svelte'
 	import NavItem from './lib/NavItem.svelte'
-	import SpecificUser from './lib/SpecificUser.svelte'
+	import User from './lib/User.svelte'
 	import IconButton from './lib/IconButton.svelte'
 	import LoggedInDropDown from './lib/LoggedInDropDown.svelte'
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
-    import FindUsers from './lib/FindUsers.svelte';
+    import Users from './lib/Users.svelte';
 	import SpecificProduct from './lib/SpecificProduct.svelte'
 
 	import { onMount } from 'svelte';
@@ -35,25 +35,25 @@ window.addEventListener('popstate', () => {
 
 	document.addEventListener ("DOMContentLoaded", function() {
 
-		const findUsers = document.getElementById("findUsers")
+		const users = document.getElementById("users")
 		const findProducts = document.getElementById("findProducts")
 		const homeButton = document.getElementById("homeButton")
 
 		var arrOfNavItems = []
-		arrOfNavItems.push(findUsers)
+		arrOfNavItems.push(users)
 		arrOfNavItems.push(findProducts)
 
 		makeStandard()
 
 		function makeStandard(){
-			findUsers.style.textDecoration = ""
+			users.style.textDecoration = ""
 			findProducts.style.textDecoration = ""
 			homeButton.style.textDecoration = ""
 		}
 
-		findUsers.addEventListener("click", function(){
+		users.addEventListener("click", function(){
 			makeStandard()
-			findUsers.style.textDecoration = "underline"
+			users.style.textDecoration = "underline"
 		})
 
 		findProducts.addEventListener("click", function() {
@@ -81,8 +81,8 @@ window.addEventListener('popstate', () => {
 
 		</button>
 			<nav class="navBar">
-				<Link class="Links" to="/findUsers">
-					<button class="testButton" id="findUsers">Find Users</button>		
+				<Link class="Links" to="/users">
+					<button class="testButton" id="users">Find Users</button>		
 			</Link>
 
 			<Link class="Links" to="/FindProducts">
@@ -114,9 +114,9 @@ window.addEventListener('popstate', () => {
 	</div>
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
-		<Route path="/findUsers" component="{FindUsers}"></Route>
+		<Route path="/users" component="{Users}"></Route>
 		<Route path="/FindProducts" component="{FindProducts}"></Route>
-		<Route path="/specificUser/:id" component="{SpecificUser}"></Route>
+		<Route path="/user/:id" component="{User}"></Route>
 
 		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
 

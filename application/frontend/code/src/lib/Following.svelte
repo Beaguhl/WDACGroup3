@@ -1,7 +1,7 @@
 
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
-	import SpecificUser from "./SpecificUser.svelte";
+	import User from "./User.svelte";
 	import {onMount} from 'svelte'
 
 
@@ -45,7 +45,7 @@
 						{#each users as user}
 							<div class="column is-4-tablet is-3-desktop square">
 								<section class="container" id="userItem">
-									<Link class="Links" to="/SpecificUser/{user.id}" state={user}>
+									<Link class="Links" to="/user/{user.id}" state={user}>
 										<div class="profilePicture">
 											<img class="imageSize" src="{user.image}" alt="">
 										</div> 
@@ -62,7 +62,7 @@
 		</section>
 
 		<main>
-			<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+			<Route path="/user" component="{User}"></Route>
 		</main>
 	</Router>
 	

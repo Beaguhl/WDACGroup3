@@ -1,8 +1,8 @@
 <script>
-	import SpecificUser from "./SpecificUser.svelte";
+	import User from "./User.svelte";
 	
 	import {Router, Link, Route} from 'svelte-routing';
-	const fetchUsersPromise = fetch("http://localhost:8080/findUsers", { // backend runs on 8080
+	const fetchUsersPromise = fetch("http://localhost:8080/users", { // backend runs on 8080
 		method: "GET"
 	}) 
 
@@ -31,7 +31,7 @@
 										{#each users as user}
 										<li>
 											<section class="container" id="userItem">
-												<Link class="Links" to="/specificUser/{user.userID}">
+												<Link class="Links" to="/user/{user.userID}">
 													<div class="text">
 														{user.username}
 														{user.userID}
@@ -61,7 +61,7 @@
 		</section>
 
 		<main>
-			<Route path="/SpecificUser" component="{SpecificUser}"></Route>
+			<Route path="/user" component="{User}"></Route>
 		</main>
 	</Router>
 	

@@ -125,7 +125,7 @@ app.get("/", function(request, response){
 	response.send("It works")
 })
 
-app.get("/findUsers", async function(request, response){	
+app.get("/users", async function(request, response){	
 	try{
 		const connection = await pool.getConnection()
 		
@@ -141,14 +141,15 @@ app.get("/findUsers", async function(request, response){
 	
 })
 
-app.get("/specificUser/:id", async function(request, response){
+app.get("/user/:id", async function(request, response){
 	const id = parseInt(request.params.id)
 
 	try {
 		const connection = await pool.getConnection()
 
-		const query = "SELECT * FROM User WHERE userID = 1"
-		const user = await connection.query(query)
+		const query = "SELECT * FROM User WHERE userID = ?"
+		const values = [id]
+		const user = await connection.query(query, values)
 
 		response.status(200).json(user)
 
