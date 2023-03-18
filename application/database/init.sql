@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS Users (
 
 
 INSERT INTO Users (username, password, admin)
-VALUES ("jocke", "$2b$12$8OEo/.3aeIJXnz1CviYSdevFwYtFAQXfHyGSewYy4oacVU5R4KjcS", TRUE);
+VALUES ("jocke", "$2b$12$SxN/g01Ktw4BVmaPGsE0q.94UoRtYI/QvPlwkyheUgkHnubxI90vm", TRUE);
 INSERT INTO Users (username, password, admin)
-VALUES ("ellen", "$2b$12$eXGwfoAHUOiUX7KkhFhKQezMlpXGRGpYE137r2kYwWGNrQmSyv5wm", TRUE);
+VALUES ("ellen", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
 INSERT INTO Users (username, password, admin)
-VALUES ("nisse", "$2b$12$RKGQ6juzBi7GyPkEAjTHeObnAcRV973C1f7vU4H4LgPMOPu/W/6Vq", FALSE);
+VALUES ("nisse", "$2b$12$h1W/m.Ut5L99..OaZNaYcelKI/6jT.VbAT2CKkI2arM.jG57D9DNK", FALSE);
 
 
 CREATE TABLE IF NOT EXISTS Follow (

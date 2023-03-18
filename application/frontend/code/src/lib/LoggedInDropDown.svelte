@@ -16,6 +16,51 @@
     import MyWishList from './MyWishList.svelte';
     import Followers from './Followers.svelte';
     import CreateUser from './CreateUser.svelte';
+    import { user } from '../user-store';
+
+
+    let username = ""
+    let password = ""
+    let body = null
+    let accessToken = null
+
+    async function login(){
+        console.log("nu gör vi login")
+
+        try {
+
+            console.log("username: " + username + " password: " + password)
+            const response = await fetch("http://localhost:8080/tokens", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            
+            })
+
+            switch(response.status){
+                case 200:
+                    body = await response.json()
+                    //accessToken = body.access_token
+
+                    $user = {
+                        isLoggedIn: true,
+                        accessToken: body.access_token
+                    }
+                    break
+
+                case 400:
+                    console.log("found error!")
+                    break
+            }
+        } catch (error){
+
+        }
+        
+    }
+    
+    
     
 
 
@@ -26,32 +71,35 @@
 	{#if activeMenu === 'main'} <!-- ska senare vara if logged in -->
     <div class="menu" in:fly={{ x: -300 }} out:fly={{ x: -300 }} bind:this={menuEl}>
         <Router>
-            <div class="row">
-                <Link class="Links" to="/Following"><i class="fa-solid fa-star item"></i>Following</Link>
-            </div>
-            <div class="row">
-                <Link class="Links" to="/MyWishList"><i class="fa-solid fa-gift item"></i> My WishList</Link>
-            </div>
-            <div class="row">
-                <Link class="Links" to="/Followers"><i class="fa-solid fa-user-group item"></i>My Followers</Link>
-            </div>
-            
             <main>
-                <form>
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username">
-                    <br>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password">
-                    <br>
-                    <button type="submit">Login</button>
-                  </form>
-                  <Link class="Links" to="/create-account">Create account</Link>
+                {#if $user.isLoggedIn}
+                    <div class="row">
+                        <Link class="Links" to="/Following"><i class="fa-solid fa-star item"></i>Following</Link>
+                    </div>
+                    <div class="row">
+                        <Link class="Links" to="/MyWishList"><i class="fa-solid fa-gift item"></i> My WishList</Link>
+                    </div>
+                    <div class="row">
+                        <Link class="Links" to="/Followers"><i class="fa-solid fa-user-group item"></i>My Followers</Link>
+                    </div>
+                {:else}
+                    <form on:submit|preventDefault={login}>
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" bind:value={username}>
+                        <br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" bind:value={password}>
+                        <br>
+                        <button type="submit">Login</button>
+                    </form>
+                    <Link class="Links" to="/create-account">Create account</Link>
+                {/if}
 
                 <Route path="/create-account" component="{CreateUser}"></Route>
-                <Route path="/Following" component="{Following}"></Route>
-                <Route path="/MyWishLish" component="{MyWishList}"></Route>
-                <Route path="/Followers" component="{Followers}"></Route>
+                    <Route path="/Following" component="{Following}"></Route>
+                    <Route path="/MyWishLish" component="{MyWishList}"></Route>
+                    <Route path="/Followers" component="{Followers}"></Route>
+                
             </main>
         </Router>
         
