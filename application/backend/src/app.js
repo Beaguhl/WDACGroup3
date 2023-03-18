@@ -1,87 +1,28 @@
-//import express from 'express'
 const express = require('express')
 const { createPool } = require ('mariadb')
-//import { renderToString } from 'svelte/ssr';
-
-
+const { validateUser } = require('./validation')
 
 const bcrypt = require('bcrypt');
 
-// The password you want to hash
-const jockePassword = 'acb231';
-const ellenPassword = 'ellen123';
-const nissePassword = 'Nasse1';
+function hashPassword(password){
+	return new Promise ((resolve, reject) => {
+		bcrypt.genSalt(12, (error, salt) => {
+			if (error){
+				reject(error)
+			}
 
-// ------------- jocke ---------------------
-// Generate a salt with 12 rounds
-bcrypt.genSalt(12, (err, salt) => {
-  if (err) {
-    throw err;
-  }
-  // Hash the password using the generated salt
-  bcrypt.hash(jockePassword, salt, (err, hash) => {
-    if (err) {
-      throw err;
-    }
-    // Store the hashed password in the database
-    console.log(`The jocke hashed password is: ${hash}`);
-  });
-});
-
-// ------------- ellen ---------------------
-// Generate a salt with 12 rounds
-bcrypt.genSalt(12, (err, salt) => {
-	if (err) {
-	  throw err;
-	}
-	// Hash the password using the generated salt
-	bcrypt.hash(ellenPassword, salt, (err, hash) => {
-	  if (err) {
-		throw err;
-	  }
-	  // Store the hashed password in the database
-	  console.log(`The hashed ellen password is: ${hash}`);
-	});
-  });
-
-  // ------------- nisse ---------------------
-  // Generate a salt with 12 rounds
-bcrypt.genSalt(12, (err, salt) => {
-	if (err) {
-	  throw err;
-	}
-	// Hash the password using the generated salt
-	bcrypt.hash(nissePassword, salt, (err, hash) => {
-	  if (err) {
-		throw err;
-	  }
-	  // Store the hashed password in the database
-	  console.log(`The hashed nisse password is: ${hash}`);
-	});
-  });
+			bcrypt.hash(password, salt, (error, hashedPassword) => {
+				if (error){
+					reject(error)
+				} else {
+					resolve(hashedPassword)
+				}
+			})
+		})
+	})
+}
 
 
-// The stored hashed password retrieved from the database
-const storedPasswordHash = '$2b$10$nTl6iVkbDY7K.eBqGqbygeBZkuQJoQ1VyRNV2129YksTF0woXMdqC';
-
-// The password entered by the user
-const enteredPassword = 'mypassword';
-
-// Compare the entered password with the stored hashed password
-/*bcrypt.compare(enteredPassword, storedPasswordHash, (err, result) => {
-  if (err) {
-    throw err;
-  }
-  if (result === true) {
-    console.log('The passwords match!');
-  } else {
-    console.log('The passwords do not match!');
-  }
-});*/
-
-//-----------------------------------------------------
-//-----------------------------------------------------
-//-----------------------------------------------------
 const pool = createPool({
 	host: "db",
 	port: 3306,
@@ -93,19 +34,6 @@ const pool = createPool({
 pool.on('error', function(error){
 	console.log("Error from pool", error)
 })
-
-
-
-/*const users = [{
-    id: 1,
-    username: "fakeJocke"
-}, {
-    id: 2,
-    username: "fakeEllen"
-}, {
-    id: 3,
-    username: "fakeNisse"
-}]*/
 
 
 const app = express()
@@ -125,6 +53,7 @@ app.get("/", function(request, response){
 	response.send("It works")
 })
 
+//-------------------- users ---------------------------
 app.get("/users", async function(request, response){	
 	try{
 		const connection = await pool.getConnection()
@@ -141,6 +70,57 @@ app.get("/users", async function(request, response){
 	
 })
 
+app.post("/users", async function(request, response){
+
+	const user = request.body
+	console.log(user.username + user.password)
+
+	const validationArr = validateUser(user)
+
+	if (validationArr.length > 0){
+		console.log("now we 400 ")
+		console.log("arr is: " + validationArr.length)
+		response.status(400).json(validationArr)
+		return
+
+	} else {
+
+		try{
+			const connection = await pool.getConnection()
+			
+			const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
+        	const createUserValues = [user.username, user.password, false]
+			
+			
+			const result = await connection.query(createUserQuery, createUserValues)
+			console.log(result)
+	
+			response.status(201).json()
+			
+		} catch(error) {
+			console.log(error)
+			response.status(500).end() // 500 = server error
+		}
+	}
+		
+	//compute userID if needed
+
+	const hashedPassword = await hashPassword(user.password)
+
+	console.log(user.username + user.password + hashedPassword) 
+
+
+
+	response.set('Location', '/users/${1}')
+	response.status(201).end()
+
+	
+
+	
+
+})
+
+//---------------------- user -------------------------
 app.get("/user/:id", async function(request, response){
 	const userID = parseInt(request.params.id)
 

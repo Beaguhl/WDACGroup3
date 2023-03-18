@@ -15,7 +15,7 @@
     import Following from './Following.svelte';
     import MyWishList from './MyWishList.svelte';
     import Followers from './Followers.svelte';
-    import CreateAccount from './CreateAccount.svelte';
+    import CreateUser from './CreateUser.svelte';
     
 
 
@@ -48,7 +48,7 @@
                   </form>
                   <Link class="Links" to="/create-account">Create account</Link>
 
-                <Route path="/create-account" component="{CreateAccount}"></Route>
+                <Route path="/create-account" component="{CreateUser}"></Route>
                 <Route path="/Following" component="{Following}"></Route>
                 <Route path="/MyWishLish" component="{MyWishList}"></Route>
                 <Route path="/Followers" component="{Followers}"></Route>
