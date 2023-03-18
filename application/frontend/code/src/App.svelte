@@ -15,6 +15,7 @@
 	import Followers from './lib/Followers.svelte'
     import Users from './lib/Users.svelte';
 	import SpecificProduct from './lib/SpecificProduct.svelte'
+	import CreateAccount from './lib/CreateAccount.svelte'
 
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -117,7 +118,7 @@ window.addEventListener('popstate', () => {
 		<Route path="/users" component="{Users}"></Route>
 		<Route path="/FindProducts" component="{FindProducts}"></Route>
 		<Route path="/user/:id" component="{User}"></Route>
-
+		<Route path="/create-account" component="{CreateAccount}"></Route>
 		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
 
 		<Route path="/Following" component="{Following}"></Route>

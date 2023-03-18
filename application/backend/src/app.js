@@ -142,14 +142,25 @@ app.get("/users", async function(request, response){
 })
 
 app.get("/user/:id", async function(request, response){
-	const id = parseInt(request.params.id)
+	const userID = parseInt(request.params.id)
 
 	try {
 		const connection = await pool.getConnection()
 
-		const query = "SELECT * FROM Users WHERE userID = ?"
-		const values = [id]
-		const user = await connection.query(query, values)
+		//---------------- gets user info -------------------
+		const userQuery = "SELECT * FROM Users WHERE userID = ?"
+		const userValues = [userID]
+		const user = await connection.query(userQuery, userValues)
+
+		/*
+		//---------------- checks follow status -------------
+		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const followValues = [userID]*/
+
+		/*userID INT,
+	followingUserID INT,*/
+
+
 
 		response.status(200).json(user)
 

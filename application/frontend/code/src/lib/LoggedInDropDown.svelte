@@ -15,6 +15,7 @@
     import Following from './Following.svelte';
     import MyWishList from './MyWishList.svelte';
     import Followers from './Followers.svelte';
+    import CreateAccount from './CreateAccount.svelte';
     
 
 
@@ -36,6 +37,18 @@
             </div>
             
             <main>
+                <form>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username">
+                    <br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password">
+                    <br>
+                    <button type="submit">Login</button>
+                  </form>
+                  <Link class="Links" to="/create-account">Create account</Link>
+
+                <Route path="/create-account" component="{CreateAccount}"></Route>
                 <Route path="/Following" component="{Following}"></Route>
                 <Route path="/MyWishLish" component="{MyWishList}"></Route>
                 <Route path="/Followers" component="{Followers}"></Route>

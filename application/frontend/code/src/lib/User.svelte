@@ -43,6 +43,7 @@
 
     } catch (error) {
       failedToFetchUser = true
+      failedToFetchUser = true
     }
   }
   
