@@ -60,10 +60,12 @@ app.get("/users", async function(request, response){
 		
 		const query = "SELECT * FROM Users"
 		const users = await connection.query(query)
+		console.log(users)
 
 		response.status(200).json(users)
 		
 	} catch(error) {
+		console.log("error....")
 		console.log(error)
 		response.status(500).end() // 500 = server error
 	}
@@ -75,7 +77,7 @@ app.post("/users", async function(request, response){
 	const user = request.body
 	console.log(user.username + user.password)
 
-	const validationArr = validateUser(user)
+	const validationArr = await validateUser(user)
 
 	if (validationArr.length > 0){
 		console.log("now we 400 ")
@@ -89,13 +91,14 @@ app.post("/users", async function(request, response){
 			const connection = await pool.getConnection()
 			
 			const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
-        	const createUserValues = [user.username, user.password, false]
 			
+			const hashedPassword = await hashPassword(user.password)
+
+        	const createUserValues = [user.username, hashedPassword, false]
 			
 			const result = await connection.query(createUserQuery, createUserValues)
-			console.log(result)
 	
-			response.status(201).json()
+			response.status(201).end()
 			
 		} catch(error) {
 			console.log(error)
@@ -105,14 +108,10 @@ app.post("/users", async function(request, response){
 		
 	//compute userID if needed
 
-	const hashedPassword = await hashPassword(user.password)
-
-	console.log(user.username + user.password + hashedPassword) 
 
 
-
-	response.set('Location', '/users/${1}')
-	response.status(201).end()
+	//response.set('Location', '/users/${1}')
+	//response.status(201).end()
 
 	
 
