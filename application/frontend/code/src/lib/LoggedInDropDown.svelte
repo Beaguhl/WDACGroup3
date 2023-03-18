@@ -76,15 +76,17 @@
                     </div>
                 {:else}
                     <form on:submit|preventDefault={login}>
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" bind:value={username}>
-                        <br>
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" bind:value={password}>
-                        <br>
-                        <button type="submit">Login</button>
+                        <div class="form-group">
+                            <label class="form-label" for="username">Username:</label>
+                            <input class="form-input" type="text" id="username" name="username" bind:value={username}>
+                          </div>
+                          <div class="form-group">
+                            <label class="form-label" for="password">Password:</label>
+                            <input class="form-input" type="password" id="password" name="password" bind:value={password}>
+                          </div>
+                          <button class="form-btn" type="submit">Login</button>
                     </form>
-                    <Link class="Links" to="/create-account">Create account</Link>
+                    <Link class="Links create-account-link" to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
                 {/if}
 
                 <Route path="/create-account" component="{CreateUser}"></Route>
@@ -149,6 +151,57 @@
 	.stack > :global(*) {
 		grid-area: 1 / 1;
 	}
+
+
+   
+
+    .form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.form-input {
+  padding: 3px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 290px;
+  font-size: 14px;
+}
+
+.form-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 7px;
+  cursor: pointer;
+  width: 300px;
+  font-size: 14px;
+}
+
+.create-account-link {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #4CAF50;
+  text-decoration: none;
+  font-size: 14px;
+}
 	
 
 </style>

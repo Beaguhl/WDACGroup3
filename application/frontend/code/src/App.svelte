@@ -178,7 +178,6 @@ window.addEventListener('popstate', () => {
 
 	}
 
-	
 
 	nav {
     display: flex;
@@ -187,7 +186,6 @@ window.addEventListener('popstate', () => {
     background-color: #333;
     color: #fff;
     padding: 10px;
-	flex-direction: row;
   }
 
   /* Style the navbar links */
@@ -258,7 +256,7 @@ window.addEventListener('popstate', () => {
 		--nav-size: 60px;
 		--border: 1px solid #474a4d;
 		--border-radius: 8px;
-		--speed: 200ms; 
+		--speed: 20ms; 
 	}
 
 	:global(body) {
