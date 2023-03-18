@@ -33,7 +33,6 @@
         case 200:
           isFetchingUser = false
           user = await response.json()
-          console.log(user)
           break
         
         case 404:
@@ -63,7 +62,6 @@
         <div class="leftColumn">
           <div class="test">
             <p>{singleUser.username}</p>
-
           </div>
           
           <!-- if not following -->

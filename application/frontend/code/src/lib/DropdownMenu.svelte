@@ -1,5 +1,6 @@
 <script>
 	import {slide, fly} from 'svelte/transition'
+    import { user } from '../user-store';
 	import Input from './Input.svelte';
 
 	import MenuItem from './MenuItem.svelte'
@@ -24,7 +25,7 @@
 </script>
 
 <div class="dropdown stack" style="height: {menuHeight}px">
-	{#if activeMenu === 'main'}
+	{#if $user.isLoggedIn}
 		<div class="menu" in:fly={{ x: -400 }} out:fly={{ x: -400 }} bind:this={menuEl}>
 			<Input bind:inputUsername on:input={handleInput}/>
 		</div>

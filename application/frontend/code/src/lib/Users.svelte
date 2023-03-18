@@ -1,16 +1,54 @@
 <script>
 	import User from "./User.svelte";
+	import { user } from "../user-store";
 	
 	import {Router, Link, Route} from 'svelte-routing';
-	const fetchUsersPromise = fetch("http://localhost:8080/users", { // backend runs on 8080
-		method: "GET"
-	}) 
+
+	let isFetchingUsers = true
+  	let isUnAuth = false
+	let users = []
+	let isServerError = false
+
+	async function loadUsers () {
+		try {
+			const response = await fetch("http://localhost:8080/users", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken
+				}
+			})
+
+			switch(response.status) {
+				case 200:
+					users = await response.json()
+					isFetchingUsers = false
+					break
+				
+				case 401:
+					isUnAuth = true
+					isFetchingUsers = false
+					break
+
+				case 500:
+					isServerError = true
+					break
+
+			}
+			
+		} catch(error){
+
+		}
+	}
+
+	loadUsers()
 
 </script>
-  
-<div>
-	find users
-</div>
+
+{#if $user.isLoggedIn}
+	<div>
+		find users
+	</div>
 	<!----------- search bar ---------->
 	<div class="search">
 		<input id="search" type="text" placeholder="Search..">
@@ -20,42 +58,32 @@
 			
 			<div class="container">
 				<div class="squareContainer">
-					{#await fetchUsersPromise}
+					{#if isFetchingUsers}
 						<p>Wait, I'm loading</p>
-					{:then response} 
-
-						{#await  response.json() then users}
-							{#if users}
-								<div class="list">  
-									<ul>
-										{#each users as user}
-										<li>
-											<section class="container" id="userItem">
-												<Link class="Links" to="/user/{user.userID}">
-													<div class="text">
-														{user.username}
-														{user.userID}
-													</div>
-												</Link> 
-											</section>   
-										</li>
-										{/each}
-									</ul>
-								</div>
-							{:else}
-								<p>No users found</p>
-							{/if}
-							
-
-							
-						{/await}
-
-					{:catch}
-
-					 <p>Something went wrong, try again</p>
-						
-					{/await}
-					
+					{:else if isUnAuth} 
+						<p>Need to be logged in to view users.</p>
+					{:else if isServerError}
+						<p>Website has server errors. Try again later</p>
+					{:else if users}
+						<div class="list">  
+							<ul>
+								{#each users as searchedUser}
+									<li>
+										<section class="container" id="userItem">
+											<Link class="Links" to="/user/{searchedUser.userID}">
+												<div class="text">
+													{searchedUser.username}
+													{searchedUser.userID}
+												</div>
+											</Link> 
+										</section>   
+									</li>
+								{/each}
+							</ul>
+						</div>
+					{:else}
+						<p>No users found</p>
+					{/if}
 				</div>
 			</div>
 		</section>
@@ -64,7 +92,10 @@
 			<Route path="/user" component="{User}"></Route>
 		</main>
 	</Router>
-	
+{:else}
+	<p>You need to be logged in to an account to view users</p>
+{/if}
+
 
   
   

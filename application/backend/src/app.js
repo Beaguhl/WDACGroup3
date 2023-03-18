@@ -59,25 +59,36 @@ app.get("/", function(request, response){
 
 //-------------------- users ---------------------------
 app.get("/users", async function(request, response){	
-	try{
-		const connection = await pool.getConnection()
-		
-		const query = "SELECT * FROM Users"
-		const users = await connection.query(query)
 
-		response.status(200).json(users)
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+	console.log("accessToken inparameter: " + authorizationHeaderValue)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
 		
-	} catch(error) {
-		console.log(error)
-		response.status(500).end() // 500 = server error
-	}
+		if (error){
+			response.status(401).end()
+		} else {
+			try{
+				const connection = await pool.getConnection()
+				
+				const query = "SELECT * FROM Users"
+				const users = await connection.query(query)
+		
+				response.status(200).json(users)
+				
+			} catch(error) {
+				console.log(error)
+				response.status(500).end() // 500 = server error
+			}
+		}
+	})
 	
 })
 
 app.post("/users", async function(request, response){
 
 	const user = request.body
-	console.log(user.username + user.password)
 
 	const validationArr = await validateUser(user)
 
@@ -89,22 +100,21 @@ app.post("/users", async function(request, response){
 
 		try{
 			const connection = await pool.getConnection()
-			
+					
 			const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
 			const hashedPassword = await hashPassword(user.password)
-        	const createUserValues = [user.username, hashedPassword, false]
-			
+			const createUserValues = [user.username, hashedPassword, false]
+					
 			const test = await connection.query(createUserQuery, createUserValues)
-			console.log("snälla" + json(test.userID))
 
 			const getUserIDQUery = "SELECT userID FROM Users WHERE username = ?"
 			const getUserIDValues = [user.username]
 
 			const userID = await connection.query(getUserIDQUery, getUserIDValues)
-	
+			
 			response.set('Location', '/users/${userID}')
 			response.status(201).end()
-			
+					
 		} catch(error) { 
 			console.log(error)
 			response.status(500).end() // 500 = server error
@@ -145,13 +155,10 @@ app.get("/user/:id", async function(request, response){
 
 
 app.post('/tokens', async function(request, response){
-	console.log(request.body)
-	console.log(request.headers)
+
 	const grantType = request.body.grant_type
 	const username = request.body.username
 	const password = request.body.password
-
-	console.log("nu kommer given: " + username + " " + password)
 
 	if (grantType != "password"){
 		response.status(400).json({error: "unsupported_grant_type"})
@@ -159,7 +166,7 @@ app.post('/tokens', async function(request, response){
 	}
 
 	if (username == "" || password == ""){
-		response.status(400).json({error: "invalid_request"})
+		response.status(400).json({error: "invalid_request"}) //
 		return
 	}
 
@@ -169,21 +176,15 @@ app.post('/tokens', async function(request, response){
 
 	const result = await connection.query(compareUserQuery, compareUserValue)
 	
-	
-	
-	
-	console.log(result)
-
 	if (result.length != 0){
 
-		console.log(result[0].userID)
+		console.log("i tokens: " + result[0].userID)
 		bcrypt.compare(password, result[0].password, (err, res) => {
 			if (err) {
 			  throw err;
 			}
 			if (res === true) {
 				//passwords matched
-				console.log(result[0].userID)
 				const payload = {
 					sub: `${result[0].userID}`
 				}

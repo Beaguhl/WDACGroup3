@@ -25,11 +25,7 @@
     let accessToken = null
 
     async function login(){
-        console.log("nu gör vi login")
-
         try {
-
-            console.log("username: " + username + " password: " + password)
             const response = await fetch("http://localhost:8080/tokens", {
                 method: "POST",
                 headers: {
@@ -43,6 +39,7 @@
                 case 200:
                     body = await response.json()
                     //accessToken = body.access_token
+                    console.log("nu kommer logged in token: " + body.access_token)
 
                     $user = {
                         isLoggedIn: true,
@@ -60,11 +57,6 @@
         
     }
     
-    
-    
-
-
-   
 </script>
 
 <div class="dropdown stack" style="height: {menuHeight}px">

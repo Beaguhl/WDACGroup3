@@ -1,6 +1,6 @@
 <script>
     import {Router, Link, Route} from 'svelte-routing'
-    import { prevent_default } from 'svelte/internal';
+    import { get_root_for_style, prevent_default } from 'svelte/internal';
     import StartPage from "./StartPage.svelte"
 
     let username = ""
@@ -51,9 +51,9 @@
 	<main>
         <div>Create Account</div>
             
-
-        {#if userWasCreated}
-            <p>user created!</p>
+            {#if userWasCreated}
+                <p>Account created!</p>
+                <Link to="/">Go to start page</Link>
             {:else}
             <form on:submit|preventDefault={createUser}>
                 <div>
@@ -79,11 +79,7 @@
             {/if}
 
         {/if}
-
         
-
-        
-
 		<Route path="/StartPage" component="{StartPage}"></Route>
 	</main>
 </Router>

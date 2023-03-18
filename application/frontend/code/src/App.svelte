@@ -19,8 +19,24 @@
 
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { user } from './user-store'
 
 	let currentRoute = ''
+
+	const currentPage = window.location.pathname;
+
+  // Check which link is active and add the "active" class
+  /*if (currentPage === '/') {
+    document.getElementById('home-link').classList.add('active');
+  } else if (currentPage === '/users') {
+    document.getElementById('users-link').classList.add('active');
+  } else if (currentPage === '/products') {
+    document.getElementById('products-link').classList.add('active');
+  } else if (currentPage === '/login') {
+    document.getElementById('login-link').classList.add('active');
+  }*/
+
+
 
 onMount(async () => {
   currentRoute = window.location.pathname;
@@ -30,8 +46,6 @@ onMount(async () => {
 window.addEventListener('popstate', () => {
   currentRoute = window.location.pathname;
 });
-
-	
 
 
 	document.addEventListener ("DOMContentLoaded", function() {
@@ -74,30 +88,55 @@ window.addEventListener('popstate', () => {
 
 
 <Router>
-	<div class="mainDiv">
+	<nav>
+		<div>
+			<Link class="Links active" id="home-link" to="/" style="color: white; text-decoration: none; margin-right: 40px;">Wishes</Link>		
+		  {#if $user.isLoggedIn}
+			<Link class="Links" to="/users" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Users</Link>
+
+			<Link class="Links" to="/products" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
+		  {/if}
+			
+		</div>
+		<div>
+		<form action=""></form>
+		  <NavItem>
+			<span slot="trigger">
+				Login
+			</span>
+				<LoggedInDropDown></LoggedInDropDown>
+		</NavItem>
+
+		</div>
+	  </nav>
+	<!--
+<div class="mainDiv">
 		<button id="homeButton">
 			<h1 class="wishes">
 				<Link class="Links" to="/">Wishes</Link>
 			</h1>
 
 		</button>
+		{#if $user.isLoggedIn}
 			<nav class="navBar">
 				<Link class="Links" to="/users">
-					<button class="testButton" id="users">Find Users</button>		
-			</Link>
+						<button class="testButton" id="users">Find Users</button>		
+				</Link>
 
-			<Link class="Links" to="/FindProducts">
-				<button class="testButton" id="findProducts">
-					Find Products
-				</button>
+				<Link class="Links" to="/FindProducts">
+					<button class="testButton" id="findProducts">
+						Find Products
+					</button>
 
-			</Link>
+				</Link>
 
-			<Link class="Links" to="/SpecificProduct">
-				Product
-			</Link>
+				<Link class="Links" to="/SpecificProduct">
+					Product
+				</Link>
 			
 			</nav>
+		{/if}
+			
 			
 			<div>
 				<NavBar>
@@ -105,13 +144,13 @@ window.addEventListener('popstate', () => {
 						<span slot="trigger">
 							Login
 						</span>
-							<!-- <DropdownMenu></DropdownMenu> -->
 							<LoggedInDropDown></LoggedInDropDown>
 					</NavItem>
 				</NavBar>
 			</div>
 			
 	</div>
+	-->
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/users" component="{Users}"></Route>
@@ -138,6 +177,31 @@ window.addEventListener('popstate', () => {
 		background: #151616;
 
 	}
+
+	
+
+	nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+	flex-direction: row;
+  }
+
+  /* Style the navbar links */
+  nav p {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 20px;
+  }
+
+  /* Style the active navbar link */
+  nav a.active {
+    font-weight: bold;
+    text-decoration: underline;
+  }
 
 
 	.link:hover :global(a){
