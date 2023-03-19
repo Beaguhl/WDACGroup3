@@ -76,6 +76,7 @@ app.get("/users", async function(request, response){
 				const getAllUsersValues = [parseInt(payload.sub)]
 				const users = await connection.query(getAllUsersQuery, getAllUsersValues)
 		
+				console.log("users are-__ " + users)
 				response.status(200).json(users)
 				
 			} catch(error) {
@@ -120,7 +121,6 @@ app.post("/users", async function(request, response){
 			response.status(500).end()
 		}
 	}
-	
 })
 
 app.get('/users/search', async function(request, response){
@@ -136,7 +136,7 @@ app.get('/users/search', async function(request, response){
 			try {
 				const searchQuery = request.query.q
 
-			const connection = await pool.getConnection()
+				const connection = await pool.getConnection()
 
 				const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${parseInt(payload.sub)} AND username LIKE '%${searchQuery}%'`
 				const searchedUsers = await connection.query(getSearchedUsersQuery)
@@ -149,15 +149,10 @@ app.get('/users/search', async function(request, response){
 				}				
 
 			} catch {
-
+				// add catch
 			}
-			
 		}
-		
 	})
-
-
-
 })
 
 //---------------------- user -------------------------
@@ -195,7 +190,6 @@ app.get("/user/:id", async function(request, response){
 					followToSend
 				}
 
-				console.log("returning this: " + model)
 				response.status(200).json(model)
 
 			} catch(error) {
@@ -209,6 +203,75 @@ app.get("/user/:id", async function(request, response){
 
 })
 
+//-------------------- follow ----------------------------
+app.get('/following', async function(request, response){
+	console.log("inside following")
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.status(401).end()
+		} else {
+			try {
+				console.log("will try to connect")
+				const connection = await pool.getConnection()
+				console.log("connection is: " + connection)
+
+				const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${parseInt(payload.sub)}`
+				const followingsID = await connection.query(getAllFollowingQuery)
+
+				let followingUsers = []
+				console.log("såja dafffaan: " + followingsID[0])
+
+				for (let i = 0; i < followingsID.length; i+=1){
+					console.log(followingsID[i].followingUserID)
+					const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`
+					const fetchedUser = await connection.query(getUserQuery)
+					followingUsers[i] = fetchedUser[0]
+				}
+
+				console.log(followingUsers)
+
+
+				if (followingUsers.length == 0){
+					response.status(404).end()
+				} else {
+					response.status(200).json(followingUsers)
+				}
+			} catch {
+				console.log("error is: " + error)
+				response.status(500).end()
+			}
+		}
+	})
+})
+
+app.get('/following/search',function(request, response){
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.status(401).end()
+		} else {
+			const searchQuery = request.query.q
+
+			const connection = await pool.getConnection()
+
+			const getSearchedFollowersQuery = `SELECT * FROM Follow WHERE userID = ${parseInt(payload.sub)} AND username LIKE '%${searchQuery}%'`
+			const searchedFollowers = await connection.query(getSearchedFollowersQuery)
+			console.log("search followes inside: " + searchedFollowers)
+
+			if (searchedFollowers.length == 0){
+				response.status(404).end()
+			} else {
+				response.status(200).json(searchedFollowers)
+			}	
+		}
+	})
+})
+
 app.post('/follow', function(request, response){
 
 	const authorizationHeaderValue = request.get("Authorization")
@@ -216,7 +279,7 @@ app.post('/follow', function(request, response){
 
 	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
 		if (error){
-			response.send(401).end()
+			response.status(401).end()
 		} else {
 			const connection = await pool.getConnection()
 

@@ -2,149 +2,223 @@
 
 <script>
 	import {Router, Link, Route} from 'svelte-routing'
-	import User from "./User.svelte";
-	import {onMount} from 'svelte'
-
-	let users;
-
-	async function getData() {
-	const response = await fetch('../../dummyData.json');
-	const data = await response.json();
-	users = data;
-	}
-
-	onMount(getData);
-
-
- 
+	import { user } from "../user-store";
+	import User from './User.svelte';
 	
 
+	let isFetchingFollowers = true
+  	let isUnAuth = false
+	let users = []
+	let isServerError = false
+	let searchedFollowers = []
+	let startedSearch = false
+	let isFetchingSearchedFollowers = true
+	let showAllFollowers = true
+
+	async function loadAllFollowers () {
+		showAllFollowers = true
+		try {
+			const response = await fetch("http://localhost:8080/followers", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken
+				}
+			})
+
+			switch(response.status) {
+				case 200:
+					users = await response.json()
+					isFetchingFollowers = false
+					break
+				
+				case 401:
+					isUnAuth = true
+					isFetchingFollowers = false
+					break
+
+				case 500:
+					isServerError = true
+					break
+
+				case 404:
+					break
+
+			}
+			
+		} catch(error){
+
+		}
+	}
+
+	loadAllFollowers()
+
+	async function searchFollowers(event){
+		showAllFollowers = false
+		startedSearch = true
+		const formData = new FormData(event.target);
+		const searchString = formData.get('q');
+
+		try {
+			const response = await fetch("http://localhost:8080/followers/search?q=" + searchString, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken
+				}
+			})
+
+			switch(response.status) {
+				case 200:
+					console.log("got 200")
+					searchedFollowers = await response.json()
+					console.log("searched users are: " + searchedFollowers)
+					isFetchingSearchedFollowers = false
+					break
+				
+				case 404:
+					isFetchingSearchedFollowers = false
+					break
+
+			}
+			
+		} catch(error){
+
+		}
+	}
 
 </script>
   
-    <div>
-        my friends
-    </div>
-	<!----------- search bar ---------->
-	<div class="search">
-		<input id="search" type="text" placeholder="Search..">
-	</div>
-	<Router>
-		<section>
-			<div>
-				followers
-			</div>
-			<div class="container">
-				<div class="squareContainer">
-					{#if users}
-						{#each users as user}
-							<div class="column is-4-tablet is-3-desktop square">
-								<section class="container" id="userItem">
-									<Link class="Links" to="/user/{user.id}">
-										<div class="profilePicture">
-											<img class="imageSize" src="{user.image}" alt="">
-										</div> 
-										<div class="text">
-											{user.username}
-										</div>
-									</Link> 
-								</section>   
-							</div> 
-						{/each}
-					{/if}
-				</div>
-			</div>
-		</section>
+{#if $user.isLoggedIn}
 
-		<main>
-			<Route path="/user" component="{User}"></Route>
-		</main>
-	</Router>
+<Router>
+	<section>
+		<div class="container">
+			<div class="squareContainer">
+					<div class="container">
+						<h1>My followers</h1>
+							<form on:submit|preventDefault={searchFollowers}>
+								<div class="search-container">
+								<input type="text" name="q" placeholder="Search for users...">
+								<button type="submit" id="search-button">Search</button>
+								<button type="button" id="show-all-button" on:click={loadAllFollowers}>Show All Users</button>
+								</div>
+							</form>
+							<div class="search-container"></div>
+						<div class="user-container">
+
+							{#if !showAllFollowers}
+								{#if startedSearch}
+									{#if isFetchingSearchedFollowers}
+										<p>searching...</p>
+									{:else}
+									
+										{#if searchedFollowers.length == 0}
+											<p>No search results found</p>
+										{:else}
+											{#each searchedFollowers as searchedUser}
+												<Link class="Links" to="/user/{searchedUser.userID}">
+													<h3>{searchedUser.username}</h3>
+												</Link> 
+											{/each}
+										{/if}
+									{/if}
+								{/if}
+							{:else}
+								{#if isFetchingFollowers}
+									<p>Wait, I'm loading</p>
+								{:else if isUnAuth} 
+									<p>Need to be logged in to view users.</p>
+								{:else if isServerError}
+									<p>Website has server errors. Try again later</p>
+								{/if}
+								{#each users as searchedUseri}
+									<Link class="Links" to="/user/{searchedUseri.userID}">
+										<h3>{searchedUseri.username}</h3>
+									</Link> 
+								{/each}
+							{/if}
+						</div>
+					</div>
+				
+			</div>
+		</div>
+	</section>
+
+	<main>
+		<Route path="/user" component="{User}"></Route>
+	</main>
+</Router>
+{:else}
+<p>You need to be logged in to an account to view users</p>
+{/if}
 	
 
   
   
   <style>
-	/*#userItem {
-	background-color: rgba(94, 127, 132, 0.418);
-	padding-bottom: 30px;
-	padding-left: 20px;
-	padding-right: 20px;
-	padding-top: 25px;
-	border-radius: 25px;
-  }*/
-  
-	.imageSize{
-	  width: 10vw;
-	  height: 20vh;
-	  border-radius: 10px;
-	}
 
-	.profilePicture{
-	  margin-top: 10%;
-	  display: flex;
-	  justify-content: center;
-	}
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
 
-	.container{
-	  grid-template-rows: 1fr 1fr;
-	  color: black;
-	}
+.container {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 20px;
+}
 
-	.container :hover {
-	  color: rgb(151, 28, 172);
-	}
+h1 {
+	text-align: center;
+	margin-bottom: 20px;
+	color: rgb(212, 247, 213);
+}
 
-	.text{
-	  display: flex;
-	  justify-content: center;
-	  margin-top: 4%;
-	  font-size: x-large;
-	  font-weight: bolder;
-	  color: black;
-	}
+h3 {
+	color: white;
+}
 
-   
+h3:hover {
+	color: rgb(143, 249, 205);
+	text-decoration: underline;
+}
 
-	.squareContainer{
-		display: grid;
-		height: 70vh;
-		width: 100vw;
-		grid-template-areas: 
-		"topLeft topMidLeft topMidRight topRight"
-		"midLeft midMidLeft midMidRight midRight"
-		"botLeft botMidLeft botMidRight botRight";
-		grid-template-rows: 10fr 10fr 10fr 1fr;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		grid-gap: 5%;
-		float: left;
-	}
+.search-container {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
 
-	.square{
-		width: 85%;
-		height: 100%;
-		border-radius: 20px;
-		z-index: 2;
-		box-shadow: 5px 5px 5px 2px;
-		margin-bottom: 5%;
-		margin-left: 6%;
-		margin-right: 2%;
-	background-color: rgba(94, 127, 132, 0.418);
-	}
+.search-container input[type="text"] {
+	flex: 1;
+	padding: 10px;
+	border: none;
+	border-bottom: 2px solid #ccc;
+}
 
-	#search {
-	  padding: 6px;
-	  border: none;
-	  margin: 3%;
-	  font-size: 17px;
-	  background-color: blue;
-	  border-radius: 10px;
-	}
+.search-container button {
+	margin-left: 10px;
+	padding: 10px;
+	border: none;
+	background-color: #333;
+	color: #fff;
+	cursor: pointer;
+}
 
-	.search {
-	  text-align: center;
-	}
+.search-container button:hover {
+	background-color: #555;
+}
 
+.user-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-gap: 20px;
+}
 
+p {
+	color: white
+}
 
   </style>

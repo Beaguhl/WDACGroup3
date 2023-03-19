@@ -63,7 +63,7 @@
                         <Link class="Links" to="/MyWishList" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
                     </div>
                     <div class="row">
-                        <Link class="Links" to="/MyWishList" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Following</Link>
+                        <Link class="Links" to="/Following" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Following</Link>
                     </div>
                     <div class="row">
                         <Link class="Links" to="/Followers" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-user-group item"></i>My Followers</Link>
