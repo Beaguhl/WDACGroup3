@@ -66,6 +66,7 @@ app.get("/users", async function(request, response){
 	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
 		
 		if (error){
+			console.log(error)
 			response.status(401).end()
 		} else {
 			try{

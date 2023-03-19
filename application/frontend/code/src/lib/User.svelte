@@ -44,6 +44,7 @@
           const {userToSend, followToSend} = await response.json()
           fetchedUser = userToSend
           fetchedFollow = followToSend
+          console.log(fetchedFollow[0])
           break
         
         case 404:
@@ -67,24 +68,27 @@
   {:else if failedToFetchUser}
     <p>Couldn't fetch user. Check your Internet connection.</p>
   {:else if fetchedUser}
-    <p>{fetchedFollow[0].followingUserID}</p>
-
     <title></title>
 
     <div id="profile">
       <h1>{fetchedUser[0].username}</h1>
-      <button class="follow-button">Follow</button>
-      <div class="todo-list">
-        <div class="todo-item">
-          <div class="todo-title">Buy groceries</div>
+      {#if fetchedFollow[0]}
+        <button class="follow-button following">Following</button>
+      {:else}
+        <button class="follow-button">Follow</button>
+      {/if}
+      
+      <div class="wish-list">
+        <div class="wish-item">
+          <div class="wish-title">Buy groceries</div>
           <div class="done-checkbox">✓</div>
         </div>
-        <div class="todo-item done">
-          <div class="todo-title">Finish project</div>
+        <div class="wish-item done">
+          <div class="wish-title">Finish project</div>
           <div class="done-checkbox done">✓</div>
         </div>
-        <div class="todo-item">
-          <div class="todo-title">Do laundry</div>
+        <div class="wish-item">
+          <div class="wish-title">Do laundry</div>
           <div class="done-checkbox">✓</div>
         </div>
       </div>
@@ -159,7 +163,7 @@ body {
         font-size: 36px;
         margin-bottom: 10px;
         color: white;
-        padding-bottom: 20px;
+        padding: 10px 30px 30px 30px;
       }
       .follow-button {
         padding: 10px 30px;
@@ -176,12 +180,12 @@ body {
       .follow-button.following {
         background-color: #808080;
       }
-      .todo-list {
+      .wish-list {
         overflow-y: scroll;
         max-height: 400px;
         margin-top: 20px;
       }
-      .todo-item {
+      .wish-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -189,17 +193,17 @@ body {
         padding: 10px;
         margin-bottom: 10px;
       }
-      .todo-item.done {
+      .wish-item.done {
         background-color: #5c995c;
       }
-      .todo-item .todo-title {
+      .wish-item .wish-title {
         flex-grow: 1;
         margin-right: 10px;
         font-weight: bold;
         cursor: pointer;
         color: white
       }
-      .todo-item .done-checkbox {
+      .wish-item .done-checkbox {
         height: 20px;
         width: 20px;
         border-radius: 50%;
@@ -210,7 +214,7 @@ body {
         cursor: pointer;
         transition: background-color 0.3s ease;
       }
-      .todo-item .done-checkbox.done {
+      .wish-item .done-checkbox.done {
         background-color: #2b423a;
         color: white;
         border-color: #ffffff;
