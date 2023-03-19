@@ -15,10 +15,11 @@
     "flowbite": "^1.6.3",
     "flowbite-svelte": "^0.29.13",
     "mdi-svelte": "^1.1.2",
-    "svelte": "^3.54.0",
+    "svelte": "^3.57.0",
     "vite": "^4.0.0"
   },
   "dependencies": {
-    "svelte-routing": "^1.6.0"
+    "svelte-routing": "^1.6.0",
+    "sveltestrap": "^5.10.0"
   }
 }
