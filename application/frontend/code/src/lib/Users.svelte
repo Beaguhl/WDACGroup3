@@ -8,8 +8,12 @@
   	let isUnAuth = false
 	let users = []
 	let isServerError = false
+	let searchedUsers = []
+	let startedSearch = false
+	let isFetchingSearchedUsers = true
+	let showAllUsers = null
 
-	async function loadUsers () {
+	async function loadAllUsers () {
 		try {
 			const response = await fetch("http://localhost:8080/users", {
 				method: "GET",
@@ -34,6 +38,9 @@
 					isServerError = true
 					break
 
+				case 404:
+					break
+
 			}
 			
 		} catch(error){
@@ -41,7 +48,40 @@
 		}
 	}
 
-	loadUsers()
+	loadAllUsers()
+
+	async function searchUsers(event){
+		startedSearch = true
+		const formData = new FormData(event.target);
+		const searchString = formData.get('q');
+
+		try {
+			const response = await fetch("http://localhost:8080/users/search?q=" + searchString, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken
+				}
+			})
+
+			switch(response.status) {
+				case 200:
+					console.log("got 200")
+					searchedUsers = await response.json()
+					console.log("searched users are: " + searchedUsers)
+					isFetchingSearchedUsers = false
+					break
+				
+				case 404:
+					isFetchingSearchedUsers = false
+					break
+
+			}
+			
+		} catch(error){
+
+		}
+	}
 
 </script>
 
@@ -49,7 +89,6 @@
 
 	<Router>
 		<section>
-			
 			<div class="container">
 				<div class="squareContainer">
 					{#if isFetchingUsers}
@@ -60,23 +99,44 @@
 						<p>Website has server errors. Try again later</p>
 					{:else if users}
 
-					<div class="container">
-						<h1>Find users</h1>
-						<div class="search-container">
-							<input type="text" placeholder="Search for users...">
-							<button id="search-button">Search</button>
-							<button id="show-all-button">Show All</button>
+						<div class="container">
+							<h1>Find users</h1>
+								<form on:submit|preventDefault={searchUsers}>
+									<div class="search-container">
+									<input type="text" name="q" placeholder="Search for users...">
+									<button type="submit" id="search-button">Search</button>
+									<button type="button" id="show-all-button">Show All Users</button>
+									</div>
+								</form>
+								<div class="search-container"></div>
+							<div class="user-container">
+
+								{#if showAllUsers == false}
+									{#if startedSearch}
+										{#if isFetchingSearchedUsers}
+											<p>searching...</p>
+										{:else}
+										
+											{#if searchedUsers.length == 0}
+												<p>No search results found</p>
+											{:else}
+												{#each searchedUsers as searchedUser}
+													<Link class="Links" to="/user/{searchedUser.userID}">
+														<h3>{searchedUser.username}</h3>
+													</Link> 
+												{/each}
+											{/if}
+										{/if}
+									{/if}
+								{:else if showAllUsers == true}
+									{#each users as searchedUseri}
+										<Link class="Links" to="/user/{searchedUseri.userID}">
+											<h3>{searchedUseri.username}</h3>
+										</Link> 
+									{/each}
+								{/if}
+							</div>
 						</div>
-						<div class="user-container">
-							{#each users as searchedUser}
-							<Link class="Links" to="/user/{searchedUser.userID}">
-								<h3>{searchedUser.username}</h3>
-							</Link> 
-							{/each}
-						</div>
-					</div>
-					{:else}
-						<p>No users found</p>
 					{/if}
 				</div>
 			</div>

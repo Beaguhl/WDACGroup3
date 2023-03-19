@@ -72,10 +72,10 @@ app.get("/users", async function(request, response){
 			try{
 				const connection = await pool.getConnection()
 				
-				const query = "SELECT * FROM Users"
-				const users = await connection.query(query)
+				const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
+				const getAllUsersValues = [parseInt(payload.sub)]
+				const users = await connection.query(getAllUsersQuery, getAllUsersValues)
 		
-				console.log("found these users: " + users)
 				response.status(200).json(users)
 				
 			} catch(error) {
@@ -117,10 +117,47 @@ app.post("/users", async function(request, response){
 					
 		} catch(error) { 
 			console.log(error)
-			response.status(500).end() // 500 = server error
+			response.status(500).end()
 		}
 	}
 	
+})
+
+app.get('/users/search', async function(request, response){
+
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			console.log(error)
+			response.status(401).end()
+		} else {
+			try {
+				const searchQuery = request.query.q
+
+			const connection = await pool.getConnection()
+
+				const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${parseInt(payload.sub)} AND username LIKE '%${searchQuery}%'`
+				//const getSearchedUsersValues = [parseInt(payload.sub)]
+				const searchedUsers = await connection.query(getSearchedUsersQuery)
+
+				if (searchedUsers.length == 0){
+					response.status(404).end()
+				} else {
+					response.status(200).json(searchedUsers)
+				}				
+
+			} catch {
+
+			}
+			
+		}
+		
+	})
+
+
+
 })
 
 //---------------------- user -------------------------
@@ -148,7 +185,6 @@ app.get("/user/:id", async function(request, response){
 				const userValues = [otherUsersID]
 				const userToSend = await connection.query(userQuery, userValues)
 
-				console.log("userID: " + payload.sub + " otherUsersID: " + otherUsersID)
 				const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
 				const followValues = [parseInt(payload.sub), otherUsersID]
 				
