@@ -14,6 +14,7 @@
 	let startedSearch = false
 	let isFetchingSearchedFollowers = true
 	let showAllFollowers = true
+	let noSearchFound = false
 
 	async function loadAllFollowers () {
 		showAllFollowers = true
@@ -28,6 +29,7 @@
 
 			switch(response.status) {
 				case 200:
+					console.log("200")
 					followers = await response.json()
 					console.log(followers)
 					isFetchingFollowers = false
@@ -43,6 +45,7 @@
 					break
 
 				case 404:
+					console.log("404")
 					break
 
 			}
@@ -74,10 +77,12 @@
 					console.log("got 200")
 					searchedFollowers = await response.json()
 					console.log("searched users are: " + searchedFollowers)
+					noSearchFound = false
 					isFetchingSearchedFollowers = false
 					break
 				
 				case 404:
+					noSearchFound = true
 					isFetchingSearchedFollowers = false
 					break
 
@@ -114,7 +119,7 @@
 										<p>searching...</p>
 									{:else}
 									
-										{#if searchedFollowers.length == 0}
+										{#if noSearchFound}
 											<p>No search results found</p>
 										{:else}
 											{#each searchedFollowers as searchedUser}

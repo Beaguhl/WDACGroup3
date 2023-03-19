@@ -250,18 +250,20 @@ app.get('/followings/search',function(request, response){
 
 			const connection = await pool.getConnection()
 
+			//gets all users that matches search string
 			const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
 			const searchedFollowing = await connection.query(getSearchedFollowingQuery)
 
 			let followingSearchedUsers = []
 
+			//checking if a user is a following
 			for (let i = 0; i < searchedFollowing.length; i+=1){
 				const getSearchedFollowing = `SELECT * FROM Follow WHERE userID = ${payload.sub} AND followingUserID = ${searchedFollowing[i].userID}`
 				const fetchedFollowing = await connection.query(getSearchedFollowing)
-				if (fetchedFollowing){
-					followingSearchedUsers[i] = searchedFollowing[0]
+				if (fetchedFollowing.length != 0){
+					let arrLenght = followingSearchedUsers.length
+					followingSearchedUsers[arrLenght] = searchedFollowing[i]
 				}
-				
 			}
 
 			console.log(followingSearchedUsers)
@@ -376,25 +378,33 @@ app.get('/followers/search',function(request, response){
 
 			const connection = await pool.getConnection()
 
-			const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
-			const searchedFollowing = await connection.query(getSearchedFollowingQuery)
+			const getSearchedFollowerQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
+			const searchedFollower = await connection.query(getSearchedFollowerQuery)
+			console.log("searched id är: " + searchedFollower)
 
-			let followingSearchedUsers = []
+			let followerSearchedUsers = []
 
-			for (let i = 0; i < searchedFollowing.length; i+=1){
-				const getSearchedFollowing = `SELECT * FROM Follow WHERE userID = ${payload.sub} AND followingUserID = ${searchedFollowing[i].userID}`
-				const fetchedFollowing = await connection.query(getSearchedFollowing)
-				if (fetchedFollowing){
-					followingSearchedUsers[i] = searchedFollowing[0]
+			for (let i = 0; i < searchedFollower.length; i+=1){
+				console.log("folowing id är: " + searchedFollower[i].userID)
+				const getSearchedFollower = `SELECT * FROM Follow WHERE followingUserID = ${payload.sub} AND userID = ${searchedFollower[i].userID}`
+				const fetchedFollowing = await connection.query(getSearchedFollower)
+				console.log(fetchedFollowing)
+				if (fetchedFollowing.length != 0){
+					console.log("fetched user is: " + searchedFollower[i])
+					let arrLenght = followerSearchedUsers.length
+					followerSearchedUsers[arrLenght] = searchedFollower[i]
 				}
 				
 			}
 
-			console.log(followingSearchedUsers)
-			if (followingSearchedUsers.length == 0){
+			console.log("detta fångade vi: " + followerSearchedUsers)
+			console.log("längden är: " + followerSearchedUsers.length)
+			if (followerSearchedUsers.length == 0){
+				console.log("404")
 				response.status(404).end()
 			} else {
-				response.status(200).json(followingSearchedUsers)
+				console.log("200")
+				response.status(200).json(followerSearchedUsers)
 			}
 		}
 	})
