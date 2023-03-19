@@ -198,13 +198,10 @@ app.get("/user/:id", async function(request, response){
 			}
 		}
 	})
-
-	
-
 })
 
 //-------------------- follow ----------------------------
-app.get('/following', async function(request, response){
+app.get('/followings', async function(request, response){
 	console.log("inside following")
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
@@ -214,9 +211,7 @@ app.get('/following', async function(request, response){
 			response.status(401).end()
 		} else {
 			try {
-				console.log("will try to connect")
 				const connection = await pool.getConnection()
-				console.log("connection is: " + connection)
 
 				const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${parseInt(payload.sub)}`
 				const followingsID = await connection.query(getAllFollowingQuery)
@@ -243,7 +238,7 @@ app.get('/following', async function(request, response){
 	})
 })
 
-app.get('/following/search',function(request, response){
+app.get('/followings/search',function(request, response){
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 
@@ -327,6 +322,80 @@ app.delete('/unfollow', function(request, response){
 			response.status(204).end()
 
 
+		}
+	})
+})
+
+app.get('/followers', async function(request, response){
+	console.log("inside following")
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.status(401).end()
+		} else {
+			try {
+				const connection = await pool.getConnection()
+
+				const getAllFollowersQuery = `SELECT userID FROM Follow WHERE followingUserID = ${parseInt(payload.sub)}`
+				const followerID = await connection.query(getAllFollowersQuery)
+				console.log("followerID are: " + followerID)
+
+				let followerUsers = []
+
+				for (let i = 0; i < followerID.length; i+=1){
+					console.log("follower ID: " + followerID[i])
+					const getFollowerQuery = `SELECT * FROM Users WHERE userID = ${followerID[i].userID}`
+					const fetchedFollower = await connection.query(getFollowerQuery)
+					followerUsers[i] = fetchedFollower[0]
+				}
+
+				if (followerUsers.length == 0){
+					response.status(404).end()
+				} else {
+					response.status(200).json(followerUsers)
+				}
+			} catch {
+				console.log("error is: " + error)
+				response.status(500).end()
+			}
+		}
+	})
+})
+
+app.get('/followers/search',function(request, response){
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.status(401).end()
+		} else {
+			const searchQuery = request.query.q
+
+			const connection = await pool.getConnection()
+
+			const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
+			const searchedFollowing = await connection.query(getSearchedFollowingQuery)
+
+			let followingSearchedUsers = []
+
+			for (let i = 0; i < searchedFollowing.length; i+=1){
+				const getSearchedFollowing = `SELECT * FROM Follow WHERE userID = ${payload.sub} AND followingUserID = ${searchedFollowing[i].userID}`
+				const fetchedFollowing = await connection.query(getSearchedFollowing)
+				if (fetchedFollowing){
+					followingSearchedUsers[i] = searchedFollowing[0]
+				}
+				
+			}
+
+			console.log(followingSearchedUsers)
+			if (followingSearchedUsers.length == 0){
+				response.status(404).end()
+			} else {
+				response.status(200).json(followingSearchedUsers)
+			}
 		}
 	})
 })

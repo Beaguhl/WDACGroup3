@@ -8,7 +8,7 @@
 
 	let isFetchingFollowers = true
   	let isUnAuth = false
-	let users = []
+	let followers = []
 	let isServerError = false
 	let searchedFollowers = []
 	let startedSearch = false
@@ -28,7 +28,8 @@
 
 			switch(response.status) {
 				case 200:
-					users = await response.json()
+					followers = await response.json()
+					console.log(followers)
 					isFetchingFollowers = false
 					break
 				
@@ -132,7 +133,7 @@
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>
 								{/if}
-								{#each users as searchedUseri}
+								{#each followers as searchedUseri}
 									<Link class="Links" to="/user/{searchedUseri.userID}">
 										<h3>{searchedUseri.username}</h3>
 									</Link> 
