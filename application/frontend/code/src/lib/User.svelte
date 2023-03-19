@@ -26,6 +26,7 @@
   let failedToFetchUser = false
   let fetchedUser = null
   let fetchedFollow = null
+  let resourceForbidden = false
 
   async function loadUser(){
     try {
@@ -40,15 +41,21 @@
       switch(response.status) {
         
         case 200:
-          isFetchingUser = false
+          console.log("user/id got 200")
           const {userToSend, followToSend} = await response.json()
+          console.log(userToSend, followToSend)
           fetchedUser = userToSend
           fetchedFollow = followToSend
           console.log(fetchedFollow[0])
+          isFetchingUser = false
           break
         
         case 404:
           isFetchingUser = false
+
+        case 403:
+          resourceForbidden = true
+          break
 
       }
 
@@ -74,12 +81,12 @@
       
       switch(response.status) {
         
-        case 200:
+        case 201:
+          loadUser()
           break
         
         case 404:
           
-
       }
 
     } catch (error) {
@@ -87,11 +94,13 @@
     }
   }
 
+  let unableToUnfollow = false
+
   async function unfollowUser(){
     console.log("clicked unfollow")
     try {
       const response = await fetch("http://localhost:8080/unfollow", {
-        method: "POST",
+        method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
           "Authorization": "bearer "+$user.accessToken,
@@ -101,10 +110,13 @@
       
       switch(response.status) {
         
-        case 200:
+        case 204:
+          loadUser()
           break
         
-        case 404:
+        case 500:
+          unableToUnfollow = true
+          break
           
 
       }
@@ -116,7 +128,12 @@
 
 </script>
 <body>
+
   {#if $user.isLoggedIn}
+
+  {#if resourceForbidden}
+    <p>You can not view yourself</p>
+  {:else}
   {#if isFetchingUser}
     <p>Wait, fetching data...</p>
   {:else if failedToFetchUser}
@@ -130,6 +147,10 @@
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
         <button class="follow-button" on:click={followUser}>Follow</button>
+      {/if}
+
+      {#if unableToUnfollow}
+        <p>Unable to unfollow user</p>
       {/if}
       
       <div class="wish-list">
@@ -190,6 +211,9 @@
   {:else}
   <p>Did not find any user with the given id</p>
   {/if}
+  {/if}
+
+  
 {:else}
 <p>Can not show user if not logged in to an account</p>
 {/if}

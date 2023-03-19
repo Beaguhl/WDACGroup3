@@ -75,6 +75,7 @@ app.get("/users", async function(request, response){
 				const query = "SELECT * FROM Users"
 				const users = await connection.query(query)
 		
+				console.log("found these users: " + users)
 				response.status(200).json(users)
 				
 			} catch(error) {
@@ -130,13 +131,18 @@ app.get("/user/:id", async function(request, response){
 
 	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
 		if (error){
+			console.log("401 error - could not verify user with token")
 			response.status(401).end()
 		} else {
-			const otherUsersID = parseInt(request.params.id)
-
 			try {
-				const connection = await pool.getConnection()
+				const otherUsersID = parseInt(request.params.id)
 
+				if (payload.sub == otherUsersID){
+					console.log("403 error - user tried to view them self")
+					response.status(403).end()
+				}
+				
+				const connection = await pool.getConnection()
 
 				const userQuery = "SELECT * FROM Users WHERE userID = ?"
 				const userValues = [otherUsersID]
@@ -146,7 +152,6 @@ app.get("/user/:id", async function(request, response){
 				const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
 				const followValues = [parseInt(payload.sub), otherUsersID]
 				
-
 				const followToSend = await connection.query(followQuery, followValues)
 
 				const model = {
@@ -154,11 +159,12 @@ app.get("/user/:id", async function(request, response){
 					followToSend
 				}
 
+				console.log("returning this: " + model)
 				response.status(200).json(model)
 
 			} catch(error) {
-				console.log(error)
-				response.status(404).end()
+				console.log("500 error: " + error)
+				response.status(500).end()
 			}
 		}
 	})
@@ -176,16 +182,24 @@ app.post('/follow', function(request, response){
 		if (error){
 			response.send(401).end()
 		} else {
-			const userShown = request.get("UserToFollow")
+			const connection = await pool.getConnection()
+
+			const userToFollow = request.get("UserToFollow")
 			const userID = parseInt(payload.sub)
+					
+			const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
+			const followValues = [userID, userToFollow]
+					
+			await connection.query(followQuery, followValues)
+			console.log("done following")
 
-
+			response.status(201).end()
 		}
 	})
 
 })
 
-app.post('/unfollow', function(request, response){
+app.delete('/unfollow', function(request, response){
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 
@@ -202,6 +216,9 @@ app.post('/unfollow', function(request, response){
 			const unfollowValues = [userID, userToUnfollow]
 
 			await connection.query(unfollowQuery, unfollowValues)
+			console.log("deleted follow")
+
+			response.status(204).end()
 
 
 		}
