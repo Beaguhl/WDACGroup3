@@ -3,7 +3,6 @@
 	import { user } from "../user-store";
 	import User from './User.svelte';
 	
-
 	let isFetchingFollowings = true
   	let isUnAuth = false
 	let followings = []
@@ -12,6 +11,7 @@
 	let startedSearch = false
 	let isFetchingSearchedFollowings = true
 	let showAllFollowings = true
+	let noSearchFound = false
 
 	async function loadAllFollowings () {
 		showAllFollowings = true
@@ -26,13 +26,7 @@
 
 			switch(response.status) {
 				case 200:
-					
           			followings = await response.json()
-					console.log(await response.json())
-					for (let i = 0; i < followings.length; i += 1){
-						console.log("now we fetched: " + followings[i])
-					}
-          			
 					isFetchingFollowings = false
 					break
 				
@@ -74,14 +68,15 @@
 
 			switch(response.status) {
 				case 200:
-					console.log("got 200")
 					searchedFollowings = await response.json()
 					console.log("searched users are: " + searchedFollowings)
+					noSearchFound = false
 					isFetchingSearchedFollowings = false
 					break
 				
 				case 404:
 					isFetchingSearchedFollowings = false
+					noSearchFound = true
 					break
 
 			}
@@ -117,8 +112,8 @@
 										<p>searching...</p>
 									{:else}
 									
-										{#if searchedFollowings.length == 0}
-											<p>No search results found</p>
+										{#if noSearchFound}
+											<p>User not found</p>
 										{:else}
 											{#each searchedFollowings as searchedUser}
 												<Link class="Links" to="/user/{searchedUser.userID}">

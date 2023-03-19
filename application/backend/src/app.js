@@ -222,7 +222,6 @@ app.get('/following', async function(request, response){
 				const followingsID = await connection.query(getAllFollowingQuery)
 
 				let followingUsers = []
-				console.log("såja dafffaan: " + followingsID[0])
 
 				for (let i = 0; i < followingsID.length; i+=1){
 					console.log(followingsID[i].followingUserID)
@@ -230,9 +229,6 @@ app.get('/following', async function(request, response){
 					const fetchedUser = await connection.query(getUserQuery)
 					followingUsers[i] = fetchedUser[0]
 				}
-
-				console.log(followingUsers)
-
 
 				if (followingUsers.length == 0){
 					response.status(404).end()
@@ -259,15 +255,26 @@ app.get('/following/search',function(request, response){
 
 			const connection = await pool.getConnection()
 
-			const getSearchedFollowersQuery = `SELECT * FROM Follow WHERE userID = ${parseInt(payload.sub)} AND username LIKE '%${searchQuery}%'`
-			const searchedFollowers = await connection.query(getSearchedFollowersQuery)
-			console.log("search followes inside: " + searchedFollowers)
+			const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
+			const searchedFollowing = await connection.query(getSearchedFollowingQuery)
 
-			if (searchedFollowers.length == 0){
+			let followingSearchedUsers = []
+
+			for (let i = 0; i < searchedFollowing.length; i+=1){
+				const getSearchedFollowing = `SELECT * FROM Follow WHERE userID = ${payload.sub} AND followingUserID = ${searchedFollowing[i].userID}`
+				const fetchedFollowing = await connection.query(getSearchedFollowing)
+				if (fetchedFollowing){
+					followingSearchedUsers[i] = searchedFollowing[0]
+				}
+				
+			}
+
+			console.log(followingSearchedUsers)
+			if (followingSearchedUsers.length == 0){
 				response.status(404).end()
 			} else {
-				response.status(200).json(searchedFollowers)
-			}	
+				response.status(200).json(followingSearchedUsers)
+			}
 		}
 	})
 })
