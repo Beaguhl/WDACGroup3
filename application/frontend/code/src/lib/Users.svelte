@@ -14,6 +14,7 @@
 	let showAllUsers = null
 
 	async function loadAllUsers () {
+		showAllUsers = true
 		try {
 			const response = await fetch("http://localhost:8080/users", {
 				method: "GET",
@@ -48,9 +49,10 @@
 		}
 	}
 
-	loadAllUsers()
+	//loadAllUsers()
 
 	async function searchUsers(event){
+		showAllUsers = false
 		startedSearch = true
 		const formData = new FormData(event.target);
 		const searchString = formData.get('q');
@@ -91,13 +93,7 @@
 		<section>
 			<div class="container">
 				<div class="squareContainer">
-					{#if isFetchingUsers}
-						<p>Wait, I'm loading</p>
-					{:else if isUnAuth} 
-						<p>Need to be logged in to view users.</p>
-					{:else if isServerError}
-						<p>Website has server errors. Try again later</p>
-					{:else if users}
+					
 
 						<div class="container">
 							<h1>Find users</h1>
@@ -105,7 +101,7 @@
 									<div class="search-container">
 									<input type="text" name="q" placeholder="Search for users...">
 									<button type="submit" id="search-button">Search</button>
-									<button type="button" id="show-all-button">Show All Users</button>
+									<button type="button" id="show-all-button" on:click={loadAllUsers}>Show All Users</button>
 									</div>
 								</form>
 								<div class="search-container"></div>
@@ -129,6 +125,13 @@
 										{/if}
 									{/if}
 								{:else if showAllUsers == true}
+									{#if isFetchingUsers}
+										<p>Wait, I'm loading</p>
+									{:else if isUnAuth} 
+										<p>Need to be logged in to view users.</p>
+									{:else if isServerError}
+										<p>Website has server errors. Try again later</p>
+									{/if}
 									{#each users as searchedUseri}
 										<Link class="Links" to="/user/{searchedUseri.userID}">
 											<h3>{searchedUseri.username}</h3>
@@ -137,7 +140,7 @@
 								{/if}
 							</div>
 						</div>
-					{/if}
+					
 				</div>
 			</div>
 		</section>

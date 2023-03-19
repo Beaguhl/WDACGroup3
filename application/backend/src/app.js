@@ -139,8 +139,8 @@ app.get('/users/search', async function(request, response){
 			const connection = await pool.getConnection()
 
 				const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${parseInt(payload.sub)} AND username LIKE '%${searchQuery}%'`
-				//const getSearchedUsersValues = [parseInt(payload.sub)]
 				const searchedUsers = await connection.query(getSearchedUsersQuery)
+				console.log("search useds inside: " + searchedUsers)
 
 				if (searchedUsers.length == 0){
 					response.status(404).end()
