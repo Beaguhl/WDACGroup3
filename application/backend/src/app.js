@@ -80,7 +80,7 @@ app.get("/users", async function(request, response){
 				
 			} catch(error) {
 				console.log(error)
-				response.status(500).end() // 500 = server error
+				response.status(500).end()
 			}
 		}
 	})
