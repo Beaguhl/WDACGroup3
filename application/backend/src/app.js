@@ -62,7 +62,6 @@ app.get("/users", async function(request, response){
 
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
-	console.log("accessToken inparameter: " + authorizationHeaderValue)
 
 	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
 		
@@ -125,31 +124,45 @@ app.post("/users", async function(request, response){
 
 //---------------------- user -------------------------
 app.get("/user/:id", async function(request, response){
-	const userID = parseInt(request.params.id)
 
-	try {
-		const connection = await pool.getConnection()
+	const authorizationHeaderValue = request.get("Authorization")
+	console.log("accesetoken is: " + authorizationHeaderValue)
 
-		const userQuery = "SELECT * FROM Users WHERE userID = ?"
-		const userValues = [userID]
-		const user = await connection.query(userQuery, userValues)
+	const accessToken = authorizationHeaderValue.substring(7)
 
-		/*
-		//---------------- checks follow status -------------
-		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
-		const followValues = [userID]*/
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.status(401).end()
+		} else {
+			const userID = parseInt(request.params.id)
 
-		/*userID INT,
-		followingUserID INT,*/
+			try {
+				const connection = await pool.getConnection()
+
+				const userQuery = "SELECT * FROM Users WHERE userID = ?"
+				const userValues = [userID]
+				const user = await connection.query(userQuery, userValues)
+
+				/*
+				//---------------- checks follow status -------------
+				const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
+				const followValues = [userID]*/
+
+				/*userID INT,
+				followingUserID INT,*/
 
 
 
-		response.status(200).json(user)
+				response.status(200).json(user)
 
-	} catch(error) {
-		console.log(error)
-		response.status(404).end()
-	}
+			} catch(error) {
+				console.log(error)
+				response.status(404).end()
+			}
+		}
+	})
+
+	
 
 })
 

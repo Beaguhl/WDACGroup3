@@ -48,7 +48,7 @@ window.addEventListener('popstate', () => {
 });
 
 
-	document.addEventListener ("DOMContentLoaded", function() {
+	/*document.addEventListener ("DOMContentLoaded", function() {
 
 		const users = document.getElementById("users")
 		const findProducts = document.getElementById("findProducts")
@@ -82,7 +82,13 @@ window.addEventListener('popstate', () => {
 			homeButton.style.textDecoration = "underline"
 		})
 
-	})
+	})*/
+
+	export let openBar = false
+
+	function toggleBar(){
+		openBar = !openBar
+	}
 
 </script>
 
@@ -99,12 +105,15 @@ window.addEventListener('popstate', () => {
 			
 		</div>
 		<div>
-		<form action=""></form>
+
 		  <NavItem>
-			<span slot="trigger">
+			<span slot="trigger" on:click={toggleBar}>
 				Login
 			</span>
-				<LoggedInDropDown></LoggedInDropDown>
+			{#if openBar}
+				<LoggedInDropDown on:clickOutside={toggleBar}></LoggedInDropDown>
+			{/if}
+
 		</NavItem>
 
 		</div>

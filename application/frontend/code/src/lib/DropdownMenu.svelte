@@ -5,6 +5,7 @@
 
 	import MenuItem from './MenuItem.svelte'
 
+
 	let activeMenu = 'main'
 	let menuHeight = 0
 	let menuEl = null

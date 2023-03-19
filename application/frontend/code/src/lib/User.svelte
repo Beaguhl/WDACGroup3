@@ -3,6 +3,8 @@
 
 <script>
 
+  import { user } from "../user-store";
+
     
 
     class WishList {
@@ -22,17 +24,23 @@
   export let id;
   let isFetchingUser = true
   let failedToFetchUser = false
-  let user = null
+  let fetchedUser = null
 
   async function loadUser(){
     try {
-      const response = await fetch("http://localhost:8080/user/" + id)
+      const response = await fetch("http://localhost:8080/user/" + id, {
+        method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken
+				}
+      })
       
       switch(response.status) {
         
         case 200:
           isFetchingUser = false
-          user = await response.json()
+          fetchedUser = await response.json()
           break
         
         case 404:
@@ -50,59 +58,64 @@
 
 </script>
 
-<!------------ HTML code ----------->
+<p>ehee</p>
 
-{#if isFetchingUser}
-  <p>Wait, fetching data...</p>
-{:else if failedToFetchUser}
-  <p>Couldn't fetch user. Check your Internet connection.</p>
-{:else if user}
-  {#each user as singleUser}
-    <div class="mainGrid">
-        <div class="leftColumn">
-          <div class="test">
-            <p>{singleUser.username}</p>
+{#if $user.isLoggedIn}
+  {#if isFetchingUser}
+    <p>Wait, fetching data...</p>
+  {:else if failedToFetchUser}
+    <p>Couldn't fetch user. Check your Internet connection.</p>
+  {:else if fetchedUser}
+    {#each fetchedUser as singleUser}
+      <div class="mainGrid">
+          <div class="leftColumn">
+            <div class="test">
+              <p>{singleUser.username}</p>
+            </div>
+            
+            <!-- if not following -->
+            <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
+            <!-- if following -->
+            <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
           </div>
-          
-          <!-- if not following -->
-          <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
-          <!-- if following -->
-          <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
-        </div>
 
-        <!-- hela högra columnen -->
-        <div id="wishListObject">
-          <p class="title">
-            {singleUser.username}'s Wish List
-          </p>
-          
-          <!-- lista med wishes -->
-          <div class="wishList">
-            {#each arrayOfWishes as wish}
-            <div class="item">
+          <!-- hela högra columnen -->
+          <div id="wishListObject">
+            <p class="title">
+              {singleUser.username}'s Wish List
+            </p>
+            
+            <!-- lista med wishes -->
+            <div class="wishList">
+              {#each arrayOfWishes as wish}
+              <div class="item">
 
-              <div class="item-btn">
-                {#if wish.purchased}
-                  <i class="fa-regular fa-square-check"></i>
-                {:else}
-                  <i class="fa-regular fa-square"></i>
-                {/if}
+                <div class="item-btn">
+                  {#if wish.purchased}
+                    <i class="fa-regular fa-square-check"></i>
+                  {:else}
+                    <i class="fa-regular fa-square"></i>
+                  {/if}
+                  
+                </div>
                 
+                <p id="itemTitle">{wish.itemName}</p>
+
               </div>
-              
-              <p id="itemTitle">{wish.itemName}</p>
+              {/each}
 
             </div>
-            {/each}
-
           </div>
         </div>
-      </div>
-  {/each}
-  
+    {/each}
+    
+  {:else}
+  <p>Did not find any user with the given id</p>
+  {/if}
 {:else}
-<p>Did not find any user with the given id</p>
+<p>Can not show user if not logged in to an account</p>
 {/if}
+
   
 
 <style>

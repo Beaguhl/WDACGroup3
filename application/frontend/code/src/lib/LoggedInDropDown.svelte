@@ -18,13 +18,15 @@
     import CreateUser from './CreateUser.svelte';
     import { user } from '../user-store';
 
-
     let username = ""
     let password = ""
     let body = null
     let accessToken = null
+    let noMatch = false
+    let closedDropDown = true
 
     async function login(){
+        console.log("clicked login")
         try {
             const response = await fetch("http://localhost:8080/tokens", {
                 method: "POST",
@@ -32,7 +34,6 @@
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
                 body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-            
             })
 
             switch(response.status){
@@ -45,21 +46,25 @@
                         isLoggedIn: true,
                         accessToken: body.access_token
                     }
+                    closedDropDown = false
                     break
 
                 case 400:
-                    console.log("found error!")
+                    noMatch = true
+                    console.log("case 400")
                     break
             }
         } catch (error){
 
         }
-        
     }
+
+    
     
 </script>
 
-<div class="dropdown stack" style="height: {menuHeight}px">
+{#if closedDropDown}
+    <div class="dropdown stack" style="height: {menuHeight}px">
 	{#if activeMenu === 'main'} <!-- ska senare vara if logged in -->
     <div class="menu" in:fly={{ x: -300 }} out:fly={{ x: -300 }} bind:this={menuEl}>
         <Router>
@@ -79,32 +84,34 @@
                         <div class="form-group">
                             <label class="form-label" for="username">Username:</label>
                             <input class="form-input" type="text" id="username" name="username" bind:value={username}>
-                          </div>
-                          <div class="form-group">
+                        </div>
+                        <div class="form-group">
                             <label class="form-label" for="password">Password:</label>
                             <input class="form-input" type="password" id="password" name="password" bind:value={password}>
-                          </div>
-                          <button class="form-btn" type="submit">Login</button>
+                        </div>
+                        <button class="form-btn" type="submit">Login</button>
                     </form>
                     <Link class="Links create-account-link" to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
+                    {#if noMatch}
+                        <p>The username and password does not match</p>
+                    {/if}
                 {/if}
 
                 <Route path="/create-account" component="{CreateUser}"></Route>
                     <Route path="/Following" component="{Following}"></Route>
                     <Route path="/MyWishLish" component="{MyWishList}"></Route>
                     <Route path="/Followers" component="{Followers}"></Route>
-                
             </main>
         </Router>
-        
-        
-        
+
     </div>
 		
 	{/if}
 
 	
 </div>
+{/if}
+
 
 
 

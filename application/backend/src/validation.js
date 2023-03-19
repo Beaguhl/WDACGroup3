@@ -21,7 +21,9 @@ async function validateUser(user) {
 
     var errorArr = []
 
-    if ((user.username).length < MIN_USERNAME_LENGTH){
+    if ((user.username).length == 0){
+        errorArr.push("Can not leave username field empty")
+    } else if ((user.username).length < MIN_USERNAME_LENGTH){
         errorArr.push("Username must be at least 2 characters long")
     } else if ((user.username).lentgh > MAX_USERNAME_LENGTH){
         errorArr.push("Username can have a maximum of 12 characters")
@@ -39,10 +41,9 @@ async function validateUser(user) {
     
     }
 
-
-    //that username is already taken
-
-    if ((user.password).length < MIN_PASSWORD_LENGTH){
+    if ((user.password).length == 0){
+        errorArr.push("Can not leave password field empty")
+    } else if ((user.password).length < MIN_PASSWORD_LENGTH){
         errorArr.push("Password must be at least 2 characters long")
     } else if ((user.password).lentgh > MAX_PASSWORD_LENGTH){
         errorArr.push("Password can have a maximum of 20 characters")
