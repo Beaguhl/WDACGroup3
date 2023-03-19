@@ -57,8 +57,62 @@
       failedToFetchUser = true
     }
   }
-  
+
   loadUser()
+
+  async function followUser(){
+    console.log("clicked follow")
+    try {
+      const response = await fetch("http://localhost:8080/follow", {
+        method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+          "Authorization": "bearer "+$user.accessToken,
+					"UserToFollow": id
+				}
+      })
+      
+      switch(response.status) {
+        
+        case 200:
+          break
+        
+        case 404:
+          
+
+      }
+
+    } catch (error) {
+      
+    }
+  }
+
+  async function unfollowUser(){
+    console.log("clicked unfollow")
+    try {
+      const response = await fetch("http://localhost:8080/unfollow", {
+        method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+          "Authorization": "bearer "+$user.accessToken,
+					"UserToUnfollow": id
+				}
+      })
+      
+      switch(response.status) {
+        
+        case 200:
+          break
+        
+        case 404:
+          
+
+      }
+
+    } catch (error) {
+      
+    }
+  }
 
 </script>
 <body>
@@ -73,9 +127,9 @@
     <div id="profile">
       <h1>{fetchedUser[0].username}</h1>
       {#if fetchedFollow[0]}
-        <button class="follow-button following">Following</button>
+        <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
-        <button class="follow-button">Follow</button>
+        <button class="follow-button" on:click={followUser}>Follow</button>
       {/if}
       
       <div class="wish-list">

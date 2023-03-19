@@ -83,7 +83,6 @@ app.get("/users", async function(request, response){
 			}
 		}
 	})
-	
 })
 
 app.post("/users", async function(request, response){
@@ -127,8 +126,6 @@ app.post("/users", async function(request, response){
 app.get("/user/:id", async function(request, response){
 
 	const authorizationHeaderValue = request.get("Authorization")
-	console.log("accesetoken is: " + authorizationHeaderValue)
-
 	const accessToken = authorizationHeaderValue.substring(7)
 
 	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
@@ -170,7 +167,49 @@ app.get("/user/:id", async function(request, response){
 
 })
 
+app.post('/follow', function(request, response){
 
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.send(401).end()
+		} else {
+			const userShown = request.get("UserToFollow")
+			const userID = parseInt(payload.sub)
+
+
+		}
+	})
+
+})
+
+app.post('/unfollow', function(request, response){
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.send(401).end()
+		} else {
+			const connection = await pool.getConnection()
+
+			const userToUnfollow = request.get("UserToUnfollow")
+			const userID = parseInt(payload.sub)
+
+			const unfollowQuery = "DELETE FROM Follow WHERE userID = ? AND followingUserID = ?"
+			const unfollowValues = [userID, userToUnfollow]
+
+			await connection.query(unfollowQuery, unfollowValues)
+
+
+		}
+	})
+})
+
+
+//----------------------- tokens ----------------------
 app.post('/tokens', async function(request, response){
 
 	const grantType = request.body.grant_type
