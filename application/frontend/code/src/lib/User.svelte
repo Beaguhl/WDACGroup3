@@ -25,6 +25,7 @@
   let isFetchingUser = true
   let failedToFetchUser = false
   let fetchedUser = null
+  let fetchedFollow = null
 
   async function loadUser(){
     try {
@@ -40,7 +41,9 @@
         
         case 200:
           isFetchingUser = false
-          fetchedUser = await response.json()
+          const {userToSend, followToSend} = await response.json()
+          fetchedUser = userToSend
+          fetchedFollow = followToSend
           break
         
         case 404:
@@ -57,35 +60,50 @@
   loadUser()
 
 </script>
-
-<p>ehee</p>
-
-{#if $user.isLoggedIn}
+<body>
+  {#if $user.isLoggedIn}
   {#if isFetchingUser}
     <p>Wait, fetching data...</p>
   {:else if failedToFetchUser}
     <p>Couldn't fetch user. Check your Internet connection.</p>
   {:else if fetchedUser}
-    {#each fetchedUser as singleUser}
+    <p>{fetchedFollow[0].followingUserID}</p>
+
+    <title></title>
+
+    <div id="profile">
+      <h1>{fetchedUser[0].username}</h1>
+      <button class="follow-button">Follow</button>
+      <div class="todo-list">
+        <div class="todo-item">
+          <div class="todo-title">Buy groceries</div>
+          <div class="done-checkbox">✓</div>
+        </div>
+        <div class="todo-item done">
+          <div class="todo-title">Finish project</div>
+          <div class="done-checkbox done">✓</div>
+        </div>
+        <div class="todo-item">
+          <div class="todo-title">Do laundry</div>
+          <div class="done-checkbox">✓</div>
+        </div>
+      </div>
+    </div>
+    <!--
       <div class="mainGrid">
           <div class="leftColumn">
             <div class="test">
               <p>{singleUser.username}</p>
             </div>
             
-            <!-- if not following -->
             <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
-            <!-- if following -->
-            <!-- <button>Following <i class="fa-solid fa-check"></i></button> -->
           </div>
 
-          <!-- hela högra columnen -->
           <div id="wishListObject">
             <p class="title">
               {singleUser.username}'s Wish List
             </p>
             
-            <!-- lista med wishes -->
             <div class="wishList">
               {#each arrayOfWishes as wish}
               <div class="item">
@@ -107,7 +125,9 @@
             </div>
           </div>
         </div>
-    {/each}
+    -->
+      
+
     
   {:else}
   <p>Did not find any user with the given id</p>
@@ -116,9 +136,103 @@
 <p>Can not show user if not logged in to an account</p>
 {/if}
 
+</body>
+
+
   
 
 <style>
+
+
+body {
+        font-family: Arial, sans-serif;
+      }
+      #profile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 50px auto;
+        width: 80%;
+        max-width: 800px;
+      }
+      h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        color: white;
+        padding-bottom: 20px;
+      }
+      .follow-button {
+        padding: 10px 30px;
+        border-radius: 20px;
+        background-color: #00bfff;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .follow-button:hover {
+        background-color: #1e90ff;
+      }
+      .follow-button.following {
+        background-color: #808080;
+      }
+      .todo-list {
+        overflow-y: scroll;
+        max-height: 400px;
+        margin-top: 20px;
+      }
+      .todo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .todo-item.done {
+        background-color: #5c995c;
+      }
+      .todo-item .todo-title {
+        flex-grow: 1;
+        margin-right: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        color: white
+      }
+      .todo-item .done-checkbox {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .todo-item .done-checkbox.done {
+        background-color: #2b423a;
+        color: white;
+        border-color: #ffffff;
+      }
+    /*.pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .pagination > button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .pagination > button:last-child {
+      margin-right: 0;
+    }*/
 
   .test{
     display: flex;

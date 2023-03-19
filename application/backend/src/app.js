@@ -134,26 +134,29 @@ app.get("/user/:id", async function(request, response){
 		if (error){
 			response.status(401).end()
 		} else {
-			const userID = parseInt(request.params.id)
+			const otherUsersID = parseInt(request.params.id)
 
 			try {
 				const connection = await pool.getConnection()
 
+
 				const userQuery = "SELECT * FROM Users WHERE userID = ?"
-				const userValues = [userID]
-				const user = await connection.query(userQuery, userValues)
+				const userValues = [otherUsersID]
+				const userToSend = await connection.query(userQuery, userValues)
 
-				/*
-				//---------------- checks follow status -------------
+				console.log("userID: " + payload.sub + " otherUsersID: " + otherUsersID)
 				const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
-				const followValues = [userID]*/
+				const followValues = [parseInt(payload.sub), otherUsersID]
+				
 
-				/*userID INT,
-				followingUserID INT,*/
+				const followToSend = await connection.query(followQuery, followValues)
 
+				const model = {
+					userToSend,
+					followToSend
+				}
 
-
-				response.status(200).json(user)
+				response.status(200).json(model)
 
 			} catch(error) {
 				console.log(error)
