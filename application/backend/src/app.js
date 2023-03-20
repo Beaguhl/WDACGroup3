@@ -75,8 +75,7 @@ app.get("/users", async function(request, response){
 				const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 				const getAllUsersValues = [parseInt(payload.sub)]
 				const users = await connection.query(getAllUsersQuery, getAllUsersValues)
-		
-				console.log("users are-__ " + users)
+	
 				response.status(200).json(users)
 				
 			} catch(error) {
@@ -140,7 +139,6 @@ app.get('/users/search', async function(request, response){
 
 				const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${parseInt(payload.sub)} AND username LIKE '%${searchQuery}%'`
 				const searchedUsers = await connection.query(getSearchedUsersQuery)
-				console.log("search useds inside: " + searchedUsers)
 
 				if (searchedUsers.length == 0){
 					response.status(404).end()
@@ -410,6 +408,36 @@ app.get('/followers/search',function(request, response){
 	})
 })
 
+//---------------- my account -------------------------
+app.get('/my-account', async function(request, response){
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+
+	const enteredPassword = request.get("Password")
+
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
+		if (error){
+			response.status(401).end()
+		} else {
+			const connection = await pool.getConnection()
+			const compareUserQuery = `SELECT * FROM Users WHERE userID = ${parseInt(payload.sub)}`
+			const user = await connection.query(compareUserQuery)
+
+			bcrypt.compare(enteredPassword, user[0].password, (err, res) => {
+				if (err) {
+				throw err;
+				}
+				if (res === true) {
+					response.status(200).json(user)
+				
+				} else {
+					response.status(403).end()
+				}
+			})
+		}
+	})
+})
+
 
 //----------------------- tokens ----------------------
 app.post('/tokens', async function(request, response){
@@ -442,7 +470,6 @@ app.post('/tokens', async function(request, response){
 			  throw err;
 			}
 			if (res === true) {
-				//passwords matched
 				const payload = {
 					sub: `${result[0].userID}`
 				}

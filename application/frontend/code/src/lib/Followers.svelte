@@ -16,6 +16,8 @@
 	let showAllFollowers = true
 	let noSearchFound = false
 
+	console.log(user)
+
 	async function loadAllFollowers () {
 		showAllFollowers = true
 		try {
