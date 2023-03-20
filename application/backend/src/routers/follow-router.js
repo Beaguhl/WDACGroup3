@@ -3,7 +3,6 @@ const express = require('express')
 const router = express.Router()
 const { createPool } = require ('mariadb')
 
-
 const pool = createPool({
 	host: "db",
 	port: 3306,
@@ -18,11 +17,11 @@ pool.on('error', function(error){
 
 module.exports = router
 
+
 const app = express()
 
 //------------ all followers ----------------
 router.get('/followers', async function(request, response){
-	console.log("inside following")
 	const userID = request.get("UserID")
 
 	try {
@@ -93,10 +92,10 @@ router.get('/followers/search', async function(request, response){
 })
 
 //---------------------- follow --------------------
-app.post('/follow', async function(request, response){
+router.post('/follow', async function(request, response){
+	console.log("follow")
 
-	const UserID = request.get("UserID")
-	const accessToken = authorizationHeaderValue.substring(7)
+	const userID = request.get("UserID")
 
 	const connection = await pool.getConnection()
 
@@ -110,15 +109,12 @@ app.post('/follow', async function(request, response){
 
 	response.status(201).end()
 			
-	
-
 })
 
 //------------------- unfollow ---------------------
-app.delete('/unfollow', async function(request, response){
+router.delete('/unfollow', async function(request, response){
 	const userID = request.get("userID")
 	const accessToken = authorizationHeaderValue.substring(7)
-
 	
 			const connection = await pool.getConnection()
 
@@ -136,9 +132,8 @@ app.delete('/unfollow', async function(request, response){
 
 //---------------- search followings ------------------------
 router.get('/followings/search', async function(request, response){
+	console.log("inside followings search")
 	const userID = request.get("userID")
-	const accessToken = authorizationHeaderValue.substring(7)
-
 
 	const searchQuery = request.query.q
 
@@ -168,14 +163,12 @@ router.get('/followings/search', async function(request, response){
 	}
 
 })
-
+console.log("following")
 //-------------------- all followings ----------------------------
-app.get('/followings', async function(request, response){
+router.get('/followings', async function(request, response){
 	console.log("inside following")
 	const userID = request.get("userID")
-	const accessToken = authorizationHeaderValue.substring(7)
 
-	try {
 		const connection = await pool.getConnection()
 
 		const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
@@ -195,9 +188,37 @@ app.get('/followings', async function(request, response){
 		} else {
 			response.status(200).json(followingUsers)
 		}
+
+
+})
+router.get('/followers', async function(request, response){
+	const userID = request.get("UserID")
+
+	try {
+		const connection = await pool.getConnection()
+
+		const getAllFollowersQuery = `SELECT userID FROM Follow WHERE followingUserID = ${userID}`
+		const followerID = await connection.query(getAllFollowersQuery)
+		console.log("followerID are: " + followerID)
+
+		let followerUsers = []
+
+		for (let i = 0; i < followerID.length; i+=1){
+			console.log("follower ID: " + followerID[i])
+			const getFollowerQuery = `SELECT * FROM Users WHERE userID = ${followerID[i].userID}`
+			const fetchedFollower = await connection.query(getFollowerQuery)
+			followerUsers[i] = fetchedFollower[0]
+		}
+
+		if (followerUsers.length == 0){
+			response.status(404).end()
+		} else {
+			response.status(200).json(followerUsers)
+		}
 	} catch {
 		console.log("error is: " + error)
 		response.status(500).end()
 	}
-
+		
+	
 })

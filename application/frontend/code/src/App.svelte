@@ -89,7 +89,7 @@ let username = ""
 				<Link class="Links" to="/products" id="products-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
 				<Link class="Links" to="/my-wishlist" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
 				<Link class="Links" to="/follows/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
-				<Link class="Links" to="/follows/following" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
+				<Link class="Links" to="/follows/followings" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
 				<Link class="Links" to="/my-account" id="my-account-link" style="color: white; text-decoration: none; margin-right: 40px;">My Account</Link>
 			{/if}
 			
@@ -177,7 +177,7 @@ let username = ""
 		<Route path="/create-account" component="{CreateUser}"></Route>
 		<Route path="/products/:id" component="{SpecificProduct}"></Route>
 		<Route path="/my-account" component="{MyAccount}"></Route>
-		<Route path="/follows/following" component="{Following}"></Route>
+		<Route path="/follows/followings" component="{Following}"></Route>
 		<Route path="/my-account" component="{MyWishList}"></Route>
 		<Route path="/follows/followers" component="{Followers}"></Route>
 

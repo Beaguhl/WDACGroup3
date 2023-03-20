@@ -13,9 +13,14 @@
 	let showAllFollowings = true
 	let noSearchFound = false
 
+	console.log("userID: " + $user.userID)
+	console.log("token: " + $user.accessToken)
+
 	async function loadAllFollowings () {
+		console.log("load all followings")
 		showAllFollowings = true
 		try {
+			console.log("try to response")
 			const response = await fetch("http://localhost:8080/follows/followings", {
 				method: "GET",
 				headers: {
@@ -53,6 +58,7 @@
 	loadAllFollowings()
 
 	async function searchFollowings(event){
+		console.log("search followings")
 		showAllFollowings = false
 		startedSearch = true
 		const formData = new FormData(event.target);
@@ -97,7 +103,7 @@
 		<div class="container">
 			<div class="squareContainer">
 					<div class="container">
-						<h1>Following</h1>
+						<h1>Followings</h1>
 							<form on:submit|preventDefault={searchFollowings}>
 								<div class="search-container">
 								<input type="text" name="q" placeholder="Search for users...">

@@ -64,6 +64,36 @@ app.get("/", function(request, response){
 	response.send("It works")
 })
 
+/*app.get('/follows/followings', async function(request, response){
+	console.log("inside following")
+	const userID = request.get("userID")
+
+	try {
+		const connection = await pool.getConnection()
+
+		const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
+		const followingsID = await connection.query(getAllFollowingQuery)
+
+		let followingUsers = []
+
+		for (let i = 0; i < followingsID.length; i+=1){
+			console.log(followingsID[i].followingUserID)
+			const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`
+			const fetchedUser = await connection.query(getUserQuery)
+			followingUsers[i] = fetchedUser[0]
+		}
+
+		if (followingUsers.length == 0){
+			response.status(404).end()
+		} else {
+			response.status(200).json(followingUsers)
+		}
+	} catch {
+		console.log("error is: " + error)
+		response.status(500).end()
+	}
+
+})*/
 
 //---------------- my account -------------------------
 app.get('/my-account', async function(request, response){

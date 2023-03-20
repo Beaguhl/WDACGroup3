@@ -149,7 +149,7 @@
     <div id="profile">
       <h1>{fetchedUser[0].username}</h1>
       {#if fetchedFollow[0]}
-        <button class="follow-button following" on:click={unfollowUser}>Following</button>
+        <button class="follow-button following" on:click={unfollowUser}>Followings</button>
       {:else}
         <button class="follow-button" on:click={followUser}>Follow</button>
       {/if}
