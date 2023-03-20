@@ -4,7 +4,7 @@
 	import User from './User.svelte';
 	
 	let isFetchingFollowings = true
-  	let isUnAuth = false
+  	let isUnAuthorized = false
 	let followings = []
 	let isServerError = false
 	let searchedFollowings = []
@@ -31,7 +31,7 @@
 					break
 				
 				case 401:
-					isUnAuth = true
+					isUnAuthorized = true
 					isFetchingFollowings = false
 					break
 
@@ -55,7 +55,7 @@
 		showAllFollowings = false
 		startedSearch = true
 		const formData = new FormData(event.target);
-		const searchString = formData.get('q');
+		const searchString = formData.get('searchString');
 
 		try {
 			const response = await fetch("http://localhost:8080/followings/search?q=" + searchString, {
@@ -98,7 +98,7 @@
 						<h1>Following</h1>
 							<form on:submit|preventDefault={searchFollowings}>
 								<div class="search-container">
-								<input type="text" name="q" placeholder="Search for users...">
+								<input type="text" name="searchString" placeholder="Search for users...">
 								<button type="submit" id="search-button">Search</button>
 								<button type="button" id="show-all-button" on:click={loadAllFollowings}>Show All Users</button>
 								</div>
@@ -126,7 +126,7 @@
 							{:else}
 								{#if isFetchingFollowings}
 									<p>Wait, I'm loading</p>
-								{:else if isUnAuth} 
+								{:else if isUnAuthorized} 
 									<p>Need to be logged in to view users.</p>
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>

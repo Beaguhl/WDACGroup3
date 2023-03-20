@@ -5,7 +5,7 @@
 	import {Router, Link, Route} from 'svelte-routing';
 
 	let isFetchingUsers = true
-  	let isUnAuth = false
+  	let isUnAuthorized = false
 	let users = []
 	let isServerError = false
 	let searchedUsers = []
@@ -31,7 +31,7 @@
 					break
 				
 				case 401:
-					isUnAuth = true
+					isUnAuthorized = true
 					isFetchingUsers = false
 					break
 
@@ -55,7 +55,7 @@
 		showAllUsers = false
 		startedSearch = true
 		const formData = new FormData(event.target);
-		const searchString = formData.get('q');
+		const searchString = formData.get('searchString');
 
 		try {
 			const response = await fetch("http://localhost:8080/users/search?q=" + searchString, {
@@ -99,9 +99,9 @@
 							<h1>Find users</h1>
 								<form on:submit|preventDefault={searchUsers}>
 									<div class="search-container">
-									<input type="text" name="q" placeholder="Search for users...">
-									<button type="submit" id="search-button">Search</button>
-									<button type="button" id="show-all-button" on:click={loadAllUsers}>Show All Users</button>
+										<input type="text" name="searchString" placeholder="Search for users...">
+										<button type="submit" id="search-button">Search</button>
+										<button type="button" id="show-all-button" on:click={loadAllUsers}>Show All Users</button>
 									</div>
 								</form>
 								<div class="search-container"></div>
@@ -127,7 +127,7 @@
 								{:else if showAllUsers == true}
 									{#if isFetchingUsers}
 										<p>Wait, I'm loading</p>
-									{:else if isUnAuth} 
+									{:else if isUnAuthorized} 
 										<p>Need to be logged in to view users.</p>
 									{:else if isServerError}
 										<p>Website has server errors. Try again later</p>
