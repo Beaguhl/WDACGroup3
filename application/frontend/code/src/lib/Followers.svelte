@@ -66,7 +66,7 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/followers/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/follows/followers/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

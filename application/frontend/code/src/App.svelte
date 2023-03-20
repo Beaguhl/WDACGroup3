@@ -87,9 +87,9 @@ let username = ""
 			{#if $user.isLoggedIn}
 				<Link class="Links" to="/users" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Users</Link>
 				<Link class="Links" to="/products" id="products-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
-				<Link class="Links" to="/MyWishList" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
-				<Link class="Links" to="/Followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
-				<Link class="Links" to="/following" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
+				<Link class="Links" to="/my-wishlist" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
+				<Link class="Links" to="/follows/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
+				<Link class="Links" to="/follows/following" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
 				<Link class="Links" to="/my-account" id="my-account-link" style="color: white; text-decoration: none; margin-right: 40px;">My Account</Link>
 			{/if}
 			
@@ -172,14 +172,14 @@ let username = ""
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/users" component="{Users}"></Route>
-		<Route path="/FindProducts" component="{FindProducts}"></Route>
-		<Route path="/user/:id" component="{User}"></Route>
+		<Route path="/products" component="{FindProducts}"></Route>
+		<Route path="/users/:id" component="{User}"></Route>
 		<Route path="/create-account" component="{CreateUser}"></Route>
-		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
-		<Route path="my-account" component="{MyAccount}"></Route>
-		<Route path="/following" component="{Following}"></Route>
-		<Route path="/MyWishList" component="{MyWishList}"></Route>
-		<Route path="/Followers" component="{Followers}"></Route>
+		<Route path="/products/:id" component="{SpecificProduct}"></Route>
+		<Route path="/my-account" component="{MyAccount}"></Route>
+		<Route path="/follows/following" component="{Following}"></Route>
+		<Route path="/my-account" component="{MyWishList}"></Route>
+		<Route path="/follows/ollowers" component="{Followers}"></Route>
 
 	</main>
 </Router>

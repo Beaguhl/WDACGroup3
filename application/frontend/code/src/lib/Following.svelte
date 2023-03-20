@@ -16,7 +16,7 @@
 	async function loadAllFollowings () {
 		showAllFollowings = true
 		try {
-			const response = await fetch("http://localhost:8080/followings", {
+			const response = await fetch("http://localhost:8080/follows/followings", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
