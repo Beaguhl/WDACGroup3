@@ -20,7 +20,8 @@
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -58,11 +59,12 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/followings/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/follows/followings/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -116,7 +118,7 @@
 											<p>User not found</p>
 										{:else}
 											{#each searchedFollowings as searchedUser}
-												<Link class="Links" to="/user/{searchedUser.userID}">
+												<Link class="Links" to="/users/{searchedUser.userID}">
 													<h3>{searchedUser.username}</h3>
 												</Link> 
 											{/each}
@@ -132,7 +134,7 @@
 									<p>Website has server errors. Try again later</p>
 								{/if}
 								{#each followings as searchedUseri}
-									<Link class="Links" to="/user/{searchedUseri.userID}">
+									<Link class="Links" to="/users/{searchedUseri.userID}">
 										<h3>{searchedUseri.username}</h3>
 									</Link> 
 								{/each}

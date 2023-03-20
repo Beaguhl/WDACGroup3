@@ -29,12 +29,14 @@
   let resourceForbidden = false
 
   async function loadUser(){
+    console.log("going into loadUser")
     try {
       const response = await fetch("http://localhost:8080/users/" + id, {
         method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+          "UserID": $user.userID
 				}
       })
       
@@ -43,7 +45,7 @@
         case 200:
           console.log("user/id got 200")
           const {userToSend, followToSend} = await response.json()
-          console.log(userToSend, followToSend)
+          console.log("users kommer nu: " + userToSend, followToSend)
           fetchedUser = userToSend
           fetchedFollow = followToSend
           console.log(fetchedFollow[0])
@@ -70,12 +72,13 @@
   async function followUser(){
     console.log("clicked follow")
     try {
-      const response = await fetch("http://localhost:8080/follow", {
+      const response = await fetch("http://localhost:8080/follows/follow", {
         method: "POST",
 				headers: {
 					"Content-Type": "application/json",
           "Authorization": "bearer "+$user.accessToken,
-					"UserToFollow": id
+					"UserToFollow": id,
+          "UserID": $user.userID
 				}
       })
       
@@ -99,12 +102,13 @@
   async function unfollowUser(){
     console.log("clicked unfollow")
     try {
-      const response = await fetch("http://localhost:8080/unfollow", {
+      const response = await fetch("http://localhost:8080/follows/unfollow", {
         method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
           "Authorization": "bearer "+$user.accessToken,
-					"UserToUnfollow": id
+					"UserToUnfollow": id,
+          "UserID": $user.userID
 				}
       })
       

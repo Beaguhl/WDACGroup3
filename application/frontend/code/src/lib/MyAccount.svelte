@@ -25,7 +25,8 @@
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Authorization": "bearer "+$user.accessToken,
-                    "Password": enteredPassword
+                    "Password": enteredPassword,
+                    "UserID": $user.userID
                 }
             })
 

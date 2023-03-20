@@ -67,30 +67,23 @@ app.get("/", function(request, response){
 
 //---------------- my account -------------------------
 app.get('/my-account', async function(request, response){
-	const authorizationHeaderValue = request.get("Authorization")
-	const accessToken = authorizationHeaderValue.substring(7)
+	const userID = request.get("UserID")
 
 	const enteredPassword = request.get("Password")
 
-	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
-		if (error){
-			response.status(401).end()
-		} else {
-			const connection = await pool.getConnection()
-			const compareUserQuery = `SELECT * FROM Users WHERE userID = ${parseInt(payload.sub)}`
-			const user = await connection.query(compareUserQuery)
+	const connection = await pool.getConnection()
+	const compareUserQuery = `SELECT * FROM Users WHERE userID = ${userID}`
+	const user = await connection.query(compareUserQuery)
 
-			bcrypt.compare(enteredPassword, user[0].password, (err, res) => {
-				if (err) {
-				throw err;
-				}
-				if (res === true) {
-					response.status(200).json(user)
+	bcrypt.compare(enteredPassword, user[0].password, (err, res) => {
+		if (err) {
+			throw err;
+		}
+		if (res === true) {
+			response.status(200).json(user)
 				
-				} else {
-					response.status(403).end()
-				}
-			})
+		} else {
+			response.status(403).end()
 		}
 	})
 })
@@ -137,7 +130,8 @@ app.post('/tokens', async function(request, response){
 					} else {
 						response.status(200).json({
 							access_token: accesToken,
-							type: "bearer"
+							type: "bearer",
+							userID: result[0].userID
 						})
 					}
 				})

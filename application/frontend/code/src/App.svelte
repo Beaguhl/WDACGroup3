@@ -179,7 +179,7 @@ let username = ""
 		<Route path="/my-account" component="{MyAccount}"></Route>
 		<Route path="/follows/following" component="{Following}"></Route>
 		<Route path="/my-account" component="{MyWishList}"></Route>
-		<Route path="/follows/ollowers" component="{Followers}"></Route>
+		<Route path="/follows/followers" component="{Followers}"></Route>
 
 	</main>
 </Router>
