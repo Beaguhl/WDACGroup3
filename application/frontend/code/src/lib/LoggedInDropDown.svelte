@@ -35,9 +35,11 @@
                     body = await response.json()
                     //accessToken = body.access_token
                     console.log("nu kommer logged in token: " + body.access_token)
+                    
                     $user = {
                         isLoggedIn: true,
-                        accessToken: body.access_token
+                        accessToken: body.access_token,
+                        userID: body.userID
                     }
                     closedDropDown = false
                     break

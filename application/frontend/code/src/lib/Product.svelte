@@ -3,22 +3,57 @@
 
 <script>
 
-	class ProductInformation {
-		constructor(productName, productPrice, productDescription){
-			this.productName = productName
-			this.productPrice = productPrice
-			this.productDescription = productDescription
+	import { user } from "../user-store"
+
+	export let id
+	let isFetchingProduct = true
+	let failedToFetchProduct = false
+	let fetchedProduct = null
+
+	async function loadProduct(){
+		console.log("inside loadProduct")
+		try {
+			const response = await fetch("http://localhost:8080/products/" + id, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
+				}
+			})
+
+			switch(response.status){
+				case 200:
+					fetchedProduct = await response.json()
+					console.log("fetched product: " + fetchedProduct)
+					isFetchingProduct = false
+					
+					break
+				
+				case 404:
+					isFetchingProduct = false
+					break
+
+				case 403:
+					resourceForbidden = true
+					break
+			}
+		}catch(error){
+			failedToFetchProduct = true
 		}
+		
 	}
 
-	var arrayOfProductInfo = []
+	loadProduct()
 
-	arrayOfProductInfo.push(new ProductInformation("Horse", 500, "It's a unicorn"))
+	
 
-  document.addEventListener ("DOMContentLoaded", function() {
+	//arrayOfProductInfo.push(new ProductInformation("Horse", 500, "It's a unicorn"))
+
+ // document.addEventListener ("DOMContentLoaded", function() {
 
 	// ------------------- following button, som laggar -------------
-	var follow = false
+	//var follow = false
 	/*document.getElementById("follow").addEventListener("click", ToggleFollow)
 	
 	function ToggleFollow() {
@@ -35,15 +70,16 @@
 
 	}*/
   
-  })
+ // })
 
-  export let location
+
+ /* export let location
 
   console.log("haha")
 
   console.log(location)
 
-  const product = location.state
+  const product = location.state*/
 
 </script>
 
@@ -53,20 +89,22 @@
 
 <!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 
-<div class="mainGrid">
- 
-  <div class="leftColumn">
-	</div>
-	<!-- lista med wishes -->
-	<div class="wishList">
-		{#each arrayOfProductInfo as info}
-			<h1>{info.productName}</h1>
-			<p>${info.productPrice}</p>
-			<p>{info.productDescription}</p>
-		{/each}
 
-	</div>
-</div>
+	{#if $user.isLoggedIn}
+
+		{#if isFetchingProduct}
+			<p>Wait, fetching data...</p>
+		{:else if failedToFetchProduct}
+			<p>Couldn't fetch product. Check your Internet connection.</p>
+		{:else if fetchedProduct}
+			<title></title>
+
+			<div>
+				<h1>{fetchedProduct.productName}</h1>
+			</div>
+		{/if}
+	{/if}
+
 
 
 <style>
@@ -125,13 +163,13 @@
 	}
 	
 	.item-btn{
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
   }
 
 	.item-btn i {
-    font-size: 18px;
+	font-size: 18px;
   }
 </style>

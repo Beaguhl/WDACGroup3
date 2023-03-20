@@ -146,7 +146,7 @@ let username = ""
 						Find Products
 					</button>
 				</Link>
-				<Link class="Links" to="/product">
+				<Link class="Links" to="/products">
 					Product
 				</Link>
 			
@@ -173,7 +173,7 @@ let username = ""
 		<Route path="/products" component="{Products}"></Route>
 		<Route path="/user/:id" component="{User}"></Route>
 		<Route path="/create-account" component="{CreateUser}"></Route>
-		<Route path="/product/:id" component="{Product}"></Route>
+		<Route path="/products/:id" component="{Product}"></Route>
 
 		<Route path="/following" component="{Following}"></Route>
 		<Route path="/MyWishList" component="{MyWishList}"></Route>

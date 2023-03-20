@@ -1,8 +1,8 @@
 <script>
 
+	import { user } from '../user-store'
 	import {Router, Link, Route} from 'svelte-routing'
 	import Product from './Product.svelte';
-	import {onMount} from 'svelte'
 
 	let isFetchingProducts = true
 	let isUnAuthorized = false
@@ -19,8 +19,9 @@
 			const response = await fetch("http://localhost:8080/products", {
 				method: "GET",
 				headers: {
-					"Content-Type": "application/json"
-					
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 			
@@ -34,13 +35,12 @@
 					isUnAuthorized = true
 					isFetchingProducts = false
 					break
-
-				case 404:
-					isFetchingSearchedProdcucts = false
-					break
 				
 				case 500:
 					isServerError = true
+					break
+
+				case 404:
 					break
 		} 
 	}catch(error){
@@ -52,13 +52,14 @@
 		showAllProducts = false
 		startedSearch = true
 		const formData = new FormData(event.target)
-		const searchString = formData.get('searchString')
+		const searchString = formData.get('q')
 
 		try{
-			const response = await fetch("http://localhost:8080/products/search?searchString=" + searchString, {
+			const response = await fetch("http://localhost:8080/products/search?q=" + searchString, {
 				method: "GET",
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken
 				}
 			})
 
@@ -76,9 +77,11 @@
 
 		}
 	}
-
+loadAllProducts()
 
 </script>
+
+{#if $user.isLoggedIn}
 
 <Router>
 	<section>
@@ -88,14 +91,14 @@
 					<h1>Find Products</h1>
 					<form on:submit|preventDefault={searchProducts}>
 						<div class="search-container">
-							<input type="text" name="searchString" placeholder="Search for products...">
+							<input type="text" name="q" placeholder="Search for products...">
 							<button type="submit" id="search-button">Search</button>
-							<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Users</button>
+							<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Products</button>
 						</div>
 					</form>
 					<div class="search-container"></div>
 					<div class="product-container">
-					{#if !showAllProducts}
+					{#if showAllProducts == false}
 						{#if startedSearch}
 							{#if isFetchingSearchedProdcucts}
 								<p>Searching...</p>
@@ -104,22 +107,24 @@
 									<p>No search result found</p>
 								{:else}
 									{#each searchedProducts as searchedProduct}
-										<Link class="Links" to="/product/{searchedProduct.productID}">
+										<Link class="Links" to="/products/{searchedProduct.productID}">
 											<h3>{searchedProduct.productName}</h3>
 										</Link>
 									{/each}
 								{/if}
 							{/if}
 						{/if}
-					{:else if showAllProducts}
+					{:else if showAllProducts == true}
 						{#if isFetchingProducts}
 							<p>Wait, I'm loading</p>
+						{:else if isUnAuthorized}
+							<p>Need to be logged in to view proudcts</p>
 						{:else if isServerError}
 							<p>Internal server error, try again later</p>
 						{/if}
-						{#each products as searchedProductIndex}
-							<Link class="Links" to="/user/{searchedProductIndex.productID}">
-								<h3>{searchedProductIndex.productName}</h3>
+						{#each products as searchedProducti}
+							<Link class="Links" to="/products/{searchedProducti.productID}">
+								<h3>{searchedProducti.productName}</h3>
 							</Link>
 						{/each}
 					{/if}
@@ -130,10 +135,12 @@
 	</section>
 	<main>
 <!-- Här ska Route vara -->
-		<Route path="Product" component="{Product}"></Route>
+		<Route path="/products" component="{Product}"></Route>
 	</main>
 </Router>
-
+{:else}
+<p>You need to be logged in to an account to view products</p>
+{/if}
 
 <style>
 

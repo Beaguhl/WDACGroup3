@@ -61,7 +61,7 @@
 		showAllFollowers = false
 		startedSearch = true
 		const formData = new FormData(event.target);
-		const searchString = formData.get('searchString');
+		const searchString = formData.get('q');
 
 		try {
 			const response = await fetch("http://localhost:8080/followers/search?q=" + searchString, {
@@ -105,7 +105,7 @@
 						<h1>My followers</h1>
 							<form on:submit|preventDefault={searchFollowers}>
 								<div class="search-container">
-								<input type="text" name="searchString" placeholder="Search for users...">
+								<input type="text" name="q" placeholder="Search for users...">
 								<button type="submit" id="search-button">Search</button>
 								<button type="button" id="show-all-button" on:click={loadAllFollowers}>Show All Users</button>
 								</div>
