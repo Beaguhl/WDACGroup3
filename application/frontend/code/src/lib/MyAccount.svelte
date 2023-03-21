@@ -4,55 +4,94 @@
 
     let showAccount = true
     let showEnterPassword = false
-    let wrongPassword = null
+    let incorrectPassword = null
     let showEditAccount = false
-    let userInfo = null
+    let username = null
+    let userNotFound = false
 
     function makeShowEnterPasswordTrue(){
         showEnterPassword = true
         showAccount = false
     }
 
-    async function verifyPassword(){
-        const formData = new FormData(event.target);
-		const enteredPassword = formData.get('password');
-        console.log("Entered password is: " + enteredPassword)
-        console.log(user)
+    console.log("user är: " + $user.userID)
 
+    async function getUsername(){
         try {
             const response = await fetch("http://localhost:8080/my-account", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Authorization": "bearer "+$user.accessToken,
-                    "Password": enteredPassword,
                     "UserID": $user.userID
                 }
             })
 
-            
-
-            switch (await response.status){
+            switch (response.status){
                 case 200:
-                    showAccount = false
-                    showEnterPassword = false
-                    showEditAccount = true
-                    break
-
-                case 403:
-                    showAccount = false
-                    showEnterPassword = true
-                    wrongPassword = true
-                    break
-
-                case 401:
+                    username = await response.json()
                     break
                 
+                case 404:
+                    userNotFound = true
+                    break
+
+                case 500:
+                    console.log("500 error")
+                    break
             }
+            
 
         } catch {
             //handle error
         }
+    }
+
+    getUsername();
+
+    let body = null
+    let noMatch = false
+
+
+    async function verifyPassword(event){
+        const formData = new FormData(event.target);
+		const enteredPassword = formData.get('password');
+        console.log("Entered password is: " + enteredPassword)
+        console.log(user)
+
+        try {
+            const response = await fetch("http://localhost:8080/tokens", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(enteredPassword.toString())}`
+            })
+            switch(response.status){
+                case 200:
+                    console.log("matcing password")
+                    body = await response.json()                    
+                    $user = {
+                        isLoggedIn: true,
+                        accessToken: body.access_token,
+                        userID: body.userID
+                    }
+                    break
+
+                case 403:
+                    incorrectPassword = true
+                    break
+
+                case 400:
+                    console.log("not matcing password")
+                    noMatch = true
+                    console.log("case 400")
+                    break
+            }
+        } catch (error){
+        }
+
+        
     }
 
 </script>
@@ -60,76 +99,81 @@
 <head>
     <title>My Account</title>
 </head>
-<body>
-    <div class="container">
-		<h1>My Account</h1>
-        {#if showAccount}
-        <p>${userInfo}</p>
-            <form on:submit|preventDefault={makeShowEnterPasswordTrue}>
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <div class="underline-textfield">
-                        <input type="text" id="username" name="username" value="dde">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="password">Current password:</label>
-                    <div class="underline-textfield">
-                        <input type="password" id="password" name="password" value="xxxxxxxxxxx">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Edit account details">
-                </div>
-            </form>
-        {/if}
-        {#if showEnterPassword}
-            <form on:submit|preventDefault={verifyPassword}>
-                <div class="form-group">
-                    <label for="password">Type current password to make changes:</label>
-                    <div class="underline-textfield">
-                        <input type="password" id="password" name="password">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <input type="submit" value="OK">
-                </div>
 
-                {#if wrongPassword}
-                    <p>Incorrect password, try again.</p>
+{#if $user.isLoggedIn}
+    {#if userNotFound}
+        <p>user not found</p>
+    {:else}
+        <body>
+            <div class="container">
+                <h1>My Account</h1>
+                {#if showAccount}
+                    <form on:submit|preventDefault={makeShowEnterPasswordTrue}>
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <div class="underline-textfield">
+                                <input type="text" id="username" name="username" value="{username}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Current password:</label>
+                            <div class="underline-textfield">
+                                <input type="password" id="password" name="password" value="xxxxxxxxxxx">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Edit account details">
+                        </div>
+                    </form>
                 {/if}
-            </form>
-        {/if}
+                {#if showEnterPassword}
+                    <form on:submit|preventDefault={verifyPassword}>
+                        <div class="form-group">
+                            <label for="password">Type current password to make changes:</label>
+                            <div class="underline-textfield">
+                                <input type="password" id="password" name="password">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="submit" value="OK">
+                        </div>
 
-        {#if showEditAccount == true}
-            <form action="">
-                <div class="form-group">
-                    <label for="username">New username:</label>
-                    <div class="underline-textfield">
-                        <input type="text" id="username" name="username" value="ddeded">
-                    </div>
-                </div>
+                        {#if incorrectPassword}
+                            <p>Incorrect password, try again.</p>
+                        {/if}
+                    </form>
+                {/if}
 
-                <div class="form-group">
-                    <label for="password">New password:</label>
-                    <div class="underline-textfield">
-                        <input type="password" id="password" name="password">
-                    </div>
-                </div>
-            
-                <div class="form-group">
-                    <input type="submit" value="Save updates">
-                </div>
-            </form>
-        {/if}
-		
+                {#if showEditAccount == true}
+                    <form action="">
+                        <div class="form-group">
+                            <label for="username">New username:</label>
+                            <div class="underline-textfield">
+                                <input type="text" id="username" name="username" value="ddeded">
+                            </div>
+                        </div>
 
-        
-        
-       
-	</div>
-</body>
+                        <div class="form-group">
+                            <label for="password">New password:</label>
+                            <div class="underline-textfield">
+                                <input type="password" id="password" name="password">
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                            <input type="submit" value="Save updates">
+                        </div>
+                    </form>
+                {/if}
+            </div>
+        </body>
+    {/if}
+    
+{:else}
+    <p>Need to be logged in to view "My Account"</p>
+{/if}
+
 
 <style>
 

@@ -12,6 +12,7 @@ const userRouter = require('./routers/user-router');
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
+
 function hashPassword(password) {
 	return new Promise((resolve, reject) => {
 		bcrypt.genSalt(12, (error, salt) => {
@@ -62,6 +63,30 @@ app.get("/", function (request, response) {
 })
 
 
+//---------------- my account -------------------------
+app.get('/my-account', async function (request, response) {
+	const userID = request.get("UserID")
+	console.log("userID is: "+ userID)
+    const enteredPassword = request.get("Password")
+    try {
+        const connection = await pool.getConnection()
+        const getUsernameQuery = 'SELECT username FROM Users WHERE userID = ?'
+		const getUsernameValue = [userID]
+        const username = await connection.query(getUsernameQuery, getUsernameValue)
+		console.log("username length is: " + username.length)
+
+		if (username.length == 0){
+			response.status(404).end()
+		} else {
+			response.status(200).json(username[0].username)
+		}
+        
+    } catch (err) {
+        console.error(err)
+        response.status(500).end()
+    }
+})
+
 
 //----------------------- tokens ----------------------
 app.post('/tokens', async function (request, response) {
@@ -111,7 +136,7 @@ app.post('/tokens', async function (request, response) {
 				})
 
 			} else {
-				console.log('The passwords do not match!');
+				response.status(403).end()
 			}
 		})
 
@@ -127,7 +152,6 @@ app.post('/tokens', async function (request, response) {
 app.use('/follows', followRouter)
 app.use('/users', userRouter)
 app.use('/products', productRouter)
-
 
 //app.listen(8080)
 app.listen(8080, () => {

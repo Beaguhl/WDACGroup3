@@ -17,13 +17,12 @@ pool.on('error', function(error){
 
 module.exports = router
 
+
 const app = express()
 
 //----------- all users ----------------
 router.get("/", async function(request, response){	
 
-	const authorizationHeaderValue = request.get("Authorization")
-	const accessToken = authorizationHeaderValue.substring(7)
 	const userID = request.get("UserID")
 
 	try{
