@@ -4,7 +4,7 @@
 	import User from './User.svelte';
 	
 	let isFetchingFollowings = true
-  	let isUnAuth = false
+  	let isUnAuthorized = false
 	let followings = []
 	let isServerError = false
 	let searchedFollowings = []
@@ -37,7 +37,7 @@
 					break
 				
 				case 401:
-					isUnAuth = true
+					isUnAuthorized = true
 					isFetchingFollowings = false
 					break
 
@@ -134,7 +134,7 @@
 							{:else}
 								{#if isFetchingFollowings}
 									<p>Wait, I'm loading</p>
-								{:else if isUnAuth} 
+								{:else if isUnAuthorized} 
 									<p>Need to be logged in to view users.</p>
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>

@@ -3,7 +3,7 @@
 	import {Router, Link, Route} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/Users.svelte'
-	import FindProducts from './lib/FindProducts.svelte'
+	import Products from './lib/Products.svelte'
 	import DropdownMenu from './lib/DropdownMenu.svelte'
 	import NavBar from './lib/NavBar.svelte'
 	import NavItem from './lib/NavItem.svelte'
@@ -14,7 +14,7 @@
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
     import Users from './lib/Users.svelte';
-	import SpecificProduct from './lib/SpecificProduct.svelte'
+	import Product from './lib/Product.svelte'
 	import CreateUser from './lib/CreateUser.svelte'
 	import MyAccount from './lib/MyAccount.svelte'
 	import { onMount } from 'svelte';
@@ -144,12 +144,12 @@ let username = ""
 				<Link class="Links" to="/users">
 						<button class="testButton" id="users">Find Users</button>		
 				</Link>
-				<Link class="Links" to="/FindProducts">
-					<button class="testButton" id="findProducts">
+				<Link class="Links" to="/products">
+					<button class="testButton" id="products">
 						Find Products
 					</button>
 				</Link>
-				<Link class="Links" to="/SpecificProduct">
+				<Link class="Links" to="/products">
 					Product
 				</Link>
 			
@@ -181,7 +181,6 @@ let username = ""
 		<Route path="/follows/followings" component="{Following}"></Route>
 		<Route path="/my-account" component="{MyWishList}"></Route>
 		<Route path="/follows/followers" component="{Followers}"></Route>
-
 	</main>
 </Router>
 

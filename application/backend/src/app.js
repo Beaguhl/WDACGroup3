@@ -12,7 +12,6 @@ const userRouter = require('./routers/user-router');
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
-
 function hashPassword(password) {
 	return new Promise((resolve, reject) => {
 		bcrypt.genSalt(12, (error, salt) => {
@@ -61,59 +60,19 @@ app.use(function (request, response, next) {
 app.get("/", function (request, response) {
 	response.send("It works")
 })
-
-/*app.get('/follows/followings', async function(request, response){
-	console.log("inside following")
-	const userID = request.get("userID")
-
-	try {
-		const connection = await pool.getConnection()
-
-		const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
-		const followingsID = await connection.query(getAllFollowingQuery)
-
-		let followingUsers = []
-
-		for (let i = 0; i < followingsID.length; i+=1){
-			console.log(followingsID[i].followingUserID)
-			const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`
-			const fetchedUser = await connection.query(getUserQuery)
-			followingUsers[i] = fetchedUser[0]
 		}
 
-		if (followingUsers.length == 0){
-			response.status(404).end()
-		} else {
-			response.status(200).json(followingUsers)
-		}
-	} catch {
-		console.log("error is: " + error)
-		response.status(500).end()
 	}
 
-})*/
-
-//---------------- my account -------------------------
-app.get('/my-account', async function (request, response) {
-	const userID = request.get("UserID")
-
-	const enteredPassword = request.get("Password")
-
-	const connection = await pool.getConnection()
-	const compareUserQuery = `SELECT * FROM Users WHERE userID = ${userID}`
-	const user = await connection.query(compareUserQuery)
-
-	bcrypt.compare(enteredPassword, user[0].password, (err, res) => {
-		if (err) {
-			throw err;
-		}
-		if (res === true) {
-			response.status(200).json(user)
-
-		} else {
-			response.status(403).end()
-		}
-	})
+	console.log("detta fångade vi: " + followerSearchedUsers)
+	console.log("längden är: " + followerSearchedUsers.length)
+	if (followerSearchedUsers.length == 0) {
+		console.log("404")
+		response.status(404).end()
+	} else {
+		console.log("200")
+		response.status(200).json(followerSearchedUsers)
+	}
 })
 
 
@@ -178,9 +137,101 @@ app.post('/tokens', async function (request, response) {
 
 })
 
+
+//----------------------- products ----------------------
+
+app.get("/products", async function (request, response) {
+
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+	const userID = request.get("UserID")
+
+
+	try {
+		const connection = await pool.getConnection()
+
+		const getAllProductsQuery = "SELECT * FROM Products"
+		const getAllProductsValues = [userID]
+		const products = await connection.query(getAllProductsQuery, getAllProductsValues)
+
+		console.log("products are-__ " + products[1])
+		response.status(200).json(products)
+
+	} catch (error) {
+		console.log(error)
+		response.status(500).end()
+	}
+}
+)
+
+
+app.get('/products/search', async function (request, response) {
+
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+	const userID = request.get("UserID")
+
+
+	try {
+		const searchQuery = request.query.q
+
+		const connection = await pool.getConnection()
+
+		const getSearchedProductsQuery = `SELECT * FROM Products WHERE productID != ${userID} AND productName LIKE '%${searchQuery}%'`
+		const searchedProducts = await connection.query(getSearchedProductsQuery)
+		console.log("search useds inside: " + searchedProducts)
+
+		if (searchedProducts.length == 0) {
+			response.status(404).end()
+		} else {
+			response.status(200).json(searchedProducts)
+		}
+
+	} catch {
+		// add catch
+	}
+})
+
+//----------------------- products ----------------------
+
+app.get("/products/:id", async function (request, response) {
+	console.log("går in i products id")
+
+
+	try {
+		const otherProductID = parseInt(request.params.id)
+		console.log("other procut är: " + otherProductID)
+
+		const connection = await pool.getConnection()
+		console.log("har connectat")
+
+		const productQuery = `SELECT * FROM Products WHERE productID = ${parseInt(otherProductID)}`
+		console.log("har 1")
+
+		const productToSend = await connection.query(productQuery)
+		console.log("procudt to send is: " + productToSend)
+
+		console.log("HÄR ÄR PRODUCTTOSEND!!!!! " + productToSend)
+		console.log("HÄR ÄR PRODUCTTOSEND!!!!! ")
+
+		const procuct = productToSend[0]
+
+		console.log("HAUHDFJHWJLAHLJF " + procuct)
+
+		const model = {
+			procuct
+		}
+
+		response.status(200).json(model)
+	} catch (error) {
+		response.status(500).end()
+	}
+})
+
 app.use('/follows', followRouter)
 app.use('/users', userRouter)
 app.use('/products', productRouter)
+
 
 //app.listen(8080)
 app.listen(8080, () => {

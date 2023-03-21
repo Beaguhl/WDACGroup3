@@ -44,14 +44,14 @@ INSERT INTO WishList (userID) VALUES (1);
 INSERT INTO WishList (userID) VALUES (2);
 INSERT INTO WishList (userID) VALUES (3);
 
-CREATE TABLE IF NOT EXISTS Product (
+CREATE TABLE IF NOT EXISTS Products (
 	productID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	productName VARCHAR(20) NOT NULL,
 	description VARCHAR(50) NOT NULL
 );
 
-INSERT INTO Product (productName, description) VALUES ("fanta", "en annan god dricka");
-INSERT INTO Product (productName, description) VALUES ("Loka", "en god dricka");
+INSERT INTO Products (productName, description) VALUES ("fanta", "en annan god dricka");
+INSERT INTO Products (productName, description) VALUES ("Loka", "en god dricka");
 
 CREATE TABLE IF NOT EXISTS WishListProduct (
 	productID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,

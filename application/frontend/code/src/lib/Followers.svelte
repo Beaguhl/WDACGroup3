@@ -7,7 +7,7 @@
 	
 
 	let isFetchingFollowers = true
-  	let isUnAuth = false
+  	let isUnAuthorized = false
 	let followers = []
 	let isServerError = false
 	let searchedFollowers = []
@@ -40,7 +40,7 @@
 					break
 				
 				case 401:
-					isUnAuth = true
+					isUnAuthorized = true
 					isFetchingFollowers = false
 					break
 
@@ -138,7 +138,7 @@
 							{:else}
 								{#if isFetchingFollowers}
 									<p>Wait, I'm loading</p>
-								{:else if isUnAuth} 
+								{:else if isUnAuthorized} 
 									<p>Need to be logged in to view users.</p>
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>
