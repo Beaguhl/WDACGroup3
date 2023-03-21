@@ -16,6 +16,7 @@
     import Users from './lib/Users.svelte';
 	import SpecificProduct from './lib/SpecificProduct.svelte'
 	import CreateUser from './lib/CreateUser.svelte'
+	import MyAccount from './lib/MyAccount.svelte'
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { user } from './user-store'
@@ -57,7 +58,8 @@ let username = ""
 
                     $user = {
                         isLoggedIn: true,
-                        accessToken: body.access_token
+                        accessToken: body.access_token,
+						userID: ""
                     }
                     closedDropDown = false
                     break
@@ -83,12 +85,13 @@ let username = ""
 	<nav>
 		<div>
 			<Link class="Links active" id="home-link" to="/" style="color: white; text-decoration: none; margin-right: 70px; font-weight: bold;">Wishes</Link>		
-		  {#if $user.isLoggedIn}
-			<Link class="Links" to="/users" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Users</Link>
-			<Link class="Links" to="/products" id="products-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
-			<Link class="Links" to="/MyWishList" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
-			<Link class="Links" to="/Followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
-			<Link class="Links" to="/following" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
+			{#if $user.isLoggedIn}
+				<Link class="Links" to="/users" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Users</Link>
+				<Link class="Links" to="/products" id="products-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
+				<Link class="Links" to="/my-wishlist" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
+				<Link class="Links" to="/follows/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
+				<Link class="Links" to="/follows/followings" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
+				<Link class="Links" to="/my-account" id="my-account-link" style="color: white; text-decoration: none; margin-right: 40px;">My Account</Link>
 			{/if}
 			
 		</div>
@@ -170,14 +173,14 @@ let username = ""
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/users" component="{Users}"></Route>
-		<Route path="/FindProducts" component="{FindProducts}"></Route>
-		<Route path="/user/:id" component="{User}"></Route>
+		<Route path="/products" component="{FindProducts}"></Route>
+		<Route path="/users/:id" component="{User}"></Route>
 		<Route path="/create-account" component="{CreateUser}"></Route>
-		<Route path="/SpecificProduct/:id" component="{SpecificProduct}"></Route>
-
-		<Route path="/following" component="{Following}"></Route>
-		<Route path="/MyWishList" component="{MyWishList}"></Route>
-		<Route path="/Followers" component="{Followers}"></Route>
+		<Route path="/products/:id" component="{SpecificProduct}"></Route>
+		<Route path="/my-account" component="{MyAccount}"></Route>
+		<Route path="/follows/followings" component="{Following}"></Route>
+		<Route path="/my-account" component="{MyWishList}"></Route>
+		<Route path="/follows/followers" component="{Followers}"></Route>
 
 	</main>
 </Router>

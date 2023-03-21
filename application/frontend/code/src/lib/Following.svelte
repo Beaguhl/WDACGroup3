@@ -13,14 +13,20 @@
 	let showAllFollowings = true
 	let noSearchFound = false
 
+	console.log("userID: " + $user.userID)
+	console.log("token: " + $user.accessToken)
+
 	async function loadAllFollowings () {
+		console.log("load all followings")
 		showAllFollowings = true
 		try {
-			const response = await fetch("http://localhost:8080/followings", {
+			console.log("try to response")
+			const response = await fetch("http://localhost:8080/follows/followings", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -52,17 +58,19 @@
 	loadAllFollowings()
 
 	async function searchFollowings(event){
+		console.log("search followings")
 		showAllFollowings = false
 		startedSearch = true
 		const formData = new FormData(event.target);
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/followings/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/follows/followings/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -95,7 +103,7 @@
 		<div class="container">
 			<div class="squareContainer">
 					<div class="container">
-						<h1>Following</h1>
+						<h1>Followings</h1>
 							<form on:submit|preventDefault={searchFollowings}>
 								<div class="search-container">
 								<input type="text" name="q" placeholder="Search for users...">
@@ -116,7 +124,7 @@
 											<p>User not found</p>
 										{:else}
 											{#each searchedFollowings as searchedUser}
-												<Link class="Links" to="/user/{searchedUser.userID}">
+												<Link class="Links" to="/users/{searchedUser.userID}">
 													<h3>{searchedUser.username}</h3>
 												</Link> 
 											{/each}
@@ -132,7 +140,7 @@
 									<p>Website has server errors. Try again later</p>
 								{/if}
 								{#each followings as searchedUseri}
-									<Link class="Links" to="/user/{searchedUseri.userID}">
+									<Link class="Links" to="/users/{searchedUseri.userID}">
 										<h3>{searchedUseri.username}</h3>
 									</Link> 
 								{/each}
