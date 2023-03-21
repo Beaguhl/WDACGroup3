@@ -5,22 +5,6 @@
 
   import { user } from "../user-store";
 
-    
-
-    class WishList {
-          constructor(itemName, purchased) {
-              this.itemName = itemName;
-              this.purchased = purchased;
-          }
-      }
-  
-    var arrayOfWishes = []
-  
-    arrayOfWishes.push(new WishList("A horse", "Ricky229")) 
-    arrayOfWishes.push(new WishList("5000 $", ""))
-    arrayOfWishes.push(new WishList("Food", "")) 
-    arrayOfWishes.push(new WishList("A new iPhone", "user_2883"))
-  
   export let id;
   let isFetchingUser = true
   let failedToFetchUser = false
@@ -173,43 +157,7 @@
         </div>
       </div>
     </div>
-    <!--
-      <div class="mainGrid">
-          <div class="leftColumn">
-            <div class="test">
-              <p>{singleUser.username}</p>
-            </div>
-            
-            <button class="followButton"><i class="fa-solid fa-plus"></i> Follow </button>
-          </div>
-
-          <div id="wishListObject">
-            <p class="title">
-              {singleUser.username}'s Wish List
-            </p>
-            
-            <div class="wishList">
-              {#each arrayOfWishes as wish}
-              <div class="item">
-
-                <div class="item-btn">
-                  {#if wish.purchased}
-                    <i class="fa-regular fa-square-check"></i>
-                  {:else}
-                    <i class="fa-regular fa-square"></i>
-                  {/if}
-                  
-                </div>
-                
-                <p id="itemTitle">{wish.itemName}</p>
-
-              </div>
-              {/each}
-
-            </div>
-          </div>
-        </div>
-    -->
+    
       
 
     

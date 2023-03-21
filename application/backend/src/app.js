@@ -9,6 +9,7 @@ const followRouter = require('./routers/follow-router')
 const productRouter = require('./routers/product-router')
 const userRouter = require('./routers/user-router');
 const myAccountRouter = require('./routers/my-account-router')
+const myWishListRouter = require('./routers/my-wishlist-router')
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
@@ -113,6 +114,7 @@ app.use('/follows', followRouter)
 app.use('/users', userRouter)
 app.use('/products', productRouter)
 app.use('/my-account', myAccountRouter)
+app.use('/my-wishlist', myWishListRouter)
 
 //app.listen(8080)
 app.listen(8080, () => {
