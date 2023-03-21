@@ -110,73 +110,13 @@ let username = ""
 		</div>
 	  </nav>
 
-	  <!--
-
-								<Link class="Links" to="/MyWishList" id="users-link" style="color: black; padding: 12px 16px; text-decoration: none; display: block;">My WishList</Link>
-
-
-
-
-							<form on:submit|preventDefault={login}>
-							<div class="form-group">
-								<label class="form-label" for="username">Username:</label>
-								<input class="form-input" type="text" id="username" name="username" bind:value={username}>
-							</div>
-							<div class="form-group">
-								<label class="form-label" for="password">Password:</label>
-								<input class="form-input" type="password" id="password" name="password" bind:value={password}>
-							</div>
-							<button class="form-btn" type="submit">Login</button>
-						</form>
-						<Link class="Links create-account-link" to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
-						-->
-
-
-	<!--
-<div class="mainDiv">
-		<button id="homeButton">
-			<h1 class="wishes">
-				<Link class="Links" to="/">Wishes</Link>
-			</h1>
-		</button>
-		{#if $user.isLoggedIn}
-			<nav class="navBar">
-				<Link class="Links" to="/users">
-						<button class="testButton" id="users">Find Users</button>		
-				</Link>
-				<Link class="Links" to="/products">
-					<button class="testButton" id="products">
-						Find Products
-					</button>
-				</Link>
-				<Link class="Links" to="/products">
-					Product
-				</Link>
-			
-			</nav>
-		{/if}
-			
-			
-			<div>
-				<NavBar>
-					<NavItem>
-						<span slot="trigger">
-							Login
-						</span>
-							<LoggedInDropDown></LoggedInDropDown>
-					</NavItem>
-				</NavBar>
-			</div>
-			
-	</div>
-	-->
 	<main>
 		<Route path="/" component="{StartPage}"></Route>
 		<Route path="/users" component="{Users}"></Route>
-		<Route path="/products" component="{FindProducts}"></Route>
+		<Route path="/products" component="{Products}"></Route>
 		<Route path="/users/:id" component="{User}"></Route>
 		<Route path="/create-account" component="{CreateUser}"></Route>
-		<Route path="/products/:id" component="{SpecificProduct}"></Route>
+		<Route path="/products/:id" component="{Product}"></Route>
 		<Route path="/my-account" component="{MyAccount}"></Route>
 		<Route path="/follows/followings" component="{Following}"></Route>
 		<Route path="/my-account" component="{MyWishList}"></Route>
