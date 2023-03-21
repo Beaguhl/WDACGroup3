@@ -58,7 +58,8 @@ let username = ""
 
                     $user = {
                         isLoggedIn: true,
-                        accessToken: body.access_token
+                        accessToken: body.access_token,
+						userID: ""
                     }
                     closedDropDown = false
                     break

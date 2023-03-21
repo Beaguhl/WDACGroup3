@@ -1,7 +1,7 @@
 const express = require('express')
-const { createPool } = require ('mariadb')
+const { createPool } = require('mariadb')
 const { validateUser } = require('./validation')
-const jwt = require ('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 const bcrypt = require('bcrypt');
 const { json } = require('express');
@@ -13,17 +13,15 @@ const userRouter = require('./routers/user-router');
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
 
-//import { ACCESS_TOKEN_SECRET } from '../config';
-
-function hashPassword(password){
-	return new Promise ((resolve, reject) => {
+function hashPassword(password) {
+	return new Promise((resolve, reject) => {
 		bcrypt.genSalt(12, (error, salt) => {
-			if (error){
+			if (error) {
 				reject(error)
 			}
 
 			bcrypt.hash(password, salt, (error, hashedPassword) => {
-				if (error){
+				if (error) {
 					reject(error)
 				} else {
 					resolve(hashedPassword)
@@ -41,7 +39,7 @@ const pool = createPool({
 	database: "abc",
 })
 
-pool.on('error', function(error){
+pool.on('error', function (error) {
 	console.log("Error from pool", error)
 })
 
@@ -51,7 +49,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded())
 
-app.use(function(request, response, next){
+app.use(function (request, response, next) {
 	response.set("Access-Control-Allow-Origin", "http://localhost:5173")
 	response.set("Access-Control-Allow-Methods", "*")
 	response.set("Access-Control-Allow-Headers", "*")
@@ -60,7 +58,7 @@ app.use(function(request, response, next){
 	next()
 })
 
-app.get("/", function(request, response){
+app.get("/", function (request, response) {
 	response.send("It works")
 })
 
@@ -96,7 +94,7 @@ app.get("/", function(request, response){
 })*/
 
 //---------------- my account -------------------------
-app.get('/my-account', async function(request, response){
+app.get('/my-account', async function (request, response) {
 	const userID = request.get("UserID")
 
 	const enteredPassword = request.get("Password")
@@ -111,7 +109,7 @@ app.get('/my-account', async function(request, response){
 		}
 		if (res === true) {
 			response.status(200).json(user)
-				
+
 		} else {
 			response.status(403).end()
 		}
@@ -120,19 +118,19 @@ app.get('/my-account', async function(request, response){
 
 
 //----------------------- tokens ----------------------
-app.post('/tokens', async function(request, response){
+app.post('/tokens', async function (request, response) {
 
 	const grantType = request.body.grant_type
 	const username = request.body.username
 	const password = request.body.password
 
-	if (grantType != "password"){
-		response.status(400).json({error: "unsupported_grant_type"})
+	if (grantType != "password") {
+		response.status(400).json({ error: "unsupported_grant_type" })
 		return
 	}
 
-	if (username == "" || password == ""){
-		response.status(400).json({error: "invalid_request"}) //
+	if (username == "" || password == "") {
+		response.status(400).json({ error: "invalid_request" }) //
 		return
 	}
 
@@ -141,21 +139,21 @@ app.post('/tokens', async function(request, response){
 	const compareUserValue = [username]
 
 	const result = await connection.query(compareUserQuery, compareUserValue)
-	
-	if (result.length != 0){
+
+	if (result.length != 0) {
 
 		console.log("i tokens: " + result[0].userID)
 		bcrypt.compare(password, result[0].password, (err, res) => {
 			if (err) {
-			  throw err;
+				throw err;
 			}
 			if (res === true) {
 				const payload = {
 					sub: `${result[0].userID}`
 				}
 
-				jwt.sign(payload, ACCESS_TOKEN_SECRET, function(error, accesToken){
-					if (error){
+				jwt.sign(payload, ACCESS_TOKEN_SECRET, function (error, accesToken) {
+					if (error) {
 						response.status(500).end()
 					} else {
 						response.status(200).json({
@@ -165,16 +163,16 @@ app.post('/tokens', async function(request, response){
 						})
 					}
 				})
-			  
-			} else {
-			  console.log('The passwords do not match!');
-			}
-		  })
 
-		
+			} else {
+				console.log('The passwords do not match!');
+			}
+		})
+
+
 
 	} else {
-		response.status(400).json({error: "invalid_grant"})
+		response.status(400).json({ error: "invalid_grant" })
 		return
 	}
 
@@ -187,4 +185,4 @@ app.use('/products', productRouter)
 //app.listen(8080)
 app.listen(8080, () => {
 	console.log('Server started on port 8080')
-  })
+})
