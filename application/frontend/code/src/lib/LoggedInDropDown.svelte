@@ -21,7 +21,6 @@
     let noMatch = false
     let closedDropDown = true
     async function login(){
-        console.log("clicked login")
         try {
             const response = await fetch("http://localhost:8080/tokens", {
                 method: "POST",
@@ -43,6 +42,7 @@
                     }
                     closedDropDown = false
                     break
+                    
                 case 400:
                     noMatch = true
                     console.log("case 400")

@@ -17,6 +17,30 @@ pool.on('error', function(error){
 
 module.exports = router
 
+const bcrypt = require('bcrypt');
+
+
+function hashPassword(password) {
+	return new Promise((resolve, reject) => {
+		bcrypt.genSalt(12, (error, salt) => {
+			if (error) {
+				reject(error)
+			}
+
+			bcrypt.hash(password, salt, (error, hashedPassword) => {
+				if (error) {
+					reject(error)
+				} else {
+					resolve(hashedPassword)
+				}
+			})
+		})
+	})
+}
+
+const { validateUser } = require('../validation')
+//const { validateUser } = require('./validation')
+
 
 const app = express()
 
@@ -38,6 +62,45 @@ router.get("/", async function(request, response){
 		console.log(error)
 		response.status(500).end()
 	}
+})
+
+router.post("/", async function(request, response){
+
+	const user = request.body
+	console.log(user.username + user.password)
+
+	const validationArr = await validateUser(user)
+
+	if (validationArr.length > 0){
+		response.status(400).json(validationArr)
+		return
+
+	} else {
+
+		try{
+			const connection = await pool.getConnection()
+			
+			const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
+			const hashedPassword = await hashPassword(user.password)
+        	const createUserValues = [user.username, hashedPassword, false]
+			
+			const test = await connection.query(createUserQuery, createUserValues)
+			console.log("snälla" + json(test.userID))
+
+			const getUserIDQUery = "SELECT userID FROM Users WHERE username = ?"
+			const getUserIDValues = [user.username]
+
+			const userID = await connection.query(getUserIDQUery, getUserIDValues)
+	
+			response.set('Location', '/users/${userID}')
+			response.status(201).end()
+			
+		} catch(error) { 
+			console.log(error)
+			response.status(500).end() // 500 = server error
+		}
+	}
+	
 })
 
 //----------- search users ----------------
@@ -100,3 +163,4 @@ router.get("/:id", async function(request, response){
 	}
 		
 })
+

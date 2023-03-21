@@ -9,8 +9,11 @@
     let username = null
     let userNotFound = false
 
-    let newUsername = username
+    let newUsername = ""
     let newPassword = ""
+
+    let succesfulUsernameUpdate = false
+    let succesfulPasswordUpdate = false
 
     function makeShowEnterPasswordTrue(){
         showEnterPassword = true
@@ -59,8 +62,6 @@
     async function verifyPassword(event){
         const formData = new FormData(event.target);
 		const enteredPassword = formData.get('password');
-        console.log("Entered password is: " + enteredPassword)
-        console.log(user)
 
         try {
             const response = await fetch("http://localhost:8080/tokens", {
@@ -88,7 +89,44 @@
                     break
             }
         } catch (error){
+            // handle error
         }
+    }
+
+    async function updatePassword(){
+        try {
+            const response = await fetch("http://localhost:8080/my-account/update-password", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "bearer "+$user.accessToken,
+                    "UserID": $user.userID,
+                    "NewPassword": newPassword
+                }
+            
+            })
+
+            switch(response.status){
+                case 200:
+                    succesfulPasswordUpdate = true
+                    console.log("cucsesful is: " + succesfulPasswordUpdate)
+                    break
+
+                case 500:
+                    
+                    break
+
+                case 400:
+                    
+                    break
+            }
+            
+        } catch (error) {
+            // handle error
+        }
+        
+
+
     }
 
 </script>
@@ -135,7 +173,6 @@
                         <div class="form-group">
                             <input type="submit" value="OK">
                         </div>
-
                         {#if incorrectPassword}
                             <p>Incorrect password, try again.</p>
                         {/if}
@@ -155,15 +192,21 @@
                             </div>
                         </form>
                     
-                        <form>
+                        <!-- update password -->
+                        <form on:submit|preventDefault={updatePassword}>
                             <div class="form-group">
                                 <label for="password">New password:</label>
                                 <div class="underline-textfield">
-                                    <input type="password" id="password" name="password">
+                                    <input type="password" id="password" name="password" bind:value={newPassword}>
                                 </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Update password">
-                                </div> 
+                                {#if succesfulPasswordUpdate == true}
+                                    <p>Password Updated</p>
+                                {:else}
+                                    <div class="form-group">
+                                        <input type="submit" value="Update password">
+                                    </div> 
+                                {/if}
+                                
                             </div>
                         </form>
                 {/if}

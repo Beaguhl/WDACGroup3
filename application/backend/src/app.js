@@ -1,35 +1,20 @@
 const express = require('express')
 const { createPool } = require('mariadb')
-const { validateUser } = require('./validation')
+//const { validateUser } = require('./validation')
 const jwt = require('jsonwebtoken')
-
 const bcrypt = require('bcrypt');
 const { json } = require('express');
 
 const followRouter = require('./routers/follow-router')
 const productRouter = require('./routers/product-router')
 const userRouter = require('./routers/user-router');
+const myAccountRouter = require('./routers/my-account-router')
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
 
-function hashPassword(password) {
-	return new Promise((resolve, reject) => {
-		bcrypt.genSalt(12, (error, salt) => {
-			if (error) {
-				reject(error)
-			}
 
-			bcrypt.hash(password, salt, (error, hashedPassword) => {
-				if (error) {
-					reject(error)
-				} else {
-					resolve(hashedPassword)
-				}
-			})
-		})
-	})
-}
+
 
 const pool = createPool({
 	host: "db",
@@ -60,31 +45,6 @@ app.use(function (request, response, next) {
 
 app.get("/", function (request, response) {
 	response.send("It works")
-})
-
-
-//---------------- my account -------------------------
-app.get('/my-account', async function (request, response) {
-	const userID = request.get("UserID")
-	console.log("userID is: "+ userID)
-    const enteredPassword = request.get("Password")
-    try {
-        const connection = await pool.getConnection()
-        const getUsernameQuery = 'SELECT username FROM Users WHERE userID = ?'
-		const getUsernameValue = [userID]
-        const username = await connection.query(getUsernameQuery, getUsernameValue)
-		console.log("username length is: " + username.length)
-
-		if (username.length == 0){
-			response.status(404).end()
-		} else {
-			response.status(200).json(username[0].username)
-		}
-        
-    } catch (err) {
-        console.error(err)
-        response.status(500).end()
-    }
 })
 
 
@@ -152,6 +112,7 @@ app.post('/tokens', async function (request, response) {
 app.use('/follows', followRouter)
 app.use('/users', userRouter)
 app.use('/products', productRouter)
+app.use('/my-account', myAccountRouter)
 
 //app.listen(8080)
 app.listen(8080, () => {

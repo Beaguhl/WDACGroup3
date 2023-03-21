@@ -95,6 +95,8 @@ router.get('/followers/search', async function(request, response){
 router.post('/follow', async function(request, response){
 	console.log("follow")
 
+	// add error handling and status codes
+
 	const userID = request.get("UserID")
 
 	const connection = await pool.getConnection()
@@ -113,7 +115,9 @@ router.post('/follow', async function(request, response){
 
 //------------------- unfollow ---------------------
 router.delete('/unfollow', async function(request, response){
-	const userID = request.get("userID")
+
+	// add error handling and status codes
+	const userID = request.get("UserID")
 	const accessToken = authorizationHeaderValue.substring(7)
 	
 			const connection = await pool.getConnection()
@@ -133,7 +137,7 @@ router.delete('/unfollow', async function(request, response){
 //---------------- search followings ------------------------
 router.get('/followings/search', async function(request, response){
 	console.log("inside followings search")
-	const userID = request.get("userID")
+	const userID = request.get("UserID")
 
 	const searchQuery = request.query.q
 
@@ -167,7 +171,7 @@ console.log("following")
 //-------------------- all followings ----------------------------
 router.get('/followings', async function(request, response){
 	console.log("inside following")
-	const userID = request.get("userID")
+	const userID = request.get("UserID")
 
 		const connection = await pool.getConnection()
 
