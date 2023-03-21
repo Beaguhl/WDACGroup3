@@ -9,6 +9,9 @@
     let username = null
     let userNotFound = false
 
+    let newUsername = username
+    let newPassword = ""
+
     function makeShowEnterPasswordTrue(){
         showEnterPassword = true
         showAccount = false
@@ -69,13 +72,9 @@
             })
             switch(response.status){
                 case 200:
-                    console.log("matcing password")
-                    body = await response.json()                    
-                    $user = {
-                        isLoggedIn: true,
-                        accessToken: body.access_token,
-                        userID: body.userID
-                    }
+                    showEditAccount = true
+                    showEnterPassword = false
+                    showAccount = false
                     break
 
                 case 403:
@@ -90,8 +89,6 @@
             }
         } catch (error){
         }
-
-        
     }
 
 </script>
@@ -146,25 +143,29 @@
                 {/if}
 
                 {#if showEditAccount == true}
-                    <form action="">
-                        <div class="form-group">
-                            <label for="username">New username:</label>
-                            <div class="underline-textfield">
-                                <input type="text" id="username" name="username" value="ddeded">
+                        <form action="">
+                            <div class="form-group">
+                                <label for="username">New username:</label>
+                                <div class="underline-textfield">
+                                    <input type="text" id="username" name="username" bind:value={newUsername}>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Update username">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password">New password:</label>
-                            <div class="underline-textfield">
-                                <input type="password" id="password" name="password">
-                            </div>
-                        </div>
+                        </form>
                     
-                        <div class="form-group">
-                            <input type="submit" value="Save updates">
-                        </div>
-                    </form>
+                        <form>
+                            <div class="form-group">
+                                <label for="password">New password:</label>
+                                <div class="underline-textfield">
+                                    <input type="password" id="password" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Update password">
+                                </div> 
+                            </div>
+                        </form>
                 {/if}
             </div>
         </body>
@@ -202,13 +203,16 @@ form {
 
 .form-group {
 	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
 }
 
 label {
 	display: block;
 	margin-bottom: 10px;
 	font-size: 24px;
-    color: white;
+	color: white;
+    margin-right: 100px;
 }
 
 .underline-textfield {
@@ -216,13 +220,14 @@ label {
 	margin-bottom: 20px;
 }
 
-.underline-textfield input[type="text"], .underline-textfield input[type="password"] {
+.underline-textfield input[type="text"],
+.underline-textfield input[type="password"] {
 	padding: 10px;
-	width: 100%;
 	font-size: 24px;
 	border: none;
 	background: none;
 	outline: none;
+	color: white;
 }
 
 .underline-textfield::after {
@@ -235,6 +240,11 @@ label {
 	background-color: rgb(212, 247, 213);
 }
 
+.lined-up {
+  display: flex;
+  align-items: center;
+}
+
 input[type="submit"] {
 	background-color: #276047;
 	border: none;
@@ -242,7 +252,13 @@ input[type="submit"] {
 	padding: 10px;
 	font-size: 24px;
 	cursor: pointer;
-	float: right;
+	margin-left: 10px;
+	color: white;
+    margin-left: 10px;
+}
+
+input[type="submit"]:first-child {
+	margin-left: auto;
 }
 
 input{
