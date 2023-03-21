@@ -70,34 +70,55 @@ router.get('/', async function (request, response) {
 })
 
 //---------------- update password -------------------------
-router.put("/update-password", async function(request, responde){
+router.put("/update-password", async function(request, response){
 	const userID = request.get("UserID")
     const newPassword = request.get("NewPassword")
 
 	try {
-		const connection = await pool.getConnection()
+        const passwordErrors = validatePassword(newPassword)
 
-        const validatePasswordErrors = validatePassword(newPassword)
-
-        if (validatePasswordErrors.length > 0){
-            responde.status(400).json(validatePasswordErrors)
+        if (passwordErrors.length > 0){
+            response.status(400).json(passwordErrors)
         } else {
+            const connection = await pool.getConnection()
             const hashedNewPassword = await hashPassword(newPassword)
-            console.log("pure password is: " + newPassword)
-            console.log("hashed password is: " + hashedNewPassword)
 
             const updatePasswordQuery = "UPDATE Users SET password = ? WHERE userID = ?"
             const updatePasswordValues = [hashedNewPassword, userID]
 
             await connection.query(updatePasswordQuery, updatePasswordValues)
 
-            responde.status(200).end()
+            response.status(200).end()
         }
-
-        
 
 	} catch (error){
         console.log("500 error: " + error)
-        responde.status(500).end()
+        response.status(500).end()
 	}
+})
+
+router.put("/update-username", async function(request, response){
+    const userID = request.get("UserID")
+    const newUsername = request.get("NewUsername")
+
+    try {
+        const usernameErrors = await validateUsername(newUsername)
+
+        if (usernameErrors.length > 0){
+            response.status(400).json(usernameErrors)
+        } else {
+            const connection = await pool.getConnection()
+
+            const updateUsernameQuery = "UPDATE Users SET Username = ? WHERE userID = ?"
+            const updateUsernameValues = [newUsername, userID]
+
+            await connection.query(updateUsernameQuery, updateUsernameValues)
+            console.log("username updated")
+
+            response.status(200).end()
+        }
+    } catch(error){
+        console.log("500 error: " + error)
+        response.status(500).end()
+    }
 })

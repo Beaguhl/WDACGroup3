@@ -17,6 +17,7 @@
     let succesfulPasswordUpdate = false
 
     let passwordErrors = []
+    let usernameErrors = []
 
     function makeShowEnterPasswordTrue(){
         showEnterPassword = true
@@ -39,6 +40,7 @@
             switch (response.status){
                 case 200:
                     username = await response.json()
+                    console.log("username is: " + username)
                     break
                 
                 case 404:
@@ -112,11 +114,10 @@
             switch(response.status){
                 case 200:
                     succesfulPasswordUpdate = true
-                    console.log("cucsesful is: " + succesfulPasswordUpdate)
+                    passwordErrors = []
                     break
 
                 case 500:
-                    
                     break
 
                 case 400:
@@ -127,9 +128,38 @@
         } catch (error) {
             // handle error
         }
-        
 
+    }
 
+    async function updateUsername(){
+        try {
+            const response = await fetch("http://localhost:8080/my-account/update-username", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "bearer "+$user.accessToken,
+                    "UserID": $user.userID,
+                    "NewUsername": newUsername
+                }
+            })
+
+            switch(response.status){
+                case 200:
+                    succesfulUsernameUpdate = true
+                    usernameErrors = []
+                    break
+
+                case 500:
+                    break
+
+                case 400:
+                    usernameErrors = await response.json()
+                    break
+            }
+
+        } catch (error){
+            // handle error
+        }
     }
 
 </script>
@@ -150,13 +180,13 @@
                         <div class="form-group">
                             <label for="username">Username:</label>
                             <div class="underline-textfield">
-                                <input type="text" id="username" name="username" value="{username}">
+                                <input type="text" id="username" name="username" value="{username}" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="password">Current password:</label>
                             <div class="underline-textfield">
-                                <input type="password" id="password" name="password" value="xxxxxxxxxxx">
+                                <input type="password" id="password" name="password" value="xxxxxxxx" readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -183,15 +213,28 @@
                 {/if}
 
                 {#if showEditAccount == true}
-                        <form action="">
+                        <!-- update username -->
+                        <form on:submit|preventDefault={updateUsername}>
                             <div class="form-group">
                                 <label for="username">New username:</label>
                                 <div class="underline-textfield">
                                     <input type="text" id="username" name="username" bind:value={newUsername}>
                                 </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Update username">
-                                </div>
+
+                                <ul>
+                                    {#each usernameErrors as error}
+                                        <li>{error}</li>
+                                    {/each}
+                                </ul>
+
+                                {#if succesfulUsernameUpdate}
+                                    <p>Username Updated</p>
+                                {:else}
+                                    <div class="form-group">
+                                        <input type="submit" value="Update username">
+                                    </div>
+                                {/if}
+                                
                             </div>
                         </form>
                     
@@ -202,12 +245,13 @@
                                 <div class="underline-textfield">
                                     <input type="password" id="password" name="password" bind:value={newPassword}>
                                 </div>
+                                
                                 <ul>
                                     {#each passwordErrors as error}
                                         <li>{error}</li>
                                     {/each}
                                 </ul>
-                                
+
                                 {#if succesfulPasswordUpdate == true}
                                     <p>Password Updated</p>
                                 {:else}

@@ -40,7 +40,7 @@ async function validateUsername(username){
         errorArr.push("Can not leave username field empty")
     } else if (username.length < MIN_USERNAME_LENGTH) {
         errorArr.push("Username must be at least 2 characters long")
-    } else if (username.lentgh > MAX_USERNAME_LENGTH) {
+    } else if (username.length > MAX_USERNAME_LENGTH) {
         errorArr.push("Username can have a maximum of 12 characters")
     } else {
         const connection = await pool.getConnection()
@@ -55,6 +55,8 @@ async function validateUsername(username){
         }
 
     }
+
+    console.log("validate user: " + errorArr)
 
     return errorArr
 }
