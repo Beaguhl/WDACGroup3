@@ -62,10 +62,10 @@
             <main>
                 {#if $user.isLoggedIn}
                     <div class="row">
-                        <Link class="Links" to="/MyWishList" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
+                        <Link class="Links" to="/my-wishlist" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
                     </div>
                     <div class="row">
-                        <Link class="Links" to="/Following" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Following</Link>
+                        <Link class="Links" to="/followings" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Followings</Link>
                     </div>
                     <div class="row">
                         <Link class="Links" to="/Followers" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-user-group item"></i>My Followers</Link>
@@ -88,7 +88,7 @@
                     {/if}
                 {/if}
                 <Route path="/create-account" component="{CreateUser}"></Route>
-                    <Route path="/Following" component="{Following}"></Route>
+                    <Route path="/followings" component="{Following}"></Route>
                     <Route path="/MyWishLish" component="{MyWishList}"></Route>
                     <Route path="/Followers" component="{Followers}"></Route>
             </main>

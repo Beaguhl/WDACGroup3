@@ -12,6 +12,9 @@
 	let startedSearch = false
 	let isFetchingSearchedUsers = true
 	let showAllUsers = null
+	let noSearchResults = false
+
+	console.log("user är: " + $user.userID)
 
 	async function loadAllUsers () {
 		showAllUsers = true
@@ -20,7 +23,8 @@
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -62,12 +66,14 @@
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
 			switch(response.status) {
 				case 200:
+					noSearchResults = false
 					console.log("got 200")
 					searchedUsers = await response.json()
 					console.log("searched users are: " + searchedUsers)
@@ -76,6 +82,7 @@
 				
 				case 404:
 					isFetchingSearchedUsers = false
+					noSearchResults = true
 					break
 
 			}
@@ -113,11 +120,11 @@
 											<p>searching...</p>
 										{:else}
 										
-											{#if searchedUsers.length == 0}
+											{#if noSearchResults}
 												<p>No search results found</p>
 											{:else}
 												{#each searchedUsers as searchedUser}
-													<Link class="Links" to="/user/{searchedUser.userID}">
+													<Link class="Links" to="/users/{searchedUser.userID}">
 														<h3>{searchedUser.username}</h3>
 													</Link> 
 												{/each}
@@ -133,7 +140,7 @@
 										<p>Website has server errors. Try again later</p>
 									{/if}
 									{#each users as searchedUseri}
-										<Link class="Links" to="/user/{searchedUseri.userID}">
+										<Link class="Links" to="/users/{searchedUseri.userID}">
 											<h3>{searchedUseri.username}</h3>
 										</Link> 
 									{/each}

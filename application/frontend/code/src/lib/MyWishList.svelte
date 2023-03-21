@@ -27,7 +27,7 @@
 					{#each users as product}
 						<div class="column is-4-tablet is-3-desktop square">
 							<section class="container" id="userItem">
-								<Link class="Links" to="/user">
+								<Link class="Links" to="/users">
 									<div class="profilePicture">
 										<img class="imageSize" src="{product.image}" alt="">
 									</div> 

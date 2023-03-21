@@ -16,14 +16,18 @@
 	let showAllFollowers = true
 	let noSearchFound = false
 
+	console.log(user)
+
 	async function loadAllFollowers () {
+		console.log("loadAllFollowers")
 		showAllFollowers = true
 		try {
-			const response = await fetch("http://localhost:8080/followers", {
+			const response = await fetch("http://localhost:8080/follows/followers", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -64,11 +68,12 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/followers/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/follows/followers/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 
@@ -123,7 +128,7 @@
 											<p>No search results found</p>
 										{:else}
 											{#each searchedFollowers as searchedUser}
-												<Link class="Links" to="/user/{searchedUser.userID}">
+												<Link class="Links" to="/users/{searchedUser.userID}">
 													<h3>{searchedUser.username}</h3>
 												</Link> 
 											{/each}
@@ -139,7 +144,7 @@
 									<p>Website has server errors. Try again later</p>
 								{/if}
 								{#each followers as searchedUseri}
-									<Link class="Links" to="/user/{searchedUseri.userID}">
+									<Link class="Links" to="/users/{searchedUseri.userID}">
 										<h3>{searchedUseri.username}</h3>
 									</Link> 
 								{/each}
