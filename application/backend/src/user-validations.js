@@ -13,25 +13,40 @@ pool.on('error', function (error) {
 })
 
 async function validateUser(user) {
-    const MIN_USERNAME_LENGTH = 2
-    const MAX_USERNAME_LENGTH = 12
-
-    const MIN_PASSWORD_LENGTH = 2
-    const MAX_PASSWORD_LENGTH = 20
-
     var errorArr = []
 
-    if ((user.username).length == 0) {
+    const validateUsernameErrors = await validateUsername(user.username)
+
+    for (let i = 0; i < validateUsernameErrors.length; i += 1){
+        errorArr.push(validateUsernameErrors[i])
+    }
+
+    const validatePasswordErrors = validatePassword(user.password)
+
+    for (let i = 0; i < validatePasswordErrors.length; i += 1){
+        errorArr.push(validatePasswordErrors[i])
+    }
+
+    return errorArr
+}
+
+async function validateUsername(username){
+    const MIN_USERNAME_LENGTH = 2
+    const MAX_USERNAME_LENGTH = 12
+    
+    var errorArr = []
+
+    if (username.length == 0) {
         errorArr.push("Can not leave username field empty")
-    } else if ((user.username).length < MIN_USERNAME_LENGTH) {
+    } else if (username.length < MIN_USERNAME_LENGTH) {
         errorArr.push("Username must be at least 2 characters long")
-    } else if ((user.username).lentgh > MAX_USERNAME_LENGTH) {
+    } else if (username.lentgh > MAX_USERNAME_LENGTH) {
         errorArr.push("Username can have a maximum of 12 characters")
     } else {
         const connection = await pool.getConnection()
 
         const usernameQuery = "SELECT * FROM Users WHERE username = ?";
-        const usernameValues = [user.username]
+        const usernameValues = [username]
 
         const result = await connection.query(usernameQuery, usernameValues)
 
@@ -41,17 +56,30 @@ async function validateUser(user) {
 
     }
 
-    if ((user.password).length == 0) {
+    return errorArr
+}
+
+function validatePassword(password){
+    const MIN_PASSWORD_LENGTH = 2
+    const MAX_PASSWORD_LENGTH = 20
+
+    var errorArr = []
+
+    if (password.length == 0) {
         errorArr.push("Can not leave password field empty")
-    } else if ((user.password).length < MIN_PASSWORD_LENGTH) {
+    } else if (password.length < MIN_PASSWORD_LENGTH) {
         errorArr.push("Password must be at least 2 characters long")
-    } else if ((user.password).lentgh > MAX_PASSWORD_LENGTH) {
+    } else if (password.length > MAX_PASSWORD_LENGTH) {
         errorArr.push("Password can have a maximum of 20 characters")
     }
 
     return errorArr
 }
 
+
+
 module.exports = {
-    validateUser
+    validateUser,
+    validateUsername,
+    validatePassword
 }

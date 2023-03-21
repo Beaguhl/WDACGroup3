@@ -38,7 +38,7 @@ function hashPassword(password) {
 	})
 }
 
-const { validateUser } = require('../validation')
+const { validateUser } = require('../user-validations')
 //const { validateUser } = require('./validation')
 
 

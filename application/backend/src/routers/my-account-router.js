@@ -21,6 +21,7 @@ pool.on('error', function(error){
 
 module.exports = router
 
+const { validateUsername, validatePassword } = require('../user-validations')
 
 const app = express()
 
@@ -76,16 +77,24 @@ router.put("/update-password", async function(request, responde){
 	try {
 		const connection = await pool.getConnection()
 
-        const hashedNewPassword = await hashPassword(newPassword)
-        console.log("pure password is: " + newPassword)
-        console.log("hashed password is: " + hashedNewPassword)
+        const validatePasswordErrors = validatePassword(newPassword)
 
-		const updatePasswordQuery = "UPDATE Users SET password = ? WHERE userID = ?"
-        const updatePasswordValues = [hashedNewPassword, userID]
+        if (validatePasswordErrors.length > 0){
+            responde.status(400).json(validatePasswordErrors)
+        } else {
+            const hashedNewPassword = await hashPassword(newPassword)
+            console.log("pure password is: " + newPassword)
+            console.log("hashed password is: " + hashedNewPassword)
 
-        await connection.query(updatePasswordQuery, updatePasswordValues)
+            const updatePasswordQuery = "UPDATE Users SET password = ? WHERE userID = ?"
+            const updatePasswordValues = [hashedNewPassword, userID]
 
-        responde.status(200).end()
+            await connection.query(updatePasswordQuery, updatePasswordValues)
+
+            responde.status(200).end()
+        }
+
+        
 
 	} catch (error){
         console.log("500 error: " + error)

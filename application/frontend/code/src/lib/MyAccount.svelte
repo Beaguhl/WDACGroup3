@@ -1,6 +1,7 @@
 <script>
     import { user } from "../user-store";
     import {Router, Link, Route} from 'svelte-routing';
+    import { each } from "svelte/internal";
 
     let showAccount = true
     let showEnterPassword = false
@@ -14,6 +15,8 @@
 
     let succesfulUsernameUpdate = false
     let succesfulPasswordUpdate = false
+
+    let passwordErrors = []
 
     function makeShowEnterPasswordTrue(){
         showEnterPassword = true
@@ -117,7 +120,7 @@
                     break
 
                 case 400:
-                    
+                    passwordErrors = await response.json()
                     break
             }
             
@@ -199,6 +202,12 @@
                                 <div class="underline-textfield">
                                     <input type="password" id="password" name="password" bind:value={newPassword}>
                                 </div>
+                                <ul>
+                                    {#each passwordErrors as error}
+                                        <li>{error}</li>
+                                    {/each}
+                                </ul>
+                                
                                 {#if succesfulPasswordUpdate == true}
                                     <p>Password Updated</p>
                                 {:else}
