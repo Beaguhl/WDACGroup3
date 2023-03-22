@@ -50,8 +50,15 @@ CREATE TABLE IF NOT EXISTS Products (
 	description VARCHAR(50) NOT NULL
 );
 
-INSERT INTO Products (productName, description) VALUES ("fanta", "en annan god dricka");
-INSERT INTO Products (productName, description) VALUES ("Loka", "en god dricka");
+INSERT INTO Products (productName, description) VALUES ("Fanta", "Drink from orange");
+INSERT INTO Products (productName, description) VALUES ("Loka", "Sparkling water");
+INSERT INTO Products (productName, description) VALUES ("Phone", "Expensive thing");
+INSERT INTO Products (productName, description) VALUES ("Food", "Made of vegetables");
+INSERT INTO Products (productName, description) VALUES ("Jeans", "Cropped jeans");
+INSERT INTO Products (productName, description) VALUES ("Coffecup", "Pink coffecup");
+INSERT INTO Products (productName, description) VALUES ("Phone case", "Protects your phone");
+INSERT INTO Products (productName, description) VALUES ("Cables", "Connect things");
+
 
 CREATE TABLE IF NOT EXISTS WishListProduct (
 	wishListProductID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -63,8 +70,16 @@ CREATE TABLE IF NOT EXISTS WishListProduct (
 	FOREIGN KEY (productID) REFERENCES Products(productID)
 );
 
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 1, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 1, TRUE, 2);
 INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (6, 3, TRUE, 1);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (3, 2, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 3, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (3, 2, TRUE, 3);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (4, 3, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (6, 2, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (7, 3, TRUE, 2);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (8, 2, FALSE, NULL);
 
 
 
