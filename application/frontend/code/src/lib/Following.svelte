@@ -11,10 +11,6 @@
 	let startedSearch = false
 	let isFetchingSearchedFollowings = true
 	let showAllFollowings = true
-	let noSearchFound = false
-
-	console.log("userID: " + $user.userID)
-	console.log("token: " + $user.accessToken)
 
 	async function loadAllFollowings () {
 		console.log("load all followings")
@@ -46,6 +42,7 @@
 					break
 
 				case 404:
+					isFetchingFollowings = false
 					break
 
 			}
@@ -78,13 +75,11 @@
 				case 200:
 					searchedFollowings = await response.json()
 					console.log("searched users are: " + searchedFollowings)
-					noSearchFound = false
 					isFetchingSearchedFollowings = false
 					break
 				
 				case 404:
 					isFetchingSearchedFollowings = false
-					noSearchFound = true
 					break
 
 			}
@@ -106,9 +101,9 @@
 						<h1>Followings</h1>
 							<form on:submit|preventDefault={searchFollowings}>
 								<div class="search-container">
-								<input type="text" name="q" placeholder="Search for users...">
+								<input type="text" name="q" placeholder="Search for followings...">
 								<button type="submit" id="search-button">Search</button>
-								<button type="button" id="show-all-button" on:click={loadAllFollowings}>Show All Users</button>
+								<button type="button" id="show-all-button" on:click={loadAllFollowings}>Show All Followings</button>
 								</div>
 							</form>
 							<div class="search-container"></div>
@@ -120,15 +115,17 @@
 										<p>searching...</p>
 									{:else}
 									
-										{#if noSearchFound}
-											<p>User not found</p>
-										{:else}
-											{#each searchedFollowings as searchedUser}
-												<Link class="Links" to="/users/{searchedUser.userID}">
-													<h3>{searchedUser.username}</h3>
-												</Link> 
-											{/each}
-										{/if}
+										
+											{#if searchedFollowings.length != 0}
+												{#each searchedFollowings as searchedUser}
+													<Link class="Links" to="/users/{searchedUser.userID}">
+														<h3>{searchedUser.username}</h3>
+													</Link> 
+												{/each}
+											{:else}
+												<p>No followings found</p>
+											{/if}
+											
 									{/if}
 								{/if}
 							{:else}
@@ -139,11 +136,16 @@
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>
 								{/if}
-								{#each followings as searchedUseri}
-									<Link class="Links" to="/users/{searchedUseri.userID}">
-										<h3>{searchedUseri.username}</h3>
-									</Link> 
-								{/each}
+								{#if followings.length != 0}
+									{#each followings as searchedUseri}
+										<Link class="Links" to="/users/{searchedUseri.userID}">
+											<h3>{searchedUseri.username}</h3>
+										</Link> 
+									{/each}
+								{:else}
+									<p>You do not follow any one</p>
+								{/if}
+								
 							{/if}
 						</div>
 					</div>

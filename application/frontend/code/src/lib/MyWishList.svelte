@@ -1,103 +1,192 @@
 <script>
 
 	import {Router, Link, Route} from 'svelte-routing'
-	import {onMount} from 'svelte'
 
-	let users;
+	import { user } from "../user-store";
 
-	async function getData() {
-	const response = await fetch('../../dummyData.json');
-	const data = await response.json();
-	users = data;
+	export let id = $user.userID
+	let wishListProducts = []
+
+	let listIsEmpty = true
+
+	let showSearch = false
+
+	async function loadWishList(){
+		try {
+			const response = await fetch("http://localhost:8080/wishlist/" + id, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+          			"Authorization": "bearer "+$user.accessToken,
+          			"UserID": $user.userID
+				}
+			})
+
+			switch(response.status) {
+        
+        		case 200:
+          			wishListProducts = await response.json()
+					listIsEmpty = false
+					showSearch = false
+					console.log(wishListProducts)
+          			break
+        
+        		case 500:
+          			break
+
+				case 404:
+					break
+
+      		}
+
+		} catch(error){
+			// handle error
+		}
 	}
 
-	
-	onMount(getData);
-	console.log("nu kommer users" + users)
+	loadWishList()
+
+	let searchResults = []
+
+	async function searchProducts(event){
+		const formData = new FormData(event.target);
+		const searchString = formData.get('q');
+
+		try {
+			const response = await fetch("http://localhost:8080/wishlist/" + id +"/search?q=" + searchString, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
+				}
+			})
+
+			switch(response.status){
+				case 200:
+					searchResults = await response.json()
+					showSearch = true
+					break
+
+				case 404:
+					searchResults = []
+					showSearch = true
+					break
+			}
+			
+		} catch(error){
+
+		}
+	}
+
 </script>
 
-<Router>
-	<section>
-		<div class="container">
-			<div class="squareContainer">
-				<div>
-                    my wishlist
-                </div>
-				{#if users}
-					{#each users as product}
-						<div class="column is-4-tablet is-3-desktop square">
-							<section class="container" id="userItem">
-								<Link class="Links" to="/users">
-									<div class="profilePicture">
-										<img class="imageSize" src="{product.image}" alt="">
-									</div> 
-									<div class="text">
-										{product.username}
-									</div>
-								</Link> 
-							</section>   
-						</div> 
-					{/each}
-				{/if}
+<body>
+	{#if $user.isLoggedIn}
+		<section>
+			<div class="container">
+				<div class="squareContainer">
+					<div class="container">
+						<h1>My Wish List</h1>
+							<form on:submit|preventDefault={searchProducts}>
+								<div class="search-container">
+									<input type="text" name="q" placeholder="Search for wish products...">
+									<button type="submit" id="search-button">Search</button>
+									<button type="button" id="show-all-button" on:click={loadWishList}>Show All Wish Products</button>
+								</div>
+							</form>
+							<div class="search-container"></div>
+						<div class="user-container">
+							{#if showSearch}
+								{#if searchResults.length != 0}
+									{#each searchResults as result}
+										<h3>{result.productName}</h3>
+									{/each}
+								{:else}
+									<p>No wishlist products found</p>
+								{/if}
+							{:else}
+								{#if wishListProducts.length != 0}
+									{#each wishListProducts as product}
+										<h3>{product.productName}</h3>
+									{/each}
+								{:else}
+									<p>You do not have any products in your wishlist at the moment</p>
+								{/if}	
+							{/if}
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</section>
-	<main>
-<!--Route-->
-	</main>
-</Router>
+		</section>
+	{:else}
+		<p>You need to be logged in to view my wish list</p>
+	{/if}
+	
+</body>
 
 <style>
 
-	.imageSize{
-		width: 10vw;
-		height: 20vh;
-	}
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
 
-	.container{
-	  grid-template-rows: 1fr 1fr;
-	  color: black;
-	}
+.container {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 20px;
+}
 
-	.squareContainer{
-		display: grid;
-		height: 70vh;
-		width: 100vw;
-		grid-template-areas: 
-		"topLeft topMidLeft topMidRight topRight"
-		"midLeft midMidLeft midMidRight midRight"
-		"botLeft botMidLeft botMidRight botRight";
-		grid-template-rows: 10fr 10fr 10fr 1fr;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		grid-gap: 5%;
-		float: left;
-	}
+h1 {
+	text-align: center;
+	margin-bottom: 20px;
+	color: rgb(212, 247, 213);
+}
 
-	.profilePicture{
-	  margin-top: 10%;
-	  display: flex;
-	  justify-content: center;
-	}
+h3 {
+	color: white;
+}
 
-	.text{
-	  display: flex;
-	  justify-content: center;
-	  margin-top: 4%;
-	  font-size: x-large;
-	  font-weight: bolder;
-	  color: black;
-	}
+h3:hover {
+	color: rgb(143, 249, 205);
+	text-decoration: underline;
+}
 
-	.square{
-		width: 85%;
-		height: 100%;
-		border-radius: 20px;
-		z-index: 2;
-		box-shadow: 5px 5px 5px 2px;
-		margin-bottom: 5%;
-		margin-left: 6%;
-		margin-right: 2%;
-		background-color: rgba(94, 127, 132, 0.418);
-	}
-	
+.search-container {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.search-container input[type="text"] {
+	flex: 1;
+	padding: 10px;
+	border: none;
+	border-bottom: 2px solid #ccc;
+}
+
+.search-container button {
+	margin-left: 10px;
+	padding: 10px;
+	border: none;
+	background-color: #333;
+	color: #fff;
+	cursor: pointer;
+}
+
+.search-container button:hover {
+	background-color: #555;
+}
+
+.user-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	grid-gap: 20px;
+}
+
+p {
+	color: white
+}
 </style>

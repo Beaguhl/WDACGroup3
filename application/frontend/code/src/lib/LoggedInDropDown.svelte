@@ -23,7 +23,6 @@
     let noMatch = false
     let closedDropDown = true
     async function login(){
-        console.log("clicked login")
         try {
             console.log("Userud is" + $user.userID)
             const response = await fetch("http://localhost:8080/tokens", {
@@ -47,6 +46,7 @@
                     }
                     closedDropDown = false
                     break
+                    
                 case 400:
                     noMatch = true
                     console.log("case 400")
@@ -66,7 +66,8 @@
             <main>
                 {#if $user.isLoggedIn}
                     <div class="row">
-                        <Link class="Links" to="/MyWishList" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
+                        <Link class="Links" to="/wishlist" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
+
                     </div>
                     <div class="row">
                         <Link class="Links" to="/Following" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Following</Link>

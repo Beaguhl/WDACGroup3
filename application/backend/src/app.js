@@ -1,34 +1,21 @@
 const express = require('express')
 const { createPool } = require('mariadb')
-const { validateUser } = require('./validation')
+//const { validateUser } = require('./validation')
 const jwt = require('jsonwebtoken')
-
 const bcrypt = require('bcrypt');
 const { json } = require('express');
 
 const followRouter = require('./routers/follow-router')
 const productRouter = require('./routers/product-router')
 const userRouter = require('./routers/user-router');
+const myAccountRouter = require('./routers/my-account-router')
+const myWishListRouter = require('./routers/wishlist-router')
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
-function hashPassword(password) {
-	return new Promise((resolve, reject) => {
-		bcrypt.genSalt(12, (error, salt) => {
-			if (error) {
-				reject(error)
-			}
 
-			bcrypt.hash(password, salt, (error, hashedPassword) => {
-				if (error) {
-					reject(error)
-				} else {
-					resolve(hashedPassword)
-				}
-			})
-		})
-	})
-}
+
+
 
 const pool = createPool({
 	host: "db",
@@ -60,7 +47,6 @@ app.use(function (request, response, next) {
 app.get("/", function (request, response) {
 	response.send("It works")
 })
-
 
 
 //----------------------- tokens ----------------------
@@ -112,7 +98,7 @@ app.post('/tokens', async function (request, response) {
 				})
 
 			} else {
-				console.log('The passwords do not match!');
+				response.status(403).end()
 			}
 		})
 
@@ -128,7 +114,8 @@ app.post('/tokens', async function (request, response) {
 app.use('/follows', followRouter)
 app.use('/users', userRouter)
 app.use('/products', productRouter)
-
+app.use('/my-account', myAccountRouter)
+app.use('/wishlist', myWishListRouter)
 
 //app.listen(8080)
 app.listen(8080, () => {

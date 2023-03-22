@@ -53,7 +53,7 @@
 		}
 	}
 
-	//loadAllUsers()
+	loadAllUsers()
 
 	async function searchUsers(event){
 		showAllUsers = false

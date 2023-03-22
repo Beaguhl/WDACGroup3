@@ -76,8 +76,8 @@ router.get('/followers/search', async function (request, response) {
 			console.log("fetched user is: " + searchedFollower[i])
 			let arrLenght = followerSearchedUsers.length
 			followerSearchedUsers[arrLenght] = searchedFollower[i]
-		}
 
+		}
 	}
 
 	console.log("detta fångade vi: " + followerSearchedUsers)
@@ -95,45 +95,60 @@ router.get('/followers/search', async function (request, response) {
 router.post('/follow', async function (request, response) {
 	console.log("follow")
 
-	const userID = request.get("UserID")
+	// add error handling and status codes
 
-	const connection = await pool.getConnection()
+	try {
+		const userID = request.get("UserID")
 
-	const userToFollow = request.get("UserToFollow")
+		const connection = await pool.getConnection()
 
-	const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
-	const followValues = [userID, userToFollow]
 
-	await connection.query(followQuery, followValues)
-	console.log("done following")
+		const userToFollow = request.get("UserToFollow")
+						
+		const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
+		const followValues = [userID, userToFollow]
+						
+		await connection.query(followQuery, followValues)
+		console.log("done following")
 
-	response.status(201).end()
+		response.status(201).end()
+	} catch(error) {
+		response.status(500).end()
+	}
 
+	
+			
 })
 
 //------------------- unfollow ---------------------
-router.delete('/unfollow', async function (request, response) {
-	const userID = request.get("userID")
-	const accessToken = authorizationHeaderValue.substring(7)
+router.delete('/unfollow', async function(request, response){
 
-	const connection = await pool.getConnection()
+	// add error handling and status codes
+	const userID = request.get("UserID")
 
-	const userToUnfollow = request.get("UserToUnfollow")
+	try {
+		const connection = await pool.getConnection()
 
-	const unfollowQuery = "DELETE FROM Follow WHERE userID = ? AND followingUserID = ?"
-	const unfollowValues = [userID, userToUnfollow]
+		const userToUnfollow = request.get("UserToUnfollow")
 
-	await connection.query(unfollowQuery, unfollowValues)
-	console.log("deleted follow")
+		const unfollowQuery = "DELETE FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const unfollowValues = [userID, userToUnfollow]
 
-	response.status(204).end()
+		await connection.query(unfollowQuery, unfollowValues)
+		console.log("deleted follow")
+
+		response.status(204).end()
+	} catch(error) {
+		response.status(500).end()
+	}
+			
 
 })
 
 //---------------- search followings ------------------------
 router.get('/followings/search', async function (request, response) {
 	console.log("inside followings search")
-	const userID = request.get("userID")
+	const userID = request.get("UserID")
 
 	const searchQuery = request.query.q
 
@@ -167,7 +182,7 @@ console.log("following")
 //-------------------- all followings ----------------------------
 router.get('/followings', async function (request, response) {
 	console.log("inside following")
-	const userID = request.get("userID")
+	const userID = request.get("UserID")
 
 	const connection = await pool.getConnection()
 
