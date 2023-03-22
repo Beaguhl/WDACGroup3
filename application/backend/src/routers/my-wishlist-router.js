@@ -25,20 +25,24 @@ router.get("/", async function(request, response){
     try {
         const connection = await pool.getConnection()
         
+        // gets one wishListID from "WishList"
         const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
         const getWishListValue = [userID]
+        
         const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
+        console.log("33 wishlist id is: " + fetchedWishlistID[0])
         const wishListID = fetchedWishlistID[0].wishListID
 
         try {
+            // gets all wishListProduct from "WishListProduct"
             const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE wishListID = ?"
             const getWishListProductValue = [wishListID]
-
             const wishListProducts = await connection.query(getWishListProductQuery, getWishListProductValue)
 
             var products = []
 
             for (let i = 0; i < wishListProducts.length; i += 1){
+                // gets one product from "Products"
                 const getProductQuery = "SELECT * FROM Products WHERE productID = ?"
                 const wishListProductID = wishListProducts[i].wishListProductID
                 const getProductValue = [wishListProductID]
@@ -47,8 +51,6 @@ router.get("/", async function(request, response){
                 products.push(product[0])
                 
             }
-
-            console.log("products are: " + products)
             response.status(200).json(products)
 
         } catch (error) {
@@ -59,5 +61,56 @@ router.get("/", async function(request, response){
     } catch (error){
         console.log(error)
 		response.status(500).end()
+    }
+})
+
+router.get("/search", async function(request, response){
+    console.log("searching my wish list")
+    const userID = request.get("UserID")
+
+    try {
+        const searchQuery = request.query.q
+        const connection = await pool.getConnection()
+
+        // get wish list ID
+        const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
+        const getWishListValue = [userID]
+        
+        const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
+        const wishListID = fetchedWishlistID[0].wishListID
+
+
+        const getProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`
+
+        // gets all products from "Products"
+        const searchedProducts = await connection.query(getProductsQuery)
+        console.log("searchedProducts.length är: " + searchedProducts.length)
+        var searchResults = []
+
+        for (let i = 0; i < searchedProducts.length; i += 1){
+            // search through products to see if it exists in wishListProduct
+            const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE productID = ? AND wishListID = ?"
+            const getWishListProductValue = [searchedProducts[i].productID, wishListID]
+            const wishListProduct = await connection.query(getWishListProductQuery, getWishListProductValue)
+
+            if (wishListProduct.length != 0){
+                console.log(searchedProducts[i].productName)
+                let arrLenght = searchResults.length
+                searchResults[arrLenght] = searchedProducts[i]
+            }
+        }
+
+        console.log("detta fångade vi: " + searchResults)
+	    console.log("längden är: " + searchResults.length)
+        if (searchResults.length == 0){
+            console.log("404")
+            response.status(404).end()
+        } else {
+            console.log("200")
+            response.status(200).json(searchResults)
+        }
+
+    } catch(error) {
+
     }
 })

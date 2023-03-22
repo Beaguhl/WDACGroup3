@@ -7,6 +7,8 @@
 
 	let listIsEmpty = true
 
+	let showSearch = false
+
 	async function loadWishList(){
 		try {
 			const response = await fetch("http://localhost:8080/my-wishlist", {
@@ -23,6 +25,7 @@
         		case 200:
           			wishListProducts = await response.json()
 					listIsEmpty = false
+					showSearch = false
 					console.log(wishListProducts)
           			break
         
@@ -41,6 +44,8 @@
 
 	loadWishList()
 
+	let searchResults = []
+
 	async function searchProducts(event){
 		const formData = new FormData(event.target);
 		const searchString = formData.get('q');
@@ -54,6 +59,18 @@
 					"UserID": $user.userID
 				}
 			})
+
+			switch(response.status){
+				case 200:
+					searchResults = await response.json()
+					showSearch = true
+					break
+
+				case 404:
+					searchResults = []
+					showSearch = true
+					break
+			}
 			
 		} catch(error){
 
@@ -63,12 +80,11 @@
 </script>
 
 <body>
-	<section>
-		<div class="container">
-			<div class="squareContainer">
-				
-					
-						<div class="container">
+	{#if $user.isLoggedIn}
+		<section>
+			<div class="container">
+				<div class="squareContainer">
+					<div class="container">
 						<h1>My Wish List</h1>
 							<form on:submit|preventDefault={searchProducts}>
 								<div class="search-container">
@@ -79,24 +95,32 @@
 							</form>
 							<div class="search-container"></div>
 						<div class="user-container">
-
-							
-									
-										
-											{#each wishListProducts as product}
-													<h3>{product.productName}</h3>
-											{/each}
-										
-									
-								
+							{#if showSearch}
+								{#if searchResults.length != 0}
+									{#each searchResults as result}
+										<h3>{result.productName}</h3>
+									{/each}
+								{:else}
+									<p>No search results found</p>
+								{/if}
+							{:else}
+								{#if wishListProducts.length != 0}
+									{#each wishListProducts as product}
+										<h3>{product.productName}</h3>
+									{/each}
+								{:else}
+									<p>You do not have any products in your wishlist at the moment</p>
+								{/if}	
+							{/if}
 						</div>
 					</div>
-					
-					
-				
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	{:else}
+		<p>You need to be logged in to view my wish list</p>
+	{/if}
+	
 </body>
 
 <style>

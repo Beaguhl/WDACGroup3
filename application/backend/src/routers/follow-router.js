@@ -76,7 +76,7 @@ router.get('/followers/search', async function(request, response){
 			console.log("fetched user is: " + searchedFollower[i])
 			let arrLenght = followerSearchedUsers.length
 			followerSearchedUsers[arrLenght] = searchedFollower[i]
-		}
+		} 
 				
 	}
 
