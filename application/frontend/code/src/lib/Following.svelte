@@ -13,8 +13,6 @@
 	let showAllFollowings = true
 	let noSearchFound = false
 
-	console.log("userID: " + $user.userID)
-	console.log("token: " + $user.accessToken)
 
 	async function loadAllFollowings () {
 		console.log("load all followings")
@@ -106,9 +104,9 @@
 						<h1>Followings</h1>
 							<form on:submit|preventDefault={searchFollowings}>
 								<div class="search-container">
-								<input type="text" name="q" placeholder="Search for users...">
+								<input type="text" name="q" placeholder="Search for followings...">
 								<button type="submit" id="search-button">Search</button>
-								<button type="button" id="show-all-button" on:click={loadAllFollowings}>Show All Users</button>
+								<button type="button" id="show-all-button" on:click={loadAllFollowings}>Show All Followings</button>
 								</div>
 							</form>
 							<div class="search-container"></div>
@@ -121,13 +119,18 @@
 									{:else}
 									
 										{#if noSearchFound}
-											<p>User not found</p>
+											<p>No followings found</p>
 										{:else}
-											{#each searchedFollowings as searchedUser}
-												<Link class="Links" to="/users/{searchedUser.userID}">
-													<h3>{searchedUser.username}</h3>
-												</Link> 
-											{/each}
+											{#if searchedFollowings.length != 0}
+												{#each searchedFollowings as searchedUser}
+													<Link class="Links" to="/users/{searchedUser.userID}">
+														<h3>{searchedUser.username}</h3>
+													</Link> 
+												{/each}
+											{:else}
+												<p>You do not follow anyone</p>
+											{/if}
+											
 										{/if}
 									{/if}
 								{/if}

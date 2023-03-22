@@ -110,9 +110,9 @@
 						<h1>My followers</h1>
 							<form on:submit|preventDefault={searchFollowers}>
 								<div class="search-container">
-								<input type="text" name="q" placeholder="Search for users...">
+								<input type="text" name="q" placeholder="Search for followers...">
 								<button type="submit" id="search-button">Search</button>
-								<button type="button" id="show-all-button" on:click={loadAllFollowers}>Show All Users</button>
+								<button type="button" id="show-all-button" on:click={loadAllFollowers}>Show All Followers</button>
 								</div>
 							</form>
 							<div class="search-container"></div>
@@ -125,13 +125,17 @@
 									{:else}
 									
 										{#if noSearchFound}
-											<p>No search results found</p>
+											<p>No followers found</p>
 										{:else}
-											{#each searchedFollowers as searchedUser}
-												<Link class="Links" to="/users/{searchedUser.userID}">
-													<h3>{searchedUser.username}</h3>
-												</Link> 
-											{/each}
+											{#if searchedFollowers.length != 0}
+												{#each searchedFollowers as searchedUser}
+													<Link class="Links" to="/users/{searchedUser.userID}">
+														<h3>{searchedUser.username}</h3>
+													</Link> 
+												{/each}
+											{:else}
+												<p>You do not have any followers</p>
+											{/if}
 										{/if}
 									{/if}
 								{/if}

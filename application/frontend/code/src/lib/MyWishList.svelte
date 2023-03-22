@@ -101,7 +101,7 @@
 										<h3>{result.productName}</h3>
 									{/each}
 								{:else}
-									<p>No search results found</p>
+									<p>No wishlist products found</p>
 								{/if}
 							{:else}
 								{#if wishListProducts.length != 0}
