@@ -59,7 +59,8 @@
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
 				}
 			})
 

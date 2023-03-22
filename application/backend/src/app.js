@@ -91,7 +91,8 @@ app.post('/tokens', async function (request, response) {
 						response.status(200).json({
 							access_token: accesToken,
 							type: "bearer",
-							userID: result[0].userID
+							userID: result[0].userID,
+							admin: result[0].admin
 						})
 					}
 				})
