@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
+
+
 <script>
 	import {fly} from 'svelte/transition'
 	let activeMenu = 'main'
@@ -23,6 +25,7 @@
     async function login(){
         console.log("clicked login")
         try {
+            console.log("Userud is" + $user.userID)
             const response = await fetch("http://localhost:8080/tokens", {
                 method: "POST",
                 headers: {
@@ -39,7 +42,8 @@
                     $user = {
                         isLoggedIn: true,
                         accessToken: body.access_token,
-                        userID: body.userID
+                        userID: body.userID,
+                        admin: body.admin
                     }
                     closedDropDown = false
                     break
@@ -62,10 +66,10 @@
             <main>
                 {#if $user.isLoggedIn}
                     <div class="row">
-                        <Link class="Links" to="/my-wishlist" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
+                        <Link class="Links" to="/MyWishList" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
                     </div>
                     <div class="row">
-                        <Link class="Links" to="/followings" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Followings</Link>
+                        <Link class="Links" to="/Following" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Following</Link>
                     </div>
                     <div class="row">
                         <Link class="Links" to="/Followers" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-user-group item"></i>My Followers</Link>
@@ -88,7 +92,7 @@
                     {/if}
                 {/if}
                 <Route path="/create-account" component="{CreateUser}"></Route>
-                    <Route path="/followings" component="{Following}"></Route>
+                    <Route path="/Following" component="{Following}"></Route>
                     <Route path="/MyWishLish" component="{MyWishList}"></Route>
                     <Route path="/Followers" component="{Followers}"></Route>
             </main>

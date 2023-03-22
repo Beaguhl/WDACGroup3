@@ -85,24 +85,26 @@ router.get("/:id", async function (request, response) {
 		const connection = await pool.getConnection()
 		console.log("har connectat")
 
-		const productQuery = `SELECT * FROM Products WHERE productID = ${parseInt(otherProductID)}`
+		const productQuery = "SELECT * FROM Products WHERE productID = ?"
+
+
+
+		const productValue = [parseInt(otherProductID)]
 		console.log("har 1")
 
-		const productToSend = await connection.query(productQuery)
+		const productToSend = await connection.query(productQuery, productValue)
 		console.log("procudt to send is: " + productToSend)
 
 		console.log("HÄR ÄR PRODUCTTOSEND!!!!! " + productToSend)
 		console.log("HÄR ÄR PRODUCTTOSEND!!!!! ")
 
-		const procuct = productToSend[0]
+		const product = productToSend[0]
 
-		console.log("HAUHDFJHWJLAHLJF " + procuct)
+		console.log("HAUHDFJHWJLAHLJF " + product)
 
-		const model = {
-			procuct
-		}
 
-		response.status(200).json(model)
+
+		response.status(200).json(product)
 	} catch (error) {
 		response.status(500).end()
 	}
