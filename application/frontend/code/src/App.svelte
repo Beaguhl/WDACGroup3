@@ -1,6 +1,6 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
-	import {Router, Link, Route} from 'svelte-routing'
+	import {Router, Route, Link} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/Users.svelte'
 	import Products from './lib/Products.svelte'
@@ -17,6 +17,7 @@
 	import Product from './lib/Product.svelte'
 	import CreateUser from './lib/CreateUser.svelte'
 	import MyAccount from './lib/MyAccount.svelte'
+	import CreateProduct from './lib/CreateProduct.svelte'
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { user } from './user-store'
@@ -59,7 +60,8 @@ let username = ""
                     $user = {
                         isLoggedIn: true,
                         accessToken: body.access_token,
-						userID: ""
+						userID: body.userID,
+						admin: body.admin
                     }
                     closedDropDown = false
                     break
@@ -92,6 +94,9 @@ let username = ""
 				<Link class="Links" to="/follows/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
 				<Link class="Links" to="/follows/followings" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
 				<Link class="Links" to="/my-account" id="my-account-link" style="color: white; text-decoration: none; margin-right: 40px;">My Account</Link>
+				{#if $user.admin}
+					<Link class="Links" to="/create-products" id="create-product-link" style="color: white; text-decoration: none; margin-right: 40px;">Create Product</Link>
+				{/if}
 			{/if}
 			
 		</div>
@@ -121,6 +126,7 @@ let username = ""
 		<Route path="/follows/followings" component="{Following}"></Route>
 		<Route path="/my-account" component="{MyWishList}"></Route>
 		<Route path="/follows/followers" component="{Followers}"></Route>
+		<Route path="/create-products" component="{CreateProduct}"></Route>
 	</main>
 </Router>
 

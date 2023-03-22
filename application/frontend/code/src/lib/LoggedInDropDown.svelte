@@ -42,7 +42,8 @@
                     $user = {
                         isLoggedIn: true,
                         accessToken: body.access_token,
-                        userID: body.userID
+                        userID: body.userID,
+                        admin: body.admin
                     }
                     closedDropDown = false
                     break
