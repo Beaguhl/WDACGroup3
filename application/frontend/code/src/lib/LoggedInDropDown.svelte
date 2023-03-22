@@ -62,7 +62,7 @@
             <main>
                 {#if $user.isLoggedIn}
                     <div class="row">
-                        <Link class="Links" to="/my-wishlist" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
+                        <Link class="Links" to="/wishlist" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-gift item"></i>My WishList</Link>
                     </div>
                     <div class="row">
                         <Link class="Links" to="/followings" id="users-link" style="color: white; padding: 12px 16px; text-decoration: none; display: block;"><i class="fa-solid fa-star item"></i>Followings</Link>

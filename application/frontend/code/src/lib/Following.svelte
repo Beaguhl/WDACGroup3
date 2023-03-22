@@ -11,8 +11,6 @@
 	let startedSearch = false
 	let isFetchingSearchedFollowings = true
 	let showAllFollowings = true
-	let noSearchFound = false
-
 
 	async function loadAllFollowings () {
 		console.log("load all followings")
@@ -44,6 +42,7 @@
 					break
 
 				case 404:
+					isFetchingFollowings = false
 					break
 
 			}
@@ -76,13 +75,11 @@
 				case 200:
 					searchedFollowings = await response.json()
 					console.log("searched users are: " + searchedFollowings)
-					noSearchFound = false
 					isFetchingSearchedFollowings = false
 					break
 				
 				case 404:
 					isFetchingSearchedFollowings = false
-					noSearchFound = true
 					break
 
 			}
@@ -118,9 +115,7 @@
 										<p>searching...</p>
 									{:else}
 									
-										{#if noSearchFound}
-											<p>No followings found</p>
-										{:else}
+										
 											{#if searchedFollowings.length != 0}
 												{#each searchedFollowings as searchedUser}
 													<Link class="Links" to="/users/{searchedUser.userID}">
@@ -128,10 +123,9 @@
 													</Link> 
 												{/each}
 											{:else}
-												<p>You do not follow anyone</p>
+												<p>No followings found</p>
 											{/if}
 											
-										{/if}
 									{/if}
 								{/if}
 							{:else}
@@ -142,11 +136,16 @@
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>
 								{/if}
-								{#each followings as searchedUseri}
-									<Link class="Links" to="/users/{searchedUseri.userID}">
-										<h3>{searchedUseri.username}</h3>
-									</Link> 
-								{/each}
+								{#if followings.length != 0}
+									{#each followings as searchedUseri}
+										<Link class="Links" to="/users/{searchedUseri.userID}">
+											<h3>{searchedUseri.username}</h3>
+										</Link> 
+									{/each}
+								{:else}
+									<p>You do not follow any one</p>
+								{/if}
+								
 							{/if}
 						</div>
 					</div>

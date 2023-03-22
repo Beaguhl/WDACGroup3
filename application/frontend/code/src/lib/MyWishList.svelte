@@ -3,6 +3,8 @@
 	import {Router, Link, Route} from 'svelte-routing'
 
 	import { user } from "../user-store";
+
+	export let id = $user.userID
 	let wishListProducts = []
 
 	let listIsEmpty = true
@@ -11,7 +13,7 @@
 
 	async function loadWishList(){
 		try {
-			const response = await fetch("http://localhost:8080/my-wishlist", {
+			const response = await fetch("http://localhost:8080/wishlist/" + id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -51,7 +53,7 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/my-wishlist/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/wishlist/" + id +"/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

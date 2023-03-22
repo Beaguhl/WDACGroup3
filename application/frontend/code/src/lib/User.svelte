@@ -4,6 +4,7 @@
 <script>
 
   import { user } from "../user-store";
+    import Product from "./Product.svelte";
 
   export let id;
   let isFetchingUser = true
@@ -11,6 +12,37 @@
   let fetchedUser = null
   let fetchedFollow = null
   let resourceForbidden = false
+  let wishListProducts = []
+
+  async function loadUsersWishList(){
+    console.log("loadUsersWishList")
+    try {
+      const response = await fetch("http://localhost:8080/wishlist/" + id, {
+        method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+          "UserID": $user.userID
+				}
+      })
+
+      switch(response.status) {
+        case 200:
+          console.log("got 200")
+          wishListProducts = await response.json()
+          console.log("done fetching")
+          console.log("pr: " + wishListProducts)
+          /*for (let i = 0; i < fetchedProducts.length; i += 1){
+            console.log("hiihhh" + fetchedProducts[i])
+          }*/
+          
+
+      }
+      
+    } catch(error) {
+
+    }
+  }
 
   async function loadUser(){
     console.log("going into loadUser")
@@ -22,6 +54,8 @@
 					"Authorization": "bearer "+$user.accessToken,
           "UserID": $user.userID
 				}
+
+
       })
       
       switch(response.status) {
@@ -30,6 +64,9 @@
           console.log("user/id got 200")
           const {userToSend, followToSend} = await response.json()
           console.log("users kommer nu: " + userToSend, followToSend)
+
+          id = userToSend.userID
+          await loadUsersWishList()
           fetchedUser = userToSend
           fetchedFollow = followToSend
           console.log(fetchedFollow[0])
@@ -52,6 +89,8 @@
   }
 
   loadUser()
+
+  
 
   async function followUser(){
     console.log("clicked follow")
@@ -133,7 +172,7 @@
     <div id="profile">
       <h1>{fetchedUser[0].username}</h1>
       {#if fetchedFollow[0]}
-        <button class="follow-button following" on:click={unfollowUser}>Followings</button>
+        <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
         <button class="follow-button" on:click={followUser}>Follow</button>
       {/if}
@@ -142,25 +181,31 @@
         <p>Unable to unfollow user</p>
       {/if}
       
+      
       <div class="wish-list">
-        <div class="wish-item">
-          <div class="wish-title">Buy groceries</div>
-          <div class="done-checkbox">✓</div>
-        </div>
-        <div class="wish-item done">
-          <div class="wish-title">Finish project</div>
-          <div class="done-checkbox done">✓</div>
-        </div>
-        <div class="wish-item">
-          <div class="wish-title">Do laundry</div>
-          <div class="done-checkbox">✓</div>
-        </div>
+        {#if wishListProducts.length != 0}
+          {#each wishListProducts as product, index}
+            {#if product[1].purchased}
+              <div class="wish-item done">
+                <div class="wish-title">{product[0].productName}</div>
+                <div class="done-checkbox done">✓</div>
+              </div>
+            {:else}
+              <div class="wish-item">
+                <div class="wish-title">{product[0].productName}</div>
+                <div class="done-checkbox"></div>
+              </div>
+            {/if}
+
+            
+          {/each}
+
+        {:else}
+            <p>User no not have any wishlist products</p>
+        {/if}
       </div>
     </div>
-    
-      
 
-    
   {:else}
   <p>Did not find any user with the given id</p>
   {/if}
@@ -178,6 +223,9 @@
 
 <style>
 
+p {
+  color: white
+}
 
 body {
         font-family: Arial, sans-serif;

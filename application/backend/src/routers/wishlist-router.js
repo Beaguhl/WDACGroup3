@@ -19,7 +19,8 @@ module.exports = router
 
 const app = express()
 
-router.get("/", async function(request, response){
+router.get("/:id", async function(request, response){
+    const id = request.get("UserID")
     const userID = request.get("UserID")
 
     try {
@@ -27,7 +28,7 @@ router.get("/", async function(request, response){
         
         // gets one wishListID from "WishList"
         const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
-        const getWishListValue = [userID]
+        const getWishListValue = [id]
         
         const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
         console.log("33 wishlist id is: " + fetchedWishlistID[0])
@@ -48,9 +49,13 @@ router.get("/", async function(request, response){
                 const getProductValue = [wishListProductID]
 
                 const product = await connection.query(getProductQuery, getProductValue)
-                products.push(product[0])
+                console.log(product[0])
+                console.log(wishListProducts[i])
+                products.push([product[0], wishListProducts[i]])
+
                 
             }
+            console.log("products är nu: " + products[0])
             response.status(200).json(products)
 
         } catch (error) {
@@ -64,7 +69,9 @@ router.get("/", async function(request, response){
     }
 })
 
-router.get("/search", async function(request, response){
+router.get("/:id/search", async function(request, response){
+    const id = request.get("UserID")
+
     console.log("searching my wish list")
     const userID = request.get("UserID")
 
@@ -74,7 +81,7 @@ router.get("/search", async function(request, response){
 
         // get wish list ID
         const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
-        const getWishListValue = [userID]
+        const getWishListValue = [id]
         
         const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
         const wishListID = fetchedWishlistID[0].wishListID
@@ -96,7 +103,8 @@ router.get("/search", async function(request, response){
             if (wishListProduct.length != 0){
                 console.log(searchedProducts[i].productName)
                 let arrLenght = searchResults.length
-                searchResults[arrLenght] = searchedProducts[i]
+                searchResults[arrLenght] = [searchedProducts[i], wishListProduct[0]]
+
             }
         }
 

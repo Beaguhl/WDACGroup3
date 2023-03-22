@@ -97,19 +97,25 @@ router.post('/follow', async function(request, response){
 
 	// add error handling and status codes
 
-	const userID = request.get("UserID")
+	try {
+		const userID = request.get("UserID")
 
-	const connection = await pool.getConnection()
+		const connection = await pool.getConnection()
 
-	const userToFollow = request.get("UserToFollow")
-					
-	const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
-	const followValues = [userID, userToFollow]
-					
-	await connection.query(followQuery, followValues)
-	console.log("done following")
+		const userToFollow = request.get("UserToFollow")
+						
+		const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
+		const followValues = [userID, userToFollow]
+						
+		await connection.query(followQuery, followValues)
+		console.log("done following")
 
-	response.status(201).end()
+		response.status(201).end()
+	} catch(error) {
+		response.status(500).end()
+	}
+
+	
 			
 })
 
@@ -118,19 +124,23 @@ router.delete('/unfollow', async function(request, response){
 
 	// add error handling and status codes
 	const userID = request.get("UserID")
-	const accessToken = authorizationHeaderValue.substring(7)
-	
-			const connection = await pool.getConnection()
 
-			const userToUnfollow = request.get("UserToUnfollow")
+	try {
+		const connection = await pool.getConnection()
 
-			const unfollowQuery = "DELETE FROM Follow WHERE userID = ? AND followingUserID = ?"
-			const unfollowValues = [userID, userToUnfollow]
+		const userToUnfollow = request.get("UserToUnfollow")
 
-			await connection.query(unfollowQuery, unfollowValues)
-			console.log("deleted follow")
+		const unfollowQuery = "DELETE FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const unfollowValues = [userID, userToUnfollow]
 
-			response.status(204).end()
+		await connection.query(unfollowQuery, unfollowValues)
+		console.log("deleted follow")
+
+		response.status(204).end()
+	} catch(error) {
+		response.status(500).end()
+	}
+			
 
 })
 
