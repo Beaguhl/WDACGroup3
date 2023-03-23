@@ -1,7 +1,7 @@
 const express = require('express')
 
 const router = express.Router()
-const { createPool } = require ('mariadb')
+const { createPool } = require('mariadb')
 
 const pool = createPool({
 	host: "db",
@@ -11,7 +11,7 @@ const pool = createPool({
 	database: "abc",
 })
 
-pool.on('error', function(error){
+pool.on('error', function (error) {
 	console.log("Error from pool", error)
 })
 
@@ -45,20 +45,20 @@ const { validateUser } = require('../user-validations')
 const app = express()
 
 //----------- all users ----------------
-router.get("/", async function(request, response){	
+router.get("/", async function (request, response) {
 
 	const userID = request.get("UserID")
 
-	try{
+	try {
 		const connection = await pool.getConnection()
-		
+
 		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 		const getAllUsersValues = [userID]
 		const users = await connection.query(getAllUsersQuery, getAllUsersValues)
 
 		response.status(200).json(users)
-		
-	} catch(error) {
+
+	} catch (error) {
 		console.log(error)
 		response.status(500).end()
 	}
@@ -104,42 +104,42 @@ router.post("/", async function(request, response){
 })
 
 //----------- search users ----------------
-router.get('/search', async function(request, response){
+router.get('/search', async function (request, response) {
 	const userID = request.get("UserID")
 
 	try {
-        const searchQuery = request.query.q
+		const searchQuery = request.query.q
 
-        const connection = await pool.getConnection()
+		const connection = await pool.getConnection()
 
-        const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${userID} AND username LIKE '%${searchQuery}%'`
-        const searchedUsers = await connection.query(getSearchedUsersQuery)
+		const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${userID} AND username LIKE '%${searchQuery}%'`
+		const searchedUsers = await connection.query(getSearchedUsersQuery)
 
-        if (searchedUsers.length == 0){
-            response.status(404).end()
-        } else {
-            response.status(200).json(searchedUsers)
-        }				
+		if (searchedUsers.length == 0) {
+			response.status(404).end()
+		} else {
+			response.status(200).json(searchedUsers)
+		}
 
-    } catch {
-        // add catch
-    }
-		
+	} catch {
+		// add catch
+	}
+
 })
 
 //---------------------- users/id -------------------------
-router.get("/:id", async function(request, response){
+router.get("/:id", async function (request, response) {
 
 	const userID = request.get("UserID")
 
 	try {
 		const otherUsersID = parseInt(request.params.id)
 
-		if (userID == otherUsersID){
+		if (userID == otherUsersID) {
 			console.log("403 error - user tried to view them self")
 			response.status(403).end()
 		}
-		
+
 		const connection = await pool.getConnection()
 
 		const userQuery = "SELECT * FROM Users WHERE userID = ?"
@@ -147,7 +147,7 @@ router.get("/:id", async function(request, response){
 		const userToSend = await connection.query(userQuery, userValues)
 
 		const followQuery = `SELECT * FROM Follow WHERE userID = ${userID} AND followingUserID = ${otherUsersID}`
-		
+
 		const followToSend = await connection.query(followQuery)
 
 		const model = {
@@ -157,10 +157,11 @@ router.get("/:id", async function(request, response){
 
 		response.status(200).json(model)
 
-	} catch(error) {
+	} catch (error) {
 		console.log("500 error: " + error)
 		response.status(500).end()
 	}
+
 		
 })
 
