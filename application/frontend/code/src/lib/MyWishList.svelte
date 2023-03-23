@@ -30,7 +30,7 @@
           			wishListProducts = await response.json()
 					listIsEmpty = false
 					showSearch = false
-					console.log(wishListProducts)
+					console.log("showing wishlistProducts: " + wishListProducts)
           			break
         
         		case 500:

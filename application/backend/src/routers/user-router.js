@@ -130,6 +130,7 @@ router.get('/search', async function (request, response) {
 //---------------------- users/id -------------------------
 router.get("/:id", async function (request, response) {
 
+	const id = parseInt(request.params.id)
 	const userID = request.get("UserID")
 
 	try {
@@ -142,13 +143,18 @@ router.get("/:id", async function (request, response) {
 
 		const connection = await pool.getConnection()
 
-		const userQuery = "SELECT * FROM Users WHERE userID = ?"
+		const userQuery = "SELECT userID, username FROM Users WHERE userID = ?"
 		const userValues = [otherUsersID]
-		const userToSend = await connection.query(userQuery, userValues)
+		const user = await connection.query(userQuery, userValues)
+		console.log("kraka userid is: " + userID)
+		console.log("other userID is: " + otherUsersID)
+		const userToSend = user[0]
 
 		const followQuery = `SELECT * FROM Follow WHERE userID = ${userID} AND followingUserID = ${otherUsersID}`
 
-		const followToSend = await connection.query(followQuery)
+		const follow = await connection.query(followQuery)
+		const followToSend = follow[0]
+		
 
 		const model = {
 			userToSend,

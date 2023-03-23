@@ -162,6 +162,7 @@ router.get('/followings/search', async function (request, response) {
 
 	//checking if a user is a following
 	for (let i = 0; i < searchedFollowing.length; i += 1) {
+		console.log("kraka userid is: " + userID)
 		const getSearchedFollowing = `SELECT * FROM Follow WHERE userID = ${userID} AND followingUserID = ${searchedFollowing[i].userID}`
 		const fetchedFollowing = await connection.query(getSearchedFollowing)
 		if (fetchedFollowing.length != 0) {

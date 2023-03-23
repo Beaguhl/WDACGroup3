@@ -17,6 +17,7 @@
   async function loadUsersWishList(){
     console.log("loadUsersWishList")
     try {
+      console.log("id to view (not mine) is: " + id)
       const response = await fetch("http://localhost:8080/wishlist/" + id, {
         method: "GET",
 				headers: {
@@ -31,7 +32,7 @@
           console.log("got 200")
           wishListProducts = await response.json()
           console.log("done fetching")
-          console.log("pr: " + wishListProducts)
+					console.log("showing wishlistProducts: " + wishListProducts)
           /*for (let i = 0; i < fetchedProducts.length; i += 1){
             console.log("hiihhh" + fetchedProducts[i])
           }*/
@@ -63,13 +64,17 @@
         case 200:
           console.log("user/id got 200")
           const {userToSend, followToSend} = await response.json()
-          console.log("users kommer nu: " + userToSend, followToSend)
+          console.log("users kommer nu: ", userToSend, followToSend)
 
           id = userToSend.userID
+          console.log("id to send is now: " + id)
           await loadUsersWishList()
           fetchedUser = userToSend
+
+          console.log(fetchedUser)
           fetchedFollow = followToSend
-          console.log(fetchedFollow[0])
+          console.log(fetchedFollow)
+
           isFetchingUser = false
           break
         
@@ -171,7 +176,7 @@
     <title></title>
 
     <div id="profile">
-      <h1>{fetchedUser[0].username}</h1>
+      <h1>{fetchedUser.username}</h1>
       {#if fetchedFollow[0]}
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
@@ -187,20 +192,21 @@
         {#if wishListProducts.length != 0}
           {#each wishListProducts as product, index}
 
-          <div class="wish-item done">
-            <div class="wish-title">hej</div>
-            <div class="done-checkbox done">✓</div>
-          </div>
-            <!--
+          
+
+            
               {#if product[1].purchased}
-              
+              <div class="wish-item done">
+                <div class="wish-title">{product[0].productName}</div>
+                <div class="done-checkbox done">✓</div>
+              </div>
             {:else}
               <div class="wish-item">
                 <div class="wish-title">{product[0].productName}</div>
                 <div class="done-checkbox"></div>
               </div>
             {/if}
-            -->
+            
             
           {/each}
 
