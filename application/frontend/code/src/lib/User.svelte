@@ -13,6 +13,7 @@
   let fetchedFollow = null
   let resourceForbidden = false
   let wishListProducts = []
+  let wishListProductID;
 
   async function loadUsersWishList(){
     console.log("loadUsersWishList")
@@ -31,8 +32,8 @@
         case 200:
           console.log("got 200")
           wishListProducts = await response.json()
-          console.log("done fetching")
 					console.log("showing wishlistProducts: " + wishListProducts)
+          console.log(wishListProducts[1])
           /*for (let i = 0; i < fetchedProducts.length; i += 1){
             console.log("hiihhh" + fetchedProducts[i])
           }*/
@@ -93,9 +94,7 @@
     }
   }
 
-  loadUser()
-
-  
+  loadUser()  
 
   async function followUser(){
     console.log("clicked follow")
@@ -159,6 +158,36 @@
 
   }
 
+  async function purchaseProduct(wishListProductID){
+    console.log("click")
+    console.log(wishListProductID)
+    try {
+
+      const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID, {
+        method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+          "UserID": $user.userID
+				}
+
+      })
+
+      switch(response.status) {
+        case 200:
+          console.log("updated suceeded")
+          loadUser()
+      }
+
+    } catch(error) {
+      
+
+    }
+  } 
+  
+  
+  
+
 </script>
 <body>
 
@@ -190,22 +219,30 @@
       
       <div class="wish-list">
         {#if wishListProducts.length != 0}
-          {#each wishListProducts as product, index}
+          {#each wishListProducts as product}
 
           
-
-            
-              {#if product[1].purchased}
+          
+            {#if product[1].purchased}
               <div class="wish-item done">
                 <div class="wish-title">{product[0].productName}</div>
-                <div class="done-checkbox done">✓</div>
+                <button >
+                  <div class="done-checkbox done">✓</div>
+                </button>
+                
+                
               </div>
             {:else}
               <div class="wish-item">
                 <div class="wish-title">{product[0].productName}</div>
-                <div class="done-checkbox"></div>
+                <button on:click={() => purchaseProduct(product[1].wishListProductID)}>
+                  <div class="done-checkbox"></div>
+                </button>
+                
               </div>
             {/if}
+          
+              
             
             
           {/each}
@@ -274,6 +311,30 @@ body {
         max-height: 400px;
         margin-top: 20px;
       }
+
+      button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+button .done-checkbox {
+  display: inline-block;
+  width: 20px; /* set a fixed width for the checkbox */
+  height: 20px; /* set a fixed height for the checkbox */
+  color: white; /* set the text color of the checkbox */
+  font-size: 16px; /* set the font size of the checkbox */
+  text-align: center; /* center the text in the checkbox */
+  line-height: 20px; /* set the line height to match the height of the checkbox */
+}
+
+/* hide the text "done" */
+button .done-checkbox.done::after {
+  content: "";
+  display: none;
+}
+
+
       .wish-item {
         display: flex;
         justify-content: space-between;
@@ -316,74 +377,7 @@ display: initial; }
         color: white;
         border-color: #ffffff;
       }
-    /*.pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-    }
-    .pagination > button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    .pagination > button:last-child {
-      margin-right: 0;
-    }*/
-
-  .test{
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  .mainGrid{
-    display: grid;
-    grid-template-columns: 2fr 2fr;
-    border-radius: 10px;
-  }
-
-  .leftColumn{
-    text-align: center;
-    margin-left: 70px;
-    margin-top: 10%;
-  }
-
-  .title{
-    text-align: center;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    /*margin: 30px 0;*/
-  }
-
-  .leftColumn {
-    text-align: center;
-    max-width: 450px;
-  }
-
-  .followButton {
-    align-items: center;
-  }
-
-  #increasedItem {
-    padding-bottom: 15px;
-    background-color: rgb(255, 255, 255);
-    padding-top: 1%;
-  }
-
-  #itemTitle {
-    text-align: center;
-  }
-
-  #buyer {
-    text-align: start;
-  }
-
+  
   :global(body) {
     
     background-color:rgb(255, 255, 255);
@@ -394,55 +388,7 @@ display: initial; }
     
   }
 
-  .wishList {
-    padding: 18px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    background-color: rgb(151, 191, 235);
-  }
   
-  #itemTitle{
-    text-align: start;
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: 1px;
-  }
-
-  .item{
-    border-radius: 5px;
-    align-items: center;
-    display: grid;
-    grid-template-columns: 1fr 4fr 1fr;
-    background-color: rgb(255, 255, 255);
-    margin-top: 15px;
-  }
-
-  .item-btn{
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
-
-  .item-btn i {
-    font-size: 18px;
-  }
-
-  #profilePic{
-    max-width: 100%;
-    max-height: 100%;
-    width: 350px;  
-    height: auto; 
-    object-fit: cover;
-    margin-top: 80px;
-    border-radius: 10px; 
-  }
-
-  #wishListObject{
-    text-align: center;
-    margin: 50px;
-    max-width: 450px;
-  }
 
 
 </style>

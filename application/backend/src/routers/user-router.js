@@ -150,9 +150,10 @@ router.get("/:id", async function (request, response) {
 		console.log("other userID is: " + otherUsersID)
 		const userToSend = user[0]
 
-		const followQuery = `SELECT * FROM Follow WHERE userID = ${userID} AND followingUserID = ${otherUsersID}`
+		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const followValues = [userID, otherUsersID]
 
-		const follow = await connection.query(followQuery)
+		const follow = await connection.query(followQuery, followValues)
 		const followToSend = follow[0]
 		
 
