@@ -157,6 +157,7 @@
 </script>
 <body>
 
+
   {#if $user.isLoggedIn}
 
   {#if resourceForbidden}
@@ -185,18 +186,21 @@
       <div class="wish-list">
         {#if wishListProducts.length != 0}
           {#each wishListProducts as product, index}
-            {#if product[1].purchased}
-              <div class="wish-item done">
-                <div class="wish-title">{product[0].productName}</div>
-                <div class="done-checkbox done">✓</div>
-              </div>
+
+          <div class="wish-item done">
+            <div class="wish-title">hej</div>
+            <div class="done-checkbox done">✓</div>
+          </div>
+            <!--
+              {#if product[1].purchased}
+              
             {:else}
               <div class="wish-item">
                 <div class="wish-title">{product[0].productName}</div>
                 <div class="done-checkbox"></div>
               </div>
             {/if}
-
+            -->
             
           {/each}
 
@@ -282,6 +286,14 @@ body {
         cursor: pointer;
         color: white
       }
+
+      /* Hide all answers by default. */ #faq dd{
+display: none; }
+/* Show answers with the class "show". */ #faq dd.show{
+display: initial; }
+
+
+
       .wish-item .done-checkbox {
         height: 20px;
         width: 20px;

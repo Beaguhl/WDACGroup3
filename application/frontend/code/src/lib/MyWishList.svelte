@@ -5,6 +5,8 @@
 	import { user } from "../user-store";
 
 	export let id = $user.userID
+	console.log("id to send in is: " + $user.userID)
+	console.log("id to send in is: " + id)
 	let wishListProducts = []
 
 	let listIsEmpty = true
@@ -108,7 +110,12 @@
 							{:else}
 								{#if wishListProducts.length != 0}
 									{#each wishListProducts as product}
-										<h3>{product.productName}</h3>
+									<div class="object">
+										<h3>{product[0].productName}</h3>
+										<p>{product[0].description}</p>
+									</div>
+										
+										
 									{/each}
 								{:else}
 									<p>You do not have any products in your wishlist at the moment</p>
@@ -131,6 +138,13 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+
+.object {
+	display: flex; 
+	flex-direction: 
+	column; align-items: 
+	center; justify-content: center;
 }
 
 .container {

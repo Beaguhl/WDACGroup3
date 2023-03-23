@@ -20,7 +20,9 @@ module.exports = router
 const app = express()
 
 router.get("/:id", async function(request, response){
-    const id = request.get("UserID")
+    
+    const id = parseInt(request.params.id)
+    console.log("inside which list router, id is: " + id)
     const userID = request.get("UserID")
 
     try {
@@ -45,13 +47,15 @@ router.get("/:id", async function(request, response){
             for (let i = 0; i < wishListProducts.length; i += 1){
                 // gets one product from "Products"
                 const getProductQuery = "SELECT * FROM Products WHERE productID = ?"
-                const wishListProductID = wishListProducts[i].wishListProductID
+                const wishListProductID = wishListProducts[i].productID
                 const getProductValue = [wishListProductID]
 
                 const product = await connection.query(getProductQuery, getProductValue)
+                console.log("----------------------------------")
                 console.log(product[0])
                 console.log(wishListProducts[i])
                 products.push([product[0], wishListProducts[i]])
+                console.log("----------------------------------")
 
                 
             }
