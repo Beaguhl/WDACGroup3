@@ -102,7 +102,10 @@
 							{#if showSearch}
 								{#if searchResults.length != 0}
 									{#each searchResults as result}
-										<h3>{result.productName}</h3>
+										<div class="object">
+											<h3>{result[0].productName}</h3>
+											<p>{result[0].description}</p>
+										</div>
 									{/each}
 								{:else}
 									<p>No wishlist products found</p>

@@ -74,7 +74,7 @@ router.get("/:id", async function(request, response){
 })
 
 router.get("/:id/search", async function(request, response){
-    const id = request.get("UserID")
+    const id = parseInt(request.params.id)
 
     console.log("searching my wish list")
     const userID = request.get("UserID")
@@ -107,6 +107,10 @@ router.get("/:id/search", async function(request, response){
             if (wishListProduct.length != 0){
                 console.log(searchedProducts[i].productName)
                 let arrLenght = searchResults.length
+                console.log("---------------------------------")
+                console.log(searchedProducts[i])
+                console.log(wishListProduct[0])
+                console.log("---------------------------------")
                 searchResults[arrLenght] = [searchedProducts[i], wishListProduct[0]]
 
             }
