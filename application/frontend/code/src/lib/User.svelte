@@ -163,7 +163,7 @@
     console.log(wishListProductID)
     try {
 
-      const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID, {
+      const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID + "/purchase", {
         method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
@@ -177,6 +177,35 @@
         case 200:
           console.log("updated suceeded")
           loadUser()
+      }
+
+    } catch(error) {
+      
+    }
+  } 
+
+  async function undoPurchaseProduct(wishListProductID){
+    console.log("click")
+    console.log(wishListProductID)
+    try {
+
+      const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID + "/undo-purchase", {
+        method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+          "UserID": $user.userID
+				}
+
+      })
+
+      switch(response.status) {
+        case 200:
+          console.log("updated suceeded")
+          loadUser()
+
+        case 403:
+          console.log("anouteziered")
       }
 
     } catch(error) {
@@ -206,7 +235,7 @@
 
     <div id="profile">
       <h1>{fetchedUser.username}</h1>
-      {#if fetchedFollow[0]}
+      {#if fetchedFollow[0] != null}
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
         <button class="follow-button" on:click={followUser}>Follow</button>
@@ -226,7 +255,7 @@
             {#if product[1].purchased}
               <div class="wish-item done">
                 <div class="wish-title">{product[0].productName}</div>
-                <button >
+                <button on:click={() => undoPurchaseProduct(product[1].wishListProductID)}>
                   <div class="done-checkbox done">✓</div>
                 </button>
                 

@@ -130,7 +130,6 @@ router.get('/search', async function (request, response) {
 //---------------------- users/id -------------------------
 router.get("/:id", async function (request, response) {
 
-	const id = parseInt(request.params.id)
 	const userID = request.get("UserID")
 
 	try {
@@ -146,17 +145,21 @@ router.get("/:id", async function (request, response) {
 		const userQuery = "SELECT userID, username FROM Users WHERE userID = ?"
 		const userValues = [otherUsersID]
 		const user = await connection.query(userQuery, userValues)
-		console.log("kraka userid is: " + userID)
-		console.log("other userID is: " + otherUsersID)
 		const userToSend = user[0]
 
 		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
 		const followValues = [userID, otherUsersID]
+		console.log("follow value: " + followValues)
 
 		const follow = await connection.query(followQuery, followValues)
-		const followToSend = follow[0]
-		
+		var followToSend = follow[0]
+		console.log("follow to send is: " + followToSend)
 
+		if (!followToSend){
+			console.log("follow not")
+			followToSend = null
+		} 
+		
 		const model = {
 			userToSend,
 			followToSend

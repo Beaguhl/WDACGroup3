@@ -16,8 +16,8 @@ pool.on('error', function (error) {
 })
 
 module.exports = router
-console.log("inside whish list product")
-router.patch("/:id", async function(request, response){
+
+router.patch("/:id/purchase", async function(request, response){
     console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
@@ -26,12 +26,8 @@ router.patch("/:id", async function(request, response){
 
     try {
         const connection = await pool.getConnection()
-        /*
-            UPDATE table_name
-            SET column1 = value1, column2 = value2, ...
-            WHERE condition;
-        */
-       console.log("got connection")
+
+        console.log("got connection")
 
         const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
         console.log("1")
@@ -40,12 +36,48 @@ router.patch("/:id", async function(request, response){
 
         await connection.query(updatePurchasedQuery, updatePurchasedValues)
 
-        //---- remove later-------
-        const test = "SELECT * FROM WishListProduct WHERE "
-
         console.log("updated!")
         response.status(200).end()
 
+    } catch(error) {
+
+    }
+
+})
+
+router.patch("/:id/undo-purchase", async function(request, response){
+    console.log("entering update purchased")
+    const id = parseInt(request.params.id)
+    const userID = request.get("UserID")
+    console.log("id to update is: " + id)
+    console.log("my userID is: " + userID)
+
+    try {
+        const connection = await pool.getConnection()
+
+        console.log("got connection")
+
+        const getUserPurchasedQuery = "SELECT userPurchased FROM WishListProduct WHERE wishListProductID = ?"
+        const getUserPurchasedValues = [id]
+
+        const userPurchasedID = await connection.query(getUserPurchasedQuery, getUserPurchasedValues)
+        console.log(userPurchasedID[0].userPurchased + "bought this product")
+        console.log("logged in as userID: " + userID)
+
+        if (userPurchasedID[0].userPurchased == userID){
+            const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
+            const updatePurchasedValues = [false, null, id]
+
+            await connection.query(updatePurchasedQuery, updatePurchasedValues)
+
+            console.log("updated!")
+            response.status(200).end()
+
+        } else {
+            response.status(403).end()
+        }
+
+        
     } catch(error) {
 
     }
