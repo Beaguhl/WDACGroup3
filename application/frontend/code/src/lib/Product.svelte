@@ -142,7 +142,7 @@
 					<p>this product is already in your wishlist</p>
 				{:else}
 
-					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct[0].productID)}>
+					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.product.productID)}>
 
 						Add to WishList
 					</button>
