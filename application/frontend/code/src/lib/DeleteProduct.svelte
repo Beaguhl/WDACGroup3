@@ -91,13 +91,17 @@
 <div class="mainContent">
 	{#if fetchedProduct}
 	<div class="card">
-		<div class="form-group">
+		
 				<h1 class="card-title">Are you sure you want to delete {fetchedProduct[0].productName}</h1>
-			</div>
+				<p class="card-subtitle">{fetchedProduct[0].description}</p>
+			<Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
 				<button class="yes-button" on:click={handleDelete}>Yes</button>
+			</Link>
+			<p class="emptyGridSpace"></p>
 			<Link class="Links" to="/products/{id}">
 				<button class="no-button">No</button>
 			</Link>
+			
 	</div>
 			
 	{/if}
@@ -121,6 +125,8 @@
 	.card{
 		grid-area: mid;
 		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
 		grid-template-areas: 
 		"cardTop cardTop cardTop"
 		"cardMid cardMid cardMid"
@@ -136,6 +142,14 @@
 		font-size: 30px;
 		font-weight: bold;
 		margin-bottom: 10px;
+		text-align: center;
+	}
+
+	.card-subtitle{
+		grid-area: cardMid;
+		font-size: 20px;
+		color: lightgray;
+		margin-bottom: 20px;
 	}
 
 	.yes-button{
@@ -151,6 +165,10 @@
 		border-radius: 5px;
 		cursor: pointer;
 		transition: background-color 0.3s ease;
+	}
+
+	.emptyGridSpace{
+		grid-area: cardBotMid;
 	}
 
 	.no-button{
