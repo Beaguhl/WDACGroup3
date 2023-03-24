@@ -88,14 +88,83 @@
 
 </script>
 
-<div class="container">
+<div class="mainContent">
 	{#if fetchedProduct}
-			<div class="form-group">
-				<h1>Are you sure you want to delete {fetchedProduct[0].productName}</h1>
+	<div class="card">
+		<div class="form-group">
+				<h1 class="card-title">Are you sure you want to delete {fetchedProduct[0].productName}</h1>
 			</div>
-				<button on:click={handleDelete}>Yes</button>
+				<button class="yes-button" on:click={handleDelete}>Yes</button>
 			<Link class="Links" to="/products/{id}">
-				<button>No</button>
+				<button class="no-button">No</button>
 			</Link>
+	</div>
+			
 	{/if}
 </div>
+
+<style>
+
+.mainContent{
+		height: 80vh;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+		grid-template-areas: 
+		". . ."
+		". mid ."
+		". . .";
+	}
+
+	.card{
+		grid-area: mid;
+		display: grid;
+		grid-template-areas: 
+		"cardTop cardTop cardTop"
+		"cardMid cardMid cardMid"
+		"cardBotLeft cardBotMid cardBotRight";
+		background-color: gray;
+		border-radius: 5px;
+		text-align: center;
+		width: 600px;
+	}
+
+	.card-title{
+		grid-area: cardTop;
+		font-size: 30px;
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
+
+	.yes-button{
+		grid-area: cardBotLeft;
+		background-color: #F32626;
+		border: none;
+		color: white;
+		padding: 10px 20px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+	}
+
+	.no-button{
+		grid-area: cardBotRight;
+		background-color: #2A7BE6;
+		border: none;
+		color: white;
+		padding: 10px 20px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+	}
+</style>
