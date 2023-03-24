@@ -4,12 +4,11 @@
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/Users.svelte'
 	import Products from './lib/Products.svelte'
-	import DropdownMenu from './lib/DropdownMenu.svelte'
 	import NavBar from './lib/NavBar.svelte'
 	import NavItem from './lib/NavItem.svelte'
 	import User from './lib/User.svelte'
 	import IconButton from './lib/IconButton.svelte'
-	import LoggedInDropDown from './lib/LoggedInDropDown.svelte'
+	import DropDown from './lib/DropdownMenu.svelte'
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
@@ -64,7 +63,6 @@ let username = ""
 						userID: body.userID,
 						admin: body.admin
                     }
-                    closedDropDown = false
                     break
 
                 case 400:
@@ -109,7 +107,7 @@ let username = ""
 				Login
 			</span>
 			{#if openBar}
-				<LoggedInDropDown on:clickOutside={toggleBar}></LoggedInDropDown>
+				<DropDown on:clickOutside={toggleBar}></DropDown>
 			{/if}
 
 		</NavItem>

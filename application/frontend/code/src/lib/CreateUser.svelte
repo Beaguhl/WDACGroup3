@@ -1,12 +1,59 @@
 <script>
-    import {Router, Link, Route} from 'svelte-routing'
+    import {Router, Link, Route, navigate} from 'svelte-routing'
     import { get_root_for_style, prevent_default } from 'svelte/internal';
     import StartPage from "./StartPage.svelte"
+    import { user } from '../user-store';
+
 
     let username = ""
     let password = ""
     let errorArr = []
     let userWasCreated = false
+
+
+    //let username = ""
+    //let password = ""
+    let body = null
+    let accessToken = null
+    let noMatch = false
+    let closedDropDown = false
+    async function login(){
+        try {
+            console.log("now we login after creating account")
+            console.log("Userud is" + $user.userID)
+            const response = await fetch("http://localhost:8080/tokens", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+            switch(response.status){
+                case 200:
+                    body = await response.json()
+                    //accessToken = body.access_token
+                    console.log("nu kommer logged in token: " + body.access_token)
+                    
+                    $user = {
+                        isLoggedIn: true,
+                        accessToken: body.access_token,
+                        userID: body.userID,
+                        admin: body.admin
+                    }
+                    closedDropDown = true
+                    navigate("/")
+
+                    break
+                    
+                case 400:
+                    noMatch = true
+                    console.log("case 400")
+                    break
+            }
+        } catch (error){
+            console.log(error)
+        }
+    }
 
     async function createUser(){
 
@@ -29,7 +76,7 @@
             switch(response.status){
                 case 201:
                     //created user
-                    userWasCreated = true
+                    login()
                     break
 
                 case 400:
@@ -41,7 +88,6 @@
         } catch (error) {
             errorArr.push("COMMUNICATION_ERROR")
         }
-
         
     }
 
@@ -51,10 +97,7 @@
 	<main>
         <div>Create Account</div>
             
-            {#if userWasCreated}
-                <p>Account created!</p>
-                <Link to="/">Go to start page</Link>
-            {:else}
+        
             <form on:submit|preventDefault={createUser}>
                 <div>
                     Username:
@@ -78,7 +121,7 @@
                 </ul>
             {/if}
 
-        {/if}
+        
         
 		<Route path="/StartPage" component="{StartPage}"></Route>
 	</main>
