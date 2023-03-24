@@ -83,7 +83,6 @@
 
 </script>
 
-<body>
 	{#if $user.isLoggedIn}
 		<section>
 			<div class="container">
@@ -133,7 +132,6 @@
 		<p>You need to be logged in to view my wish list</p>
 	{/if}
 	
-</body>
 
 <style>
 

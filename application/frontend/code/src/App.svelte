@@ -126,7 +126,7 @@ let username = ""
 		<Route path="/products/:id" component="{Product}"></Route>
 		<Route path="/my-account" component="{MyAccount}"></Route>
 		<Route path="/follows/followings" component="{Following}"></Route>
-		<Route path="/my-account" component="{MyWishList}"></Route>
+		<Route path="/my-wishlist" component="{MyWishList}"></Route>
 		<Route path="/follows/followers" component="{Followers}"></Route>
 		<Route path="/create-products" component="{CreateProduct}"></Route>
 		<Route path="/products/:id/update" component="{UpdateProduct}"></Route>
