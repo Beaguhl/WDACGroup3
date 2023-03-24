@@ -1,6 +1,6 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
-	import {Router, Route, Link} from 'svelte-routing'
+	import {Router, Route, Link, navigate} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/Users.svelte'
 	import Products from './lib/Products.svelte'
@@ -32,47 +32,17 @@ window.addEventListener('popstate', () => {
   currentRoute = window.location.pathname;
 });
 	
-let username = ""
+	let username = ""
     let password = ""
     let body = null
     let accessToken = null
     let noMatch = false
     let closedDropDown = true
+	let emptyField = false
+	let dropdownShown = false
 
-    async function login(){
-        console.log("clicked login")
-        try {
-            const response = await fetch("http://localhost:8080/tokens", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-            })
+	
 
-            switch(response.status){
-                case 200:
-                    body = await response.json()
-                    //accessToken = body.access_token
-                    console.log("nu kommer logged in token: " + body.access_token)
-
-                    $user = {
-                        isLoggedIn: true,
-                        accessToken: body.access_token,
-						userID: body.userID,
-						admin: body.admin
-                    }
-                    break
-
-                case 400:
-                    noMatch = true
-                    console.log("case 400")
-                    break
-            }
-        } catch (error){
-
-        }
-    }
 	export let openBar = false
 	function toggleBar(){
 		openBar = !openBar
@@ -80,7 +50,50 @@ let username = ""
 
 	function logout(){
 		$user.isLoggedIn = false
+		navigate("/")
 	}
+
+
+	async function login() {
+    try {
+      console.log("Userud is" + $user.userID)
+      const response = await fetch("http://localhost:8080/tokens", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+      })
+      switch (response.status) {
+        case 200:
+          body = await response.json()
+          console.log("nu kommer logged in token: " + body.access_token)
+
+          $user = {
+            isLoggedIn: true,
+            accessToken: body.access_token,
+            userID: body.userID,
+            admin: body.admin
+          }
+          closedDropDown = true
+		  	username = ""
+    		password = ""
+			emptyField = false
+			dropdownShown = false
+          break
+
+        case 400:
+          emptyField = true
+          console.log("case 400")
+          break
+      }
+    } catch (error) {
+    }
+  }
+
+  function toggleDropDown() {
+    dropdownShown = !dropdownShown
+  }
 	
 </script>
 
@@ -104,19 +117,44 @@ let username = ""
 			
 		</div>
 		<div>
+			
 
 			{#if $user.isLoggedIn}
-				<button on:click={logout}> logout </button>
+				<button on:click={logout}> Logout </button>
 			{:else}
-			<NavItem>
-				<span slot="trigger" id="pointer" on:click={toggleBar}>
-					Login
-				</span>
-				{#if openBar}
-					<DropDown on:clickOutside={toggleBar}></DropDown>
-				{/if}
+				<div class="dropdown">
+					<button class="dropbtn" on:click={toggleDropDown}>Login</button>
+					{#if dropdownShown}
 
-			</NavItem>
+						<div class="dropdown-content">
+							<Router>
+								<main>
+								<form on:submit|preventDefault={login}>
+									<div class="form-group">
+									<label class="form-label" for="username">Username:</label>
+									<input class="form-input" type="text" id="username" name="username" bind:value={username}>
+									</div>
+									<div class="form-group">
+									<label class="form-label" for="password">Password:</label>
+									<input class="form-input" type="password" id="password" name="password" bind:value={password}>
+									</div>
+									<button class="form-btn" id="pointer" type="submit">Login</button>
+								</form>
+								<div >
+									<Link class="Links create-account-link"  to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
+								</div>
+								{#if emptyField}
+									<div class="error-message">
+									<p>No field can be left empty</p>
+									</div>
+								{/if}
+								<Route path="/create-account" component="{CreateUser}"></Route>
+								</main>
+							</Router>
+						</div>
+					{/if}
+					
+				</div>
 			{/if}
 
 		  	
@@ -165,8 +203,6 @@ let username = ""
 	cursor: pointer;
 }
 
-
-
   
 	main{
 		z-index: 1;
@@ -189,8 +225,86 @@ let username = ""
 		font-family: Helvetica;
 	}
 
+	.dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        position: absolute;
+        z-index: 1;
+		left: -240px;
+		background-color: #333;
+		padding: 20px;
+    }
+
+    .dropdown-content a {
+        display: block;
+        text-align: left;
+    }
+
+    
+
+    .dropbtn {
+        color: white;
+        background-color: transparent;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .dropbtn:hover {
+        text-decoration: underline;
+    }
 
 
+	
+  
+.stack {
+  display: grid;
+  align-items: start;
+}
+  
+.stack > :global(*) {
+  grid-area: 1 / 1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+}
+
+.form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.form-input {
+  padding: 3px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 290px;
+  font-size: 14px;
+}
+
+.form-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 7px;
+  cursor: pointer;
+  width: 300px;
+  font-size: 14px;
+}
+
+.error-message {
+  margin-top: 5px;
+  color: red;
+  font-size: 14px;
+}
 
 
 
