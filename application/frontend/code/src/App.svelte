@@ -2,12 +2,12 @@
 <script>
 	import {Router, Route, Link, navigate} from 'svelte-routing'
 	import StartPage from "./lib/StartPage.svelte"
-	import SearchUsers from './lib/Users.svelte'
+
 	import Products from './lib/Products.svelte'
-	import NavItem from './lib/NavItem.svelte'
+
 	import User from './lib/User.svelte'
-	import IconButton from './lib/IconButton.svelte'
-	import DropDown from './lib/DropdownMenu.svelte'
+
+
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
@@ -17,9 +17,9 @@
 	import MyAccount from './lib/MyAccount.svelte'
 	import CreateProduct from './lib/CreateProduct.svelte'
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+
 	import { user } from './user-store'
-    import { text } from 'svelte/internal';
+
 	import UpdateProduct from './lib/UpdateProduct.svelte';
 	import DeleteProduct from './lib/DeleteProduct.svelte';
 
@@ -121,7 +121,7 @@ window.addEventListener('popstate', () => {
 			
 
 			{#if $user.isLoggedIn}
-				<button on:click={logout}> Logout </button>
+				<button id="logout" on:click={logout}> Logout </button>
 			{:else}
 				<div class="dropdown">
 					<button class="dropbtn" on:click={toggleDropDown}>Login</button>
@@ -199,7 +199,10 @@ window.addEventListener('popstate', () => {
     padding: 10px;
   }
 
-
+#logout{
+	background-color: gray;
+	color: white;
+}
 
 #pointer{
 	cursor: pointer;
