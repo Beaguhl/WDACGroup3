@@ -2,6 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 const { createPool } = require('mariadb')
+const { validateUser } = require('../user-validations')
 
 const pool = createPool({
 	host: "db",
@@ -18,7 +19,6 @@ pool.on('error', function (error) {
 module.exports = router
 
 const bcrypt = require('bcrypt');
-
 
 function hashPassword(password) {
 	return new Promise((resolve, reject) => {
@@ -38,15 +38,8 @@ function hashPassword(password) {
 	})
 }
 
-const { validateUser } = require('../user-validations')
-//const { validateUser } = require('./validation')
-
-
-const app = express()
-
 //----------- all users ----------------
 router.get("/", async function (request, response) {
-
 	const userID = request.get("UserID")
 
 	try {
@@ -55,7 +48,6 @@ router.get("/", async function (request, response) {
 		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 		const getAllUsersValues = [userID]
 		const users = await connection.query(getAllUsersQuery, getAllUsersValues)
-		console.log(users)
 		response.status(200).json(users)
 
 	} catch (error) {
@@ -64,14 +56,11 @@ router.get("/", async function (request, response) {
 	}
 })
 
+//----------------- create user --------------------
 router.post("/", async function(request, response){
-
 	const user = request.body
-	console.log(user.username + user.password)
-
 	const validationArr = await validateUser(user)
 
-	console.log(validationArr)
 	if (validationArr.length > 0){
 		response.status(400).json(validationArr)
 		return
@@ -98,15 +87,13 @@ router.post("/", async function(request, response){
 
 			await connection.query(createWishListQuery, createWishListValue)
 
-			//response.set('Location', '/users/${userID}')
 			response.status(201).end()
 			
 		} catch(error) { 
 			console.log(error)
-			response.status(500).end() // 500 = server error
+			response.status(500).end()
 		}
 	}
-	
 })
 
 //----------- search users ----------------
@@ -127,15 +114,14 @@ router.get('/search', async function (request, response) {
 			response.status(200).json(searchedUsers)
 		}
 
-	} catch {
-		// add catch
+	} catch(error) {
+		console.log(error)
+		response.status(500).end()
 	}
-
 })
 
 //---------------------- users/id -------------------------
 router.get("/:id", async function (request, response) {
-
 	const userID = request.get("UserID")
 
 	try {
@@ -155,14 +141,11 @@ router.get("/:id", async function (request, response) {
 
 		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
 		const followValues = [userID, otherUsersID]
-		console.log("follow value: " + followValues)
 
 		const follow = await connection.query(followQuery, followValues)
 		var followToSend = follow[0]
-		console.log("follow to send is: " + followToSend)
 
 		if (!followToSend){
-			console.log("follow not")
 			followToSend = null
 		} 
 		
@@ -174,10 +157,8 @@ router.get("/:id", async function (request, response) {
 		response.status(200).json(model)
 
 	} catch (error) {
-		console.log("500 error: " + error)
+		console.log(error)
 		response.status(500).end()
 	}
-
-		
 })
 
