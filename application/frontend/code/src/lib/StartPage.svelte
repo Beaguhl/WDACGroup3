@@ -1,60 +1,43 @@
 <script>
 
 </script>
-
-<!--<App>-->
-<div class="mainDiv">
-	<div class="squareContainer">
-		<div class="square">
-
-		</div>
-		<div class="square">
-	
-		</div>
-	</div>
-	<div>
-		<h2 class="title">
-			Welcome
-		</h2>
-
+<body>
+	<div class="container">
+		<h2 class="title">Welcome to Wish List!</h2>
 		<p class="mainContent">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-			Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-			sunt in culpa qui officia deserunt mollit anim id est laborum.
+			Wish List is a website where you can create and share wish lists with your friends and family. Whether it's for your birthday, wedding, or any other special occasion, you can add items to your wish list and let your loved ones know what you're hoping for. 
+			Sign up now and start creating your wish lists today!
 		</p>
 	</div>
-	
-</div>
+</body>
 
 <style>
 
-	.mainDiv{	
-		display: flex;
-		width: 100vw;
+
+	body {
+		font-family: Arial, sans-serif;
+		margin: 0;
+		padding: 0;
 	}
 
-	.squareContainer{
-		float: left;
-		margin: 5%;
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 20px;
 	}
 
-	.title{
-		display: flex;
-		justify-content: center;
+	h2.title {
+		font-size: 32px;
+		text-align: center;
+		margin-bottom: 20px;
+		color: rgb(212, 247, 213);
 	}
 
-	.mainContent{
-		display: flex;
-		justify-content: center;
-	}
-
-	.square{
-		margin-bottom: 10%;
-		height: 250px;
-		width: 250px;
-		border-radius: 20px;
-		box-shadow: 5px 5px 10px 2px gray;
+	p.mainContent {
+		font-size: 18px;
+		line-height: 1.5;
+		margin-bottom: 40px;
+		color: white;
 	}
 
 </style>
