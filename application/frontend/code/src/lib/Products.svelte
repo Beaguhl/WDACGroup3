@@ -115,6 +115,7 @@ loadAllProducts()
 								{/if}
 							{/if}
 						{/if}
+					{:else if showAllProducts == true}
 						{#if isFetchingProducts}
 							<p>Wait, I'm loading</p>
 						{:else if isUnAuthorized}
@@ -122,8 +123,6 @@ loadAllProducts()
 						{:else if isServerError}
 							<p>Internal server error, try again later</p>
 						{/if}
-						{:else if showAllProducts == true}
-						
 						{#each products as searchedProducti}
 							<Link class="Links" to="/products/{searchedProducti.productID}">
 								<h3>{searchedProducti.productName}</h3>
