@@ -9,6 +9,30 @@
 	let isFetchingProduct = true
 	let failedToFetchProduct = false
 	let fetchedProduct = null
+	let alreadyInList = false
+
+	async function isInWishList(productID){
+		try {
+			const response = await fetch("http://localhost:8080/wishlist-product/" + productID, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
+				}
+			})
+
+			switch(response.status){
+				case 200:
+					console.log("not in the wishlist")
+					alreadyInList = true
+					break
+
+			}
+		} catch(error) {
+
+		}
+	}
 
 	async function loadProduct(){
 		console.log("inside loadProduct")
@@ -25,9 +49,9 @@
 			switch(response.status){
 				case 200:
 					fetchedProduct = await response.json()
-					console.log("fetched product: " + fetchedProduct)
+					console.log("fetched product: " + fetchedProduct.product.productName)
+					console.log(fetchedProduct.productIsInWishList)
 					isFetchingProduct = false
-					
 					break
 				
 				case 404:
@@ -78,7 +102,6 @@
 
 
 
-<!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 
 
 	{#if $user.isLoggedIn}
@@ -91,14 +114,19 @@
 		<div class="flex">
 			<div class="card">
 				<h1 class="card-title">
-					{fetchedProduct.productName}
+					{fetchedProduct.product.productName}
 				</h1>
 				<h2 class="card-subtitle">
-					{fetchedProduct.description}
+					{fetchedProduct.product.description}
 				</h2>
-				<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.productID)}>
-					Add to WishList
-				</button>
+				{#if fetchedProduct.productIsInWishList}
+					<p>this product is already in your wishlist</p>
+				{:else}
+					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.productID)}>
+						Add to WishList
+					</button>
+				{/if}
+				
 			</div>
 		</div>
 		{/if}

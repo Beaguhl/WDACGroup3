@@ -86,7 +86,6 @@ router.patch("/:id/undo-purchase", async function(request, response){
 })
 
 router.post("/:id", async function(request, response){
-    console.log("trying to add")
     
     try {
 
@@ -100,11 +99,8 @@ router.post("/:id", async function(request, response){
 
         const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
         
-
         if (fetchedWishListID != null){
             const wishListID = fetchedWishListID[0].wishListID
-            // INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
-            // const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
 
             const addProductQuery = "INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)"
             const addProductValues = [productID, wishListID, false, null]
@@ -113,10 +109,9 @@ router.post("/:id", async function(request, response){
             response.status(200).end()
         }
 
-        
-
     } catch(error) {
         console.log(error)
         response.status(500).end()
     }
 })
+
