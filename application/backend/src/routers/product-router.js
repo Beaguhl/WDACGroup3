@@ -89,6 +89,45 @@ router.get("/:id", async function (request, response) {
 		const productToSend = await connection.query(productQuery, productValue)
 
 		const product = productToSend[0]
+		var productIsInWishList = false
+
+		try {
+
+			const userID = request.get("UserID")
+
+			const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
+			const getWishListIDValue = [userID]
+	
+			const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
+	
+			if (fetchedWishListID != null){
+				const wishListID = fetchedWishListID[0].wishListID
+	
+				const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE wishListID = ? AND productID = ?"
+				const getWishListProductValues = [wishListID, productValue]
+	
+				const result = await connection.query(getWishListProductQuery, getWishListProductValues)
+	
+				console.log("result is: " + result)
+				if (result.length != 0){
+					console.log("found the product")
+					productIsInWishList = true
+				}
+	
+			}
+	
+		} catch(error) {
+			console.log(error)
+			response.status(500)
+		}
+
+
+		const model = {
+			product,
+			productIsInWishList
+		}
+
+		console.log(model)
 
 		response.status(200).json(product)
 	} catch (error) {
@@ -98,6 +137,7 @@ router.get("/:id", async function (request, response) {
 
 
 router.get("/:id/update", async function (request, response) {
+
 
 	try {
 		const anotherProductID = parseInt(request.params.id)
@@ -138,6 +178,7 @@ router.put("/:id/update", async function (request, response) {
 		console.log("Product updated successfully")
 
 		response.status(200).end()
+
 	} catch (error) {
 		console.log("Error updating product: ", error)
 		response.status(500).end()

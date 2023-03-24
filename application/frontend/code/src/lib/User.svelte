@@ -13,10 +13,12 @@
   let fetchedFollow = null
   let resourceForbidden = false
   let wishListProducts = []
+  let wishListProductID;
 
   async function loadUsersWishList(){
     console.log("loadUsersWishList")
     try {
+      console.log("id to view (not mine) is: " + id)
       const response = await fetch("http://localhost:8080/wishlist/" + id, {
         method: "GET",
 				headers: {
@@ -30,11 +32,8 @@
         case 200:
           console.log("got 200")
           wishListProducts = await response.json()
-          console.log("done fetching")
-          console.log("pr: " + wishListProducts)
-          /*for (let i = 0; i < fetchedProducts.length; i += 1){
-            console.log("hiihhh" + fetchedProducts[i])
-          }*/
+					console.log("showing wishlistProducts: " + wishListProducts)
+          
           
 
       }
@@ -63,13 +62,17 @@
         case 200:
           console.log("user/id got 200")
           const {userToSend, followToSend} = await response.json()
-          console.log("users kommer nu: " + userToSend, followToSend)
+          console.log("users kommer nu: ", userToSend, followToSend)
 
           id = userToSend.userID
+          console.log("id to send is now: " + id)
           await loadUsersWishList()
           fetchedUser = userToSend
+
+          console.log(fetchedUser)
           fetchedFollow = followToSend
-          console.log(fetchedFollow[0])
+          console.log(fetchedFollow)
+
           isFetchingUser = false
           break
         
@@ -88,9 +91,7 @@
     }
   }
 
-  loadUser()
-
-  
+  loadUser()  
 
   async function followUser(){
     console.log("clicked follow")
@@ -154,8 +155,68 @@
 
   }
 
+  async function purchaseProduct(wishListProductID){
+    console.log("click")
+    console.log(wishListProductID)
+    try {
+
+      const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID + "/purchase", {
+        method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+          "UserID": $user.userID
+				}
+
+      })
+
+      switch(response.status) {
+        case 200:
+          console.log("updated suceeded")
+          loadUser()
+      }
+
+    } catch(error) {
+      
+    }
+  } 
+
+  async function undoPurchaseProduct(wishListProductID){
+    console.log("click")
+    console.log(wishListProductID)
+    try {
+
+      const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID + "/undo-purchase", {
+        method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+          "UserID": $user.userID
+				}
+
+      })
+
+      switch(response.status) {
+        case 200:
+          console.log("updated suceeded")
+          loadUser()
+
+        case 403:
+          console.log("anouteziered")
+      }
+
+    } catch(error) {
+      
+
+    }
+  } 
+  
+  
+  
+
 </script>
 <body>
+
 
   {#if $user.isLoggedIn}
 
@@ -170,8 +231,8 @@
     <title></title>
 
     <div id="profile">
-      <h1>{fetchedUser[0].username}</h1>
-      {#if fetchedFollow[0]}
+      <h1>{fetchedUser.username}</h1>
+      {#if fetchedFollow != null}
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
         <button class="follow-button" on:click={followUser}>Follow</button>
@@ -184,19 +245,31 @@
       
       <div class="wish-list">
         {#if wishListProducts.length != 0}
-          {#each wishListProducts as product, index}
+          {#each wishListProducts as product}
+
+          
+          
             {#if product[1].purchased}
               <div class="wish-item done">
                 <div class="wish-title">{product[0].productName}</div>
-                <div class="done-checkbox done">✓</div>
+                <button on:click={() => undoPurchaseProduct(product[1].wishListProductID)}>
+                  <div class="done-checkbox done">✓</div>
+                </button>
+                
+                
               </div>
             {:else}
               <div class="wish-item">
                 <div class="wish-title">{product[0].productName}</div>
-                <div class="done-checkbox"></div>
+                <button on:click={() => purchaseProduct(product[1].wishListProductID)}>
+                  <div class="done-checkbox"></div>
+                </button>
+                
               </div>
             {/if}
-
+          
+              
+            
             
           {/each}
 
@@ -264,6 +337,30 @@ body {
         max-height: 400px;
         margin-top: 20px;
       }
+
+      button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+button .done-checkbox {
+  display: inline-block;
+  width: 20px; /* set a fixed width for the checkbox */
+  height: 20px; /* set a fixed height for the checkbox */
+  color: white; /* set the text color of the checkbox */
+  font-size: 16px; /* set the font size of the checkbox */
+  text-align: center; /* center the text in the checkbox */
+  line-height: 20px; /* set the line height to match the height of the checkbox */
+}
+
+/* hide the text "done" */
+button .done-checkbox.done::after {
+  content: "";
+  display: none;
+}
+
+
       .wish-item {
         display: flex;
         justify-content: space-between;
@@ -282,6 +379,14 @@ body {
         cursor: pointer;
         color: white
       }
+
+      /* Hide all answers by default. */ #faq dd{
+display: none; }
+/* Show answers with the class "show". */ #faq dd.show{
+display: initial; }
+
+
+
       .wish-item .done-checkbox {
         height: 20px;
         width: 20px;
@@ -298,6 +403,7 @@ body {
         color: white;
         border-color: #ffffff;
       }
+
     /*.pagination {
       display: flex;
       justify-content: center;
@@ -317,7 +423,6 @@ body {
       margin-right: 0;
     }*/
 
-
   :global(body) {
     
     background-color:rgb(255, 255, 255);
@@ -327,9 +432,6 @@ body {
     
     
   }
-
-
-
 
 
 </style>

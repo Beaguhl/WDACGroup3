@@ -77,9 +77,7 @@ INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VA
 INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 3, FALSE, NULL);
 INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (3, 2, TRUE, 3);
 INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (4, 3, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (6, 2, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (7, 3, TRUE, 2);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (8, 2, FALSE, NULL);
+INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (3, 2, FALSE, NULL);
 
 
 

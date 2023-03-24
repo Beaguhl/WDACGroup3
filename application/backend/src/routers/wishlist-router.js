@@ -19,8 +19,11 @@ module.exports = router
 
 const app = express()
 
-router.get("/:id", async function (request, response) {
-    const id = request.get("UserID")
+
+router.get("/:id", async function(request, response){
+    
+    const id = parseInt(request.params.id)
+
     const userID = request.get("UserID")
 
     try {
@@ -45,13 +48,15 @@ router.get("/:id", async function (request, response) {
             for (let i = 0; i < wishListProducts.length; i += 1) {
                 // gets one product from "Products"
                 const getProductQuery = "SELECT * FROM Products WHERE productID = ?"
-                const wishListProductID = wishListProducts[i].wishListProductID
+                const wishListProductID = wishListProducts[i].productID
                 const getProductValue = [wishListProductID]
 
                 const product = await connection.query(getProductQuery, getProductValue)
+                console.log("----------------------------------")
                 console.log(product[0])
                 console.log(wishListProducts[i])
                 products.push([product[0], wishListProducts[i]])
+                console.log("----------------------------------")
 
 
             }
@@ -69,8 +74,10 @@ router.get("/:id", async function (request, response) {
     }
 })
 
-router.get("/:id/search", async function (request, response) {
-    const id = request.get("UserID")
+
+router.get("/:id/search", async function(request, response){
+    const id = parseInt(request.params.id)
+
 
     console.log("searching my wish list")
     const userID = request.get("UserID")
@@ -103,6 +110,10 @@ router.get("/:id/search", async function (request, response) {
             if (wishListProduct.length != 0) {
                 console.log(searchedProducts[i].productName)
                 let arrLenght = searchResults.length
+                console.log("---------------------------------")
+                console.log(searchedProducts[i])
+                console.log(wishListProduct[0])
+                console.log("---------------------------------")
                 searchResults[arrLenght] = [searchedProducts[i], wishListProduct[0]]
 
             }

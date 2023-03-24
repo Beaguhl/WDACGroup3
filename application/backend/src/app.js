@@ -10,6 +10,7 @@ const productRouter = require('./routers/product-router')
 const userRouter = require('./routers/user-router');
 const myAccountRouter = require('./routers/my-account-router')
 const myWishListRouter = require('./routers/wishlist-router')
+const wishListproduct = require('./routers/wishlist-product-router')
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"
 
@@ -47,6 +48,8 @@ app.use(function (request, response, next) {
 app.get("/", function (request, response) {
 	response.send("It works")
 })
+
+
 
 
 //----------------------- tokens ----------------------
@@ -116,6 +119,8 @@ app.use('/users', userRouter)
 app.use('/products', productRouter)
 app.use('/my-account', myAccountRouter)
 app.use('/wishlist', myWishListRouter)
+app.use('/wishlist-product', wishListproduct)
+
 
 //app.listen(8080)
 app.listen(8080, () => {

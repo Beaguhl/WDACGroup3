@@ -5,6 +5,8 @@
 	import { user } from "../user-store";
 
 	export let id = $user.userID
+	console.log("id to send in is: " + $user.userID)
+	console.log("id to send in is: " + id)
 	let wishListProducts = []
 
 	let listIsEmpty = true
@@ -28,7 +30,7 @@
           			wishListProducts = await response.json()
 					listIsEmpty = false
 					showSearch = false
-					console.log(wishListProducts)
+					console.log("showing wishlistProducts: " + wishListProducts)
           			break
         
         		case 500:
@@ -100,7 +102,10 @@
 							{#if showSearch}
 								{#if searchResults.length != 0}
 									{#each searchResults as result}
-										<h3>{result.productName}</h3>
+										<div class="object">
+											<h3>{result[0].productName}</h3>
+											<p>{result[0].description}</p>
+										</div>
 									{/each}
 								{:else}
 									<p>No wishlist products found</p>
@@ -108,7 +113,12 @@
 							{:else}
 								{#if wishListProducts.length != 0}
 									{#each wishListProducts as product}
-										<h3>{product.productName}</h3>
+									<div class="object">
+										<h3>{product[0].productName}</h3>
+										<p>{product[0].description}</p>
+									</div>
+										
+										
 									{/each}
 								{:else}
 									<p>You do not have any products in your wishlist at the moment</p>
@@ -131,6 +141,13 @@
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+
+.object {
+	display: flex; 
+	flex-direction: 
+	column; align-items: 
+	center; justify-content: center;
 }
 
 .container {

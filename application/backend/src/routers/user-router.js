@@ -55,7 +55,7 @@ router.get("/", async function (request, response) {
 		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 		const getAllUsersValues = [userID]
 		const users = await connection.query(getAllUsersQuery, getAllUsersValues)
-
+		console.log(users)
 		response.status(200).json(users)
 
 	} catch (error) {
@@ -142,14 +142,24 @@ router.get("/:id", async function (request, response) {
 
 		const connection = await pool.getConnection()
 
-		const userQuery = "SELECT * FROM Users WHERE userID = ?"
+		const userQuery = "SELECT userID, username FROM Users WHERE userID = ?"
 		const userValues = [otherUsersID]
-		const userToSend = await connection.query(userQuery, userValues)
+		const user = await connection.query(userQuery, userValues)
+		const userToSend = user[0]
 
-		const followQuery = `SELECT * FROM Follow WHERE userID = ${userID} AND followingUserID = ${otherUsersID}`
+		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const followValues = [userID, otherUsersID]
+		console.log("follow value: " + followValues)
 
-		const followToSend = await connection.query(followQuery)
+		const follow = await connection.query(followQuery, followValues)
+		var followToSend = follow[0]
+		console.log("follow to send is: " + followToSend)
 
+		if (!followToSend){
+			console.log("follow not")
+			followToSend = null
+		} 
+		
 		const model = {
 			userToSend,
 			followToSend
