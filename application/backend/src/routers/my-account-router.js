@@ -3,8 +3,6 @@ const express = require('express')
 const router = express.Router()
 const { createPool } = require ('mariadb')
 
-//import * as hash from "../app.js"
-
 const bcrypt = require('bcrypt');
 
 const pool = createPool({
@@ -22,8 +20,6 @@ pool.on('error', function(error){
 module.exports = router
 
 const { validateUsername, validatePassword } = require('../user-validations')
-
-const app = express()
 
 
 function hashPassword(password) {
@@ -44,18 +40,15 @@ function hashPassword(password) {
 	})
 }
 
-
 //---------------- get my account -------------------------
 router.get('/', async function (request, response) {
 	const userID = request.get("UserID")
-	console.log("userID is: "+ userID)
-    const enteredPassword = request.get("Password")
+
     try {
         const connection = await pool.getConnection()
         const getUsernameQuery = 'SELECT username FROM Users WHERE userID = ?'
 		const getUsernameValue = [userID]
         const username = await connection.query(getUsernameQuery, getUsernameValue)
-		console.log("username length is: " + username.length)
 
 		if (username.length == 0){
 			response.status(404).end()
@@ -63,8 +56,8 @@ router.get('/', async function (request, response) {
 			response.status(200).json(username[0].username)
 		}
         
-    } catch (err) {
-        console.error(err)
+    } catch (error) {
+        console.error(error)
         response.status(500).end()
     }
 })
@@ -92,11 +85,12 @@ router.put("/update-password", async function(request, response){
         }
 
 	} catch (error){
-        console.log("500 error: " + error)
+        console.log(error)
         response.status(500).end()
 	}
 })
 
+//---------------- update username -------------------------
 router.put("/update-username", async function(request, response){
     const userID = request.get("UserID")
     const newUsername = request.get("NewUsername")
@@ -113,12 +107,12 @@ router.put("/update-username", async function(request, response){
             const updateUsernameValues = [newUsername, userID]
 
             await connection.query(updateUsernameQuery, updateUsernameValues)
-            console.log("username updated")
 
             response.status(200).end()
         }
+
     } catch(error){
-        console.log("500 error: " + error)
+        console.log(error)
         response.status(500).end()
     }
 })
