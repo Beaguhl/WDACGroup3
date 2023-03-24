@@ -1,4 +1,3 @@
-const e = require('express')
 const express = require('express')
 
 const router = express.Router()
@@ -18,52 +17,39 @@ pool.on('error', function (error) {
 
 module.exports = router
 
+//------------------ mark product as purchased ---------------
 router.patch("/:id/purchase", async function(request, response){
-    console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
-    console.log("id to update is: " + id)
-    console.log("my userID is: " + userID)
 
     try {
         const connection = await pool.getConnection()
 
-        console.log("got connection")
-
         const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
-        console.log("1")
         const updatePurchasedValues = [true, userID, id]
-        console.log("2")
 
         await connection.query(updatePurchasedQuery, updatePurchasedValues)
 
-        console.log("updated!")
         response.status(200).end()
 
     } catch(error) {
-
+        console.log(error)
+        response.status(500).end()
     }
-
 })
 
+//--------------- undo marked product as purchased ---------------
 router.patch("/:id/undo-purchase", async function(request, response){
-    console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
-    console.log("id to update is: " + id)
-    console.log("my userID is: " + userID)
 
     try {
         const connection = await pool.getConnection()
-
-        console.log("got connection")
 
         const getUserPurchasedQuery = "SELECT userPurchased FROM WishListProduct WHERE wishListProductID = ?"
         const getUserPurchasedValues = [id]
 
         const userPurchasedID = await connection.query(getUserPurchasedQuery, getUserPurchasedValues)
-        console.log(userPurchasedID[0].userPurchased + "bought this product")
-        console.log("logged in as userID: " + userID)
 
         if (userPurchasedID[0].userPurchased == userID){
             const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
@@ -71,27 +57,24 @@ router.patch("/:id/undo-purchase", async function(request, response){
 
             await connection.query(updatePurchasedQuery, updatePurchasedValues)
 
-            console.log("updated!")
             response.status(200).end()
 
         } else {
             response.status(403).end()
         }
 
-        
     } catch(error) {
-
+        console.log(error)
+        response.status(500).end()
     }
-
 })
 
+//----------------- add wish to wishlist -------------------
 router.post("/:id", async function(request, response){
+    const productID = parseInt(request.params.id)
+    const userID = request.get("UserID")
     
     try {
-
-        const productID = parseInt(request.params.id)
-        const userID = request.get("UserID")
-
         const connection = await pool.getConnection()
 
         const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
