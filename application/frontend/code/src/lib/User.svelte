@@ -403,7 +403,26 @@ display: initial; }
         color: white;
         border-color: #ffffff;
       }
-  
+
+    /*.pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .pagination > button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .pagination > button:last-child {
+      margin-right: 0;
+    }*/
+
   :global(body) {
     
     background-color:rgb(255, 255, 255);
@@ -413,8 +432,6 @@ display: initial; }
     
     
   }
-
-  
 
 
 </style>

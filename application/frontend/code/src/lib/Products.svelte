@@ -166,11 +166,6 @@ loadAllProducts()
 		text-decoration: underline;
 	}
 
-	.imageSize{
-		width: 10vw;
-		height: 20vh;
-	}
-
 	.container{
 		max-width: 960px;
 		margin: 0 auto;
@@ -209,33 +204,6 @@ loadAllProducts()
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 		grid-gap: 20px;
-	}
-
-	.profilePicture{
-	  margin-top: 10%;
-	  display: flex;
-	  justify-content: center;
-	}
-
-	.text{
-	  display: flex;
-	  justify-content: center;
-	  margin-top: 4%;
-	  font-size: x-large;
-	  font-weight: bolder;
-	  color: black;
-	}
-
-	.square{
-		width: 85%;
-		height: 100%;
-		border-radius: 20px;
-		z-index: 2;
-		box-shadow: 5px 5px 5px 2px;
-		margin-bottom: 5%;
-		margin-left: 6%;
-		margin-right: 2%;
-		background-color: rgba(94, 127, 132, 0.418);
 	}
 	
 	p {
