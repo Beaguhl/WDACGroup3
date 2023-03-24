@@ -60,12 +60,12 @@ app.post('/tokens', async function (request, response) {
 	const password = request.body.password
 
 	if (grantType != "password") {
-		response.status(400).json({ error: "unsupported_grant_type" })
+		response.status(400).json({ error: "unsupported_grant_type" }).end()
 		return
 	}
 
 	if (username == "" || password == "") {
-		response.status(400).json({ error: "invalid_request" }) //
+		response.status(400).json({ error: "invalid_request" }).end()
 		return
 	}
 
