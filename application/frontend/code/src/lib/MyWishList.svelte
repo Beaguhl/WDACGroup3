@@ -1,17 +1,12 @@
 <script>
-
-	import {Router, Link, Route} from 'svelte-routing'
-
 	import { user } from "../user-store";
 
 	export let id = $user.userID
-	console.log("id to send in is: " + $user.userID)
-	console.log("id to send in is: " + id)
+
 	let wishListProducts = []
-
 	let listIsEmpty = true
-
 	let showSearch = false
+	let somethingWentWrong = false
 
 	async function loadWishList(){
 		try {
@@ -25,7 +20,6 @@
 			})
 
 			switch(response.status) {
-        
         		case 200:
           			wishListProducts = await response.json()
 					listIsEmpty = false
@@ -38,11 +32,11 @@
 
 				case 404:
 					break
-
       		}
 
 		} catch(error){
-			// handle error
+			console.log(error)
+			somethingWentWrong = true
 		}
 	}
 
@@ -77,47 +71,49 @@
 			}
 			
 		} catch(error){
-
+			console.log(error)
+			somethingWentWrong = true
 		}
 	}
 
 </script>
 
 	{#if $user.isLoggedIn}
-		<section>
-			<div class="container">
-				<div class="squareContainer">
-					<div class="container">
-						<h1>My Wish List</h1>
-							<form on:submit|preventDefault={searchProducts}>
-								<div class="search-container">
-									<input type="text" name="q" placeholder="Search for wish products...">
-									<button type="submit" id="search-button">Search</button>
-									<button type="button" id="show-all-button" on:click={loadWishList}>Show All Wish Products</button>
-								</div>
-							</form>
-							<div class="search-container"></div>
-						<div class="user-container">
-							{#if showSearch}
-								{#if searchResults.length != 0}
-									{#each searchResults as result}
-										<div class="object">
-											<h3>{result[0].productName}</h3>
-											<p>{result[0].description}</p>
-										</div>
-									{/each}
-								{:else}
-									<p>No wishlist products found</p>
-								{/if}
-							{:else}
-								{#if wishListProducts.length != 0}
-									{#each wishListProducts as product}
-									<div class="object">
-										<h3>{product[0].productName}</h3>
-										<p>{product[0].description}</p>
+		{#if somethingWentWrong}
+			<p>Something went wrong.</p>
+		{:else}
+			<section>
+				<div class="container">
+					<div class="squareContainer">
+						<div class="container">
+							<h1>My Wish List</h1>
+								<form on:submit|preventDefault={searchProducts}>
+									<div class="search-container">
+										<input type="text" name="q" placeholder="Search for wish products...">
+										<button type="submit" id="search-button">Search</button>
+										<button type="button" id="show-all-button" on:click={loadWishList}>Show All Wish Products</button>
 									</div>
-										
-										
+								</form>
+								<div class="search-container"></div>
+							<div class="user-container">
+								{#if showSearch}
+									{#if searchResults.length != 0}
+										{#each searchResults as result}
+											<div class="object">
+												<h3>{result[0].productName}</h3>
+												<p>{result[0].description}</p>
+											</div>
+										{/each}
+									{:else}
+										<p>No wishlist products found</p>
+									{/if}
+								{:else}
+									{#if wishListProducts.length != 0}
+										{#each wishListProducts as product}
+										<div class="object">
+											<h3>{product[0].productName}</h3>
+											<p>{product[0].description}</p>
+										</div>		
 									{/each}
 								{:else}
 									<p>You do not have any products in your wishlist at the moment</p>
@@ -128,80 +124,80 @@
 				</div>
 			</div>
 		</section>
-	{:else}
-		<p>You need to be logged in to view my wish list</p>
 	{/if}
-	
+{:else}
+	<p>You need to be logged in to view my wish list</p>
+{/if}
 
 <style>
 
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
 
-.object {
-	display: flex; 
-	flex-direction: 
-	column; align-items: 
-	center; justify-content: center;
-}
+	.object {
+		display: flex; 
+		flex-direction: 
+		column; align-items: 
+		center; justify-content: center;
+	}
 
-.container {
-	max-width: 960px;
-	margin: 0 auto;
-	padding: 20px;
-}
+	.container {
+		max-width: 960px;
+		margin: 0 auto;
+		padding: 20px;
+	}
 
-h1 {
-	text-align: center;
-	margin-bottom: 20px;
-	color: rgb(212, 247, 213);
-}
+	h1 {
+		text-align: center;
+		margin-bottom: 20px;
+		color: rgb(212, 247, 213);
+	}
 
-h3 {
-	color: white;
-}
+	h3 {
+		color: white;
+	}
 
-h3:hover {
-	color: rgb(143, 249, 205);
-	text-decoration: underline;
-}
+	h3:hover {
+		color: rgb(143, 249, 205);
+		text-decoration: underline;
+	}
 
-.search-container {
-	display: flex;
-	align-items: center;
-	margin-bottom: 20px;
-}
+	.search-container {
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+	}
 
-.search-container input[type="text"] {
-	flex: 1;
-	padding: 10px;
-	border: none;
-	border-bottom: 2px solid #ccc;
-}
+	.search-container input[type="text"] {
+		flex: 1;
+		padding: 10px;
+		border: none;
+		border-bottom: 2px solid #ccc;
+	}
 
-.search-container button {
-	margin-left: 10px;
-	padding: 10px;
-	border: none;
-	background-color: #333;
-	color: #fff;
-	cursor: pointer;
-}
+	.search-container button {
+		margin-left: 10px;
+		padding: 10px;
+		border: none;
+		background-color: #333;
+		color: #fff;
+		cursor: pointer;
+	}
 
-.search-container button:hover {
-	background-color: #555;
-}
+	.search-container button:hover {
+		background-color: #555;
+	}
 
-.user-container {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	grid-gap: 20px;
-}
+	.user-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		grid-gap: 20px;
+	}
 
-p {
-	color: white
-}
+	p {
+		color: white
+	}
 </style>

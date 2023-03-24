@@ -1,14 +1,11 @@
 <script>
 	import { user } from "../user-store"
-	import { Router, Link, Route, navigate } from "svelte-routing"
-	import { onMount } from "svelte";
-	import Products from "./Products.svelte";
+	import { Link, navigate } from "svelte-routing"
 
 	export let id
 	let isFetchingProduct = true
 	let fetchedProduct = null
 	let failedToFetchProduct = false
-
 	let successfulProductDelete = false
 
 	async function loadProductToDelete(){
@@ -22,6 +19,7 @@
 					"UserID": $user.userID
 				}
 			})
+
 			switch(response.status){
 				case 200:
 					fetchedProduct = await response.json()
@@ -32,7 +30,8 @@
 					isFetchingProduct = false
 					break
 			}
-		}catch(error){
+		} catch(error) {
+			console.log(error)
 			failedToFetchProduct = true
 		}
 	}
@@ -53,36 +52,35 @@
 			})
 			switch(response.status){
 				case 200:
-					console.log("YAY!")
 					successfulProductDelete = true
 
 				case 500:
-					console.log("NOT YAY!")
 					break
 
 				case 400:
-					console.log("yay?")
 					break
 
 			}
-		}catch(error){
 
+		}catch(error){
+			failedToFetchProduct = true
+			console.log(error)
 		}
 	}
 
 
+	
 	/**
-	 * @param {{ preventDefault: () => void; }} event
-	 */
+     * @param {{ preventDefault: () => void; }} event
+     */
 	async function handleDelete(event){
 		event.preventDefault()
 
 		try{
 			await deleteProduct()
-			console.log("I GOT HERE SOMEHOW....")
 			navigate("/products")
-		}catch(error){
-
+		} catch(error) {
+			console.log(error)
 		}
 	}
 
@@ -90,20 +88,17 @@
 
 <div class="mainContent">
 	{#if fetchedProduct}
-	<div class="card">
-		
-				<h1 class="card-title">Are you sure you want to delete {fetchedProduct[0].productName}</h1>
-				<p class="card-subtitle">{fetchedProduct[0].description}</p>
+		<div class="card">
+			<h1 class="card-title">Are you sure you want to delete {fetchedProduct[0].productName}</h1>
+			<p class="card-subtitle">{fetchedProduct[0].description}</p>
 			<Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
-				<button class="yes-button" on:click={handleDelete}>Yes</button>
+			<button class="yes-button" on:click={handleDelete}>Yes</button>
 			</Link>
 			<p class="emptyGridSpace"></p>
 			<Link class="Links" to="/products/{id}">
-				<button class="no-button">No</button>
+			<button class="no-button">No</button>
 			</Link>
-			
-	</div>
-			
+		</div>		
 	{/if}
 </div>
 

@@ -1,36 +1,29 @@
 <script>
-    import {Router, Link, Route, navigate} from 'svelte-routing'
-    import { get_root_for_style, prevent_default } from 'svelte/internal';
+    import {Router, Route, navigate} from 'svelte-routing'
     import StartPage from "./StartPage.svelte"
     import { user } from '../user-store';
-
 
     let username = ""
     let password = ""
     let errorArr = []
-    let userWasCreated = false
-
-
-    //let username = ""
-    //let password = ""
+    let somethingWentWrong = false
     let body = null
-    let accessToken = null
     let noMatch = false
     let closedDropDown = false
+
     async function login(){
         try {
-            console.log("UserID that login is" + $user.userID)
             const response = await fetch("http://localhost:8080/tokens", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "bearer "+$user.accessToken
                 },
                 body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
             })
             switch(response.status){
                 case 200:
                     body = await response.json()
-                    console.log("nu kommer logged in token: " + body.access_token)
                     
                     $user = {
                         isLoggedIn: true,
@@ -40,7 +33,6 @@
                     }
                     closedDropDown = true
                     navigate("/")
-
                     break
                     
                 case 400:
@@ -49,6 +41,7 @@
                     break
             }
         } catch (error){
+            somethingWentWrong = true
             console.log(error)
         }
     }
@@ -60,17 +53,15 @@
                 password
         }
 
-        // add loading
         try {
             const response = await fetch("http://localhost:8080/users", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(user)
             })
 
-            console.log("response status is: " + response.status)
             switch(response.status){
                 case 201:
                     login()
@@ -83,73 +74,46 @@
                     break
             }
         } catch (error) {
+            somethingWentWrong = true
+            console.log(error)
             errorArr.push("COMMUNICATION_ERROR")
         }
-        
     }
 
 </script>
 
 <Router>
 	<body>
-        <!--
+        {#if somethingWentWrong}
+            <p>Something went wrong.</p>
+        {:else}
+            <h1>Create Account</h1>
 
-           <div>Create Account</div>  
-        
-        <form on:submit|preventDefault={createUser}>
-            <div>
-                Username:
-                <input type="text" name="" id="" bind:value={username}>
-            </div>
+            <form on:submit|preventDefault={createUser}>
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username" bind:value={username}>
+                </div>
 
-            <div>
-                Password:
-                <input type="text" name="" id="" bind:value={password}>
-            </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" bind:value={password}>
+                </div>
 
-            <input type="submit" value="Create Account">
-        </form>
+                <input type="submit" value="Create Account">
+            </form>
 
-        {#if errorArr.length > 0}
-            <p>Errors detected!</p>
-            <ul>
-                {#each errorArr as error}
-                    <li>{error}</li>
-                {/each}
-            </ul>
-        {/if} 
-        -->
-        
-
-
-        <h1>Create Account</h1>
-
-        <form on:submit|preventDefault={createUser}>
-            <div>
-                <label for="username">Username:</label>
-                <input type="text" name="username" id="username" bind:value={username}>
-            </div>
-
-            <div>
-                <label for="password">Password:</label>
-                <input type="password" name="password" id="password" bind:value={password}>
-            </div>
-
-            <input type="submit" value="Create Account">
-        </form>
-
-        {#if errorArr.length > 0}
-            <p>Errors detected!</p>
-            <ul>
-                {#each errorArr as error}
-                    <li>{error}</li>
-                {/each}
-            </ul>
+            {#if errorArr.length > 0}
+                <p>Errors detected!</p>
+                <ul>
+                    {#each errorArr as error}
+                        <li>{error}</li>
+                    {/each}
+                </ul>
+            {/if}
+            <Route path="/StartPage" component="{StartPage}"></Route>
         {/if}
-        
-        
-		<Route path="/StartPage" component="{StartPage}"></Route>
-        </body>
+    </body>
 </Router>
 
 <style>
@@ -221,7 +185,4 @@
     li {
         margin-bottom: 0.5rem;
     }
-    
-    
-
 </style>

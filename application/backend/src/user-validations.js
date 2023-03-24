@@ -12,6 +12,7 @@ pool.on('error', function (error) {
     console.log("Error from pool", error)
 })
 
+//-------------- validate user --------------------
 async function validateUser(user) {
     var errorArr = []
 
@@ -30,6 +31,7 @@ async function validateUser(user) {
     return errorArr
 }
 
+//-------------- validate username --------------------
 async function validateUsername(username){
     const MIN_USERNAME_LENGTH = 2
     const MAX_USERNAME_LENGTH = 12
@@ -53,14 +55,12 @@ async function validateUsername(username){
         if (result.length != 0) {
             errorArr.push("That username is already taken")
         }
-
     }
-
-    console.log("validate user: " + errorArr)
 
     return errorArr
 }
 
+//-------------- validate password --------------------
 function validatePassword(password){
     const MIN_PASSWORD_LENGTH = 2
     const MAX_PASSWORD_LENGTH = 20
@@ -77,8 +77,6 @@ function validatePassword(password){
 
     return errorArr
 }
-
-
 
 module.exports = {
     validateUser,

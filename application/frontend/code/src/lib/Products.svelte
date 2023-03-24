@@ -12,6 +12,7 @@
 	let startedSearch = false
 	let isFetchingSearchedProdcucts = true
 	let showAllProducts = null
+	let somethingWentWrong = false
 
 	async function loadAllProducts() {
 		showAllProducts = true
@@ -44,7 +45,8 @@
 					break
 		} 
 	}catch(error){
-
+		console.log(error)
+		somethingWentWrong = true
 	}
 }
 
@@ -75,70 +77,75 @@
 					break
 			}
 		}catch(error){
-
+			somethingWentWrong = true
+			console.log(error)
 		}
 	}
+
 loadAllProducts()
 
 </script>
 
 {#if $user.isLoggedIn}
-
-<Router>
-	<section>
-		<div class="container">
-			<div class="squareContainer">
+	{#if somethingWentWrong}
+		<p>Something went wrong.</p>
+	{:else}
+		<Router>
+			<section>
 				<div class="container">
-					<h1>Find Products</h1>
-					<form on:submit|preventDefault={searchProducts}>
-						<div class="search-container">
-							<input type="text" name="q" placeholder="Search for products...">
-							<button type="submit" id="search-button">Search</button>
-							<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Products</button>
-						</div>
-					</form>
-					<div class="search-container"></div>
-					<div class="product-container">
-					{#if showAllProducts == false}
-						{#if startedSearch}
-							{#if isFetchingSearchedProdcucts}
-								<p>Searching...</p>
-							{:else}
-								{#if searchedProducts.length == 0}
-									<p>No search result found</p>
-								{:else}
-									{#each searchedProducts as searchedProduct}
-										<Link class="Links" to="/products/{searchedProduct.productID}">
-											<h3>{searchedProduct.productName}</h3>
-										</Link>
-									{/each}
+					<div class="squareContainer">
+						<div class="container">
+							<h1>Find Products</h1>
+							<form on:submit|preventDefault={searchProducts}>
+								<div class="search-container">
+									<input type="text" name="q" placeholder="Search for products...">
+									<button type="submit" id="search-button">Search</button>
+									<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Products</button>
+								</div>
+							</form>
+							<div class="search-container"></div>
+							<div class="product-container">
+							{#if showAllProducts == false}
+								{#if startedSearch}
+									{#if isFetchingSearchedProdcucts}
+										<p>Searching...</p>
+									{:else}
+										{#if searchedProducts.length == 0}
+											<p>No search result found</p>
+										{:else}
+											{#each searchedProducts as searchedProduct}
+												<Link class="Links" to="/products/{searchedProduct.productID}">
+													<h3>{searchedProduct.productName}</h3>
+												</Link>
+											{/each}
+										{/if}
+									{/if}
 								{/if}
+							{:else if showAllProducts == true}
+								{#if isFetchingProducts}
+									<p>Wait, I'm loading</p>
+								{:else if isUnAuthorized}
+									<p>Need to be logged in to view proudcts</p>
+								{:else if isServerError}
+									<p>Internal server error, try again later</p>
+								{/if}
+								{#each products as searchedProducti}
+									<Link class="Links" to="/products/{searchedProducti.productID}">
+										<h3>{searchedProducti.productName}</h3>
+									</Link>
+								{/each}
 							{/if}
-						{/if}
-					{:else if showAllProducts == true}
-						{#if isFetchingProducts}
-							<p>Wait, I'm loading</p>
-						{:else if isUnAuthorized}
-							<p>Need to be logged in to view proudcts</p>
-						{:else if isServerError}
-							<p>Internal server error, try again later</p>
-						{/if}
-						{#each products as searchedProducti}
-							<Link class="Links" to="/products/{searchedProducti.productID}">
-								<h3>{searchedProducti.productName}</h3>
-							</Link>
-						{/each}
-					{/if}
-					</div>
-				</div> 
+						</div>
+					</div> 
+				</div>
 			</div>
-		</div>
-	</section>
-	<main>
-<!-- Här ska Route vara -->
-		<Route path="/products" component="{Product}"></Route>
-	</main>
-</Router>
+		</section>
+		<main>
+			<Route path="/products" component="{Product}"></Route>
+		</main>
+		</Router>
+	{/if}
+
 {:else}
 <p>You need to be logged in to an account to view products</p>
 {/if}
@@ -185,7 +192,6 @@ loadAllProducts()
 		border-bottom: 2px solid #ccc;
 	}
 
-
 	.search-container button {
 		margin-left: 10px;
 		padding: 10px;
@@ -199,7 +205,6 @@ loadAllProducts()
 		background-color: #555;
 	}
 
-
 	.product-container {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -209,5 +214,4 @@ loadAllProducts()
 	p {
 		color: white;
 	}
-
 </style>

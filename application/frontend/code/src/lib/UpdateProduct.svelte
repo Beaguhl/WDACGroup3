@@ -3,13 +3,8 @@
 
 <script>
 	import { user } from "../user-store";
-	import {Router, Link, Route} from "svelte-routing"
-	import { onMount } from "svelte";
-
-
 	export let id
 
-	let isFetchingProduct = true
 	let fetchedProduct = null
 
 	let newProductName = ""
@@ -18,8 +13,9 @@
 	let succesfulProductNameUpdate = false
 	let succesfulProductDescriptionUpdate = false
 
+	let somethingWentWrong = false
+
 	async function getProductToUpdate(){
-		console.log("AAAAAAAAAAAAAAAAAAAAAAAA")
 		try {
 			console.log(id)
 			const response = await fetch(`http://localhost:8080/products/${id}/update` ,{
@@ -46,6 +42,8 @@
 				
 			}
 		}catch(error){
+			somethingWentWrong = true
+			console.log(error)
 		}
 	}
 
@@ -82,7 +80,8 @@
 					break
 			}
 		}catch(error){
-
+			console.log(error)
+			somethingWentWrong = true
 		}
 	}
 
@@ -92,42 +91,44 @@
 	async function handleUpdate(event){
 		event.preventDefault()
 
-		try{
-			const response = await updateProduct()
-			console.log("Name: " + newProductName)
-			console.log("Desc: " + newProductDescription)
-		}catch(error){
-
+		try {
+			await updateProduct()
+		} catch(error) {
+			somethingWentWrong = true
+			console.log(error)
 		}
-
-		
 	}
-
-
-
 </script>
 
-<div class="container">
-	{#if fetchedProduct}
-		<form on:submit={handleUpdate}>
-			<div class="form-group">
-				<label for="fetchedProductName">Product Name:</label>
-				<div class="underline-textfield">
-					<input type="text" id="fetchedProductName" name="fetchedProduct" bind:value={newProductName}>
-				</div>
-				<label for="fetchedProductDescription">Description</label>
-				<div class="underline-textfield">
-					<input type="text" id="fetchedProductDescription" name="fetchedProduct" bind:value={newProductDescription}>
-				</div>
-				<div class="form-group">
-					<input type="submit" value="Update product">
-				</div>
-			</div>
-		
+{#if $user.isLoggedIn}	
+	{#if somethingWentWrong} 
+		<p>Something went wrong.</p>
+	{:else}
+		<div class="container">
+			{#if fetchedProduct}
+				<form on:submit={handleUpdate}>
+					<div class="form-group">
+						<label for="fetchedProductName">Product Name:</label>
+						<div class="underline-textfield">
+							<input type="text" id="fetchedProductName" name="fetchedProduct" bind:value={newProductName}>
+						</div>
+						<label for="fetchedProductDescription">Description</label>
+						<div class="underline-textfield">
+							<input type="text" id="fetchedProductDescription" name="fetchedProduct" bind:value={newProductDescription}>
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Update product">
+						</div>
+					</div>
+				
 
-		</form>
+				</form>
+			{/if}
+		</div>
 	{/if}
-</div>
+{:else}
+	<p>You need to be logged in.</p>
+{/if}
 
 <style>
 	.container {
@@ -136,80 +137,72 @@
 	border-radius: 10px;
 	box-shadow: 0 0 10px rgba(0,0,0,0.1);
 	width: 600px;
-}
+	}
 
-p {
-    color: white;
-}
+	p {
+		color: white;
+	}
 
-h1 {
-	font-size: 36px;
-	margin-bottom: 20px;
-	text-align: center;
-    color: rgb(212, 247, 213);
-}
+	form {
+		margin-top: 30px;
+	}
 
-form {
-	margin-top: 30px;
-}
+	.form-group {
+		margin-bottom: 20px;
+		display: flex;
+		flex-direction: column;
+	}
 
-.form-group {
-	margin-bottom: 20px;
-	display: flex;
-	flex-direction: column;
-}
+	label {
+		display: block;
+		margin-bottom: 10px;
+		font-size: 24px;
+		color: white;
+		margin-right: 100px;
+	}
 
-label {
-	display: block;
-	margin-bottom: 10px;
-	font-size: 24px;
-	color: white;
-    margin-right: 100px;
-}
+	.underline-textfield {
+		position: relative;
+		margin-bottom: 20px;
+	}
 
-.underline-textfield {
-	position: relative;
-	margin-bottom: 20px;
-}
+	.underline-textfield input[type="text"] {
+		padding: 10px;
+		font-size: 24px;
+		border: none;
+		background: none;
+		outline: none;
+		color: white;
+	}
 
-.underline-textfield input[type="text"],
-.underline-textfield input[type="password"] {
-	padding: 10px;
-	font-size: 24px;
-	border: none;
-	background: none;
-	outline: none;
-	color: white;
-}
-
-.underline-textfield::after {
-	content: "";
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 2px;
-	width: 100%;
-	background-color: rgb(212, 247, 213);
-}
+	.underline-textfield::after {
+		content: "";
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 2px;
+		width: 100%;
+		background-color: rgb(212, 247, 213);
+	}
 
 
-input[type="submit"] {
-	background-color: #276047;
-	border: none;
-	border-radius: 5px;
-	padding: 10px;
-	font-size: 24px;
-	cursor: pointer;
-	margin-left: 10px;
-	color: white;
-    margin-left: 10px;
-}
+	input[type="submit"] {
+		background-color: #276047;
+		border: none;
+		border-radius: 5px;
+		padding: 10px;
+		font-size: 24px;
+		cursor: pointer;
+		margin-left: 10px;
+		color: white;
+		margin-left: 10px;
+	}
 
-input[type="submit"]:first-child {
-	margin-left: auto;
-}
+	input[type="submit"]:first-child {
+		margin-left: auto;
+	}
 
-input{
-    color: rgb(255, 255, 255);
-}
+	input{
+		color: rgb(255, 255, 255);
+	}
 </style>

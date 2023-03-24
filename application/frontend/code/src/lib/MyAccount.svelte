@@ -1,7 +1,5 @@
 <script>
     import { user } from "../user-store";
-    import {Router, Link, Route} from 'svelte-routing';
-    import { each } from "svelte/internal";
 
     let showAccount = true
     let showEnterPassword = false
@@ -19,12 +17,12 @@
     let passwordErrors = []
     let usernameErrors = []
 
+    let somethingWentWrong = false
+
     function makeShowEnterPasswordTrue(){
         showEnterPassword = true
         showAccount = false
     }
-
-    console.log("user är: " + $user.userID)
 
     async function getUsername(){
         try {
@@ -53,16 +51,15 @@
             }
             
 
-        } catch {
-            //handle error
+        } catch(error) {
+            console.log(error)
+            somethingWentWrong = true
         }
     }
 
     getUsername();
 
-    let body = null
     let noMatch = false
-
 
     async function verifyPassword(event){
         const formData = new FormData(event.target);
@@ -94,7 +91,8 @@
                     break
             }
         } catch (error){
-            // handle error
+            somethingWentWrong = true
+            console.log(error)
         }
     }
 
@@ -108,7 +106,6 @@
                     "UserID": $user.userID,
                     "NewPassword": newPassword
                 }
-            
             })
 
             switch(response.status){
@@ -126,9 +123,9 @@
             }
             
         } catch (error) {
-            // handle error
+            console.log(error)
+            somethingWentWrong = true
         }
-
     }
 
     async function updateUsername(){
@@ -158,7 +155,8 @@
             }
 
         } catch (error){
-            // handle error
+            console.log(error)
+            somethingWentWrong = true
         }
     }
 
@@ -169,51 +167,54 @@
 </head>
 
 {#if $user.isLoggedIn}
-    {#if userNotFound}
-        <p>user not found</p>
+    {#if somethingWentWrong}
+        <p>Something went wrong.</p>
     {:else}
-        <body>
-            <div class="container">
-                <h1>My Account</h1>
-                {#if showAccount}
-                    <form on:submit|preventDefault={makeShowEnterPasswordTrue}>
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <div class="underline-textfield">
-                                <input type="text" id="username" name="username" value="{username}" readonly>
+        {#if userNotFound}
+            <p>user not found</p>
+        {:else}
+            <body>
+                <div class="container">
+                    <h1>My Account</h1>
+                    {#if showAccount}
+                        <form on:submit|preventDefault={makeShowEnterPasswordTrue}>
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <div class="underline-textfield">
+                                    <input type="text" id="username" name="username" value="{username}" readonly>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Current password:</label>
-                            <div class="underline-textfield">
-                                <input type="password" id="password" name="password" value="xxxxxxxx" readonly>
+                            <div class="form-group">
+                                <label for="password">Current password:</label>
+                                <div class="underline-textfield">
+                                    <input type="password" id="password" name="password" value="xxxxxxxx" readonly>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Edit account details">
-                        </div>
-                    </form>
-                {/if}
-                {#if showEnterPassword}
-                    <form on:submit|preventDefault={verifyPassword}>
-                        <div class="form-group">
-                            <label for="password">Type current password to make changes:</label>
-                            <div class="underline-textfield">
-                                <input type="password" id="password" name="password">
+                            <div class="form-group">
+                                <input type="submit" value="Edit account details">
                             </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <input type="submit" value="OK">
-                        </div>
-                        {#if incorrectPassword}
-                            <p>Incorrect password, try again.</p>
-                        {/if}
-                    </form>
-                {/if}
+                        </form>
+                    {/if}
 
-                {#if showEditAccount == true}
-                        <!-- update username -->
+                    {#if showEnterPassword}
+                        <form on:submit|preventDefault={verifyPassword}>
+                            <div class="form-group">
+                                <label for="password">Type current password to make changes:</label>
+                                <div class="underline-textfield">
+                                    <input type="password" id="password" name="password">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="submit" value="OK">
+                            </div>
+                            {#if incorrectPassword}
+                                <p>Incorrect password, try again.</p>
+                            {/if}
+                        </form>
+                    {/if}
+
+                    {#if showEditAccount == true}
                         <form on:submit|preventDefault={updateUsername}>
                             <div class="form-group">
                                 <label for="username">New username:</label>
@@ -234,18 +235,17 @@
                                         <input type="submit" value="Update username">
                                     </div>
                                 {/if}
-                                
+                                    
                             </div>
                         </form>
-                    
-                        <!-- update password -->
+                        
                         <form on:submit|preventDefault={updatePassword}>
                             <div class="form-group">
                                 <label for="password">New password:</label>
                                 <div class="underline-textfield">
                                     <input type="password" id="password" name="password" bind:value={newPassword}>
                                 </div>
-                                
+                                    
                                 <ul>
                                     {#each passwordErrors as error}
                                         <li>{error}</li>
@@ -259,14 +259,13 @@
                                         <input type="submit" value="Update password">
                                     </div> 
                                 {/if}
-                                
                             </div>
                         </form>
-                {/if}
-            </div>
-        </body>
+                    {/if}
+                </div>
+            </body>
+        {/if}
     {/if}
-    
 {:else}
     <p>Need to be logged in to view "My Account"</p>
 {/if}
@@ -274,86 +273,86 @@
 
 <style>
 
-.container {
-	margin: 50px auto;
-	padding: 30px;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0,0,0,0.1);
-	width: 600px;
-}
+    .container {
+        margin: 50px auto;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        width: 600px;
+    }
 
-p {
-    color: white;
-}
+    p {
+        color: white;
+    }
 
-h1 {
-	font-size: 36px;
-	margin-bottom: 20px;
-	text-align: center;
-    color: rgb(212, 247, 213);
-}
+    h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: rgb(212, 247, 213);
+    }
 
-form {
-	margin-top: 30px;
-}
+    form {
+        margin-top: 30px;
+    }
 
-.form-group {
-	margin-bottom: 20px;
-	display: flex;
-	flex-direction: column;
-}
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
 
-label {
-	display: block;
-	margin-bottom: 10px;
-	font-size: 24px;
-	color: white;
-    margin-right: 100px;
-}
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 24px;
+        color: white;
+        margin-right: 100px;
+    }
 
-.underline-textfield {
-	position: relative;
-	margin-bottom: 20px;
-}
+    .underline-textfield {
+        position: relative;
+        margin-bottom: 20px;
+    }
 
-.underline-textfield input[type="text"],
-.underline-textfield input[type="password"] {
-	padding: 10px;
-	font-size: 24px;
-	border: none;
-	background: none;
-	outline: none;
-	color: white;
-}
+    .underline-textfield input[type="text"],
+    .underline-textfield input[type="password"] {
+        padding: 10px;
+        font-size: 24px;
+        border: none;
+        background: none;
+        outline: none;
+        color: white;
+    }
 
-.underline-textfield::after {
-	content: "";
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 2px;
-	width: 100%;
-	background-color: rgb(212, 247, 213);
-}
+    .underline-textfield::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: rgb(212, 247, 213);
+    }
 
 
-input[type="submit"] {
-	background-color: #276047;
-	border: none;
-	border-radius: 5px;
-	padding: 10px;
-	font-size: 24px;
-	cursor: pointer;
-	margin-left: 10px;
-	color: white;
-    margin-left: 10px;
-}
+    input[type="submit"] {
+        background-color: #276047;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 24px;
+        cursor: pointer;
+        margin-left: 10px;
+        color: white;
+        margin-left: 10px;
+    }
 
-input[type="submit"]:first-child {
-	margin-left: auto;
-}
+    input[type="submit"]:first-child {
+        margin-left: auto;
+    }
 
-input{
-    color: rgb(255, 255, 255);
-}
+    input{
+        color: rgb(255, 255, 255);
+    }
 </style>

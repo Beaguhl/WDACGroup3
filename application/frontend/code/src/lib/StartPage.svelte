@@ -1,6 +1,3 @@
-<script>
-
-</script>
 <body>
 	<div class="container">
 		<h2 class="title">Welcome to Wish List!</h2>
@@ -12,8 +9,6 @@
 </body>
 
 <style>
-
-
 	body {
 		font-family: Arial, sans-serif;
 		margin: 0;
@@ -39,7 +34,6 @@
 		margin-bottom: 40px;
 		color: white;
 	}
-
 </style>
 
 
