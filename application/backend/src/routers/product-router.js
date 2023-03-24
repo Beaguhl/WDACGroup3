@@ -97,26 +97,28 @@ router.get("/:id", async function (request, response) {
 
 			const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
 			const getWishListIDValue = [userID]
-	
+
 			const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
-	
-			if (fetchedWishListID != null){
+
+			if (fetchedWishListID.length != 0) {
 				const wishListID = fetchedWishListID[0].wishListID
-	
+				console.log("wishListID is: " + wishListID)
+
 				const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE wishListID = ? AND productID = ?"
 				const getWishListProductValues = [wishListID, productValue]
-	
+
 				const result = await connection.query(getWishListProductQuery, getWishListProductValues)
-	
+
 				console.log("result is: " + result)
-				if (result.length != 0){
+				if (result.length != 0) {
 					console.log("found the product")
 					productIsInWishList = true
 				}
-	
+
 			}
-	
-		} catch(error) {
+
+		} catch (error) {
+
 			console.log(error)
 			response.status(500)
 		}
@@ -129,7 +131,7 @@ router.get("/:id", async function (request, response) {
 
 		console.log(model)
 
-		response.status(200).json(product)
+		response.status(200).json(model)
 	} catch (error) {
 		response.status(500).end()
 	}
