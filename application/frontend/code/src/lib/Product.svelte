@@ -109,31 +109,14 @@
 
 
 
-	{#if $user.isLoggedIn}
 
-		{#if isFetchingProduct}
-			<p>Wait, fetching data...</p>
-		{:else if failedToFetchProduct}
-			<p>Couldn't fetch product. Check your Internet connection.</p>
-		{:else if fetchedProduct}
-		<div class="flex">
-			<div class="card">
-				<h1 class="card-title">
-					{fetchedProduct.product.productName}
-				</h1>
-				<h2 class="card-subtitle">
-					{fetchedProduct.product.description}
-				</h2>
-				{#if fetchedProduct.productIsInWishList}
-					<p>this product is already in your wishlist</p>
-				{:else}
-					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.productID)}>
-						Add to WishList
-					</button>
-				{/if}
-				
-			</div>
-		</div>
+
+	
+		
+		
+
+			
+
 
 <!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
 <Router>
@@ -145,13 +128,21 @@
 			{:else if failedToFetchProduct}
 				<p>Couldn't fetch product. Check your Internet connection.</p>
 			{:else if fetchedProduct}
-				<div class="card">
-					<h1 class="card-title">
-						{fetchedProduct.productName}
-					</h1>
-					<h2 class="card-subtitle">
-						{fetchedProduct.description}
-					</h2>
+			<div class="card">
+				<h1 class="card-title">
+					{fetchedProduct.product.productName}
+				</h1>
+				<h2 class="card-subtitle">
+					{fetchedProduct.product.description}
+				</h2>
+				
+				{#if fetchedProduct.productIsInWishList}
+					<p>this product is already in your wishlist</p>
+				{:else}
+					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.productID)}>
+						Add to WishList
+					</button>
+				{/if}
 					{#if $user.admin}
 					<Link class="Links" to="/products/{id}/update" id="update-product-link" style="color: white; text-decoration: none; margin-right: 40px;">
 						<button class="update-button">

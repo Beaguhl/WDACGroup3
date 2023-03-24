@@ -4,7 +4,6 @@
 <script>
 	import { user } from "../user-store";
 	import {Router, Link, Route} from "svelte-routing"
-	import Product from "./Product.svelte";
 	import { onMount } from "svelte";
 
 
