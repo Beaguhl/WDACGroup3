@@ -4,7 +4,6 @@
 	import StartPage from "./lib/StartPage.svelte"
 	import SearchUsers from './lib/Users.svelte'
 	import Products from './lib/Products.svelte'
-	import NavBar from './lib/NavBar.svelte'
 	import NavItem from './lib/NavItem.svelte'
 	import User from './lib/User.svelte'
 	import IconButton from './lib/IconButton.svelte'
@@ -78,6 +77,10 @@ let username = ""
 	function toggleBar(){
 		openBar = !openBar
 	}
+
+	function logout(){
+		$user.isLoggedIn = false
+	}
 	
 </script>
 
@@ -102,15 +105,21 @@ let username = ""
 		</div>
 		<div>
 
-		  <NavItem>
-			<span slot="trigger" id="pointer" on:click={toggleBar}>
-				Login
-			</span>
-			{#if openBar}
-				<DropDown on:clickOutside={toggleBar}></DropDown>
+			{#if $user.isLoggedIn}
+				<button on:click={logout}> logout </button>
+			{:else}
+			<NavItem>
+				<span slot="trigger" id="pointer" on:click={toggleBar}>
+					Login
+				</span>
+				{#if openBar}
+					<DropDown on:clickOutside={toggleBar}></DropDown>
+				{/if}
+
+			</NavItem>
 			{/if}
 
-		</NavItem>
+		  	
 
 		</div>
 	  </nav>
