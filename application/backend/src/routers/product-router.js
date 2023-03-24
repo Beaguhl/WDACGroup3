@@ -144,19 +144,56 @@ router.get("/:id/update", async function (request, response) {
 	try {
 		const anotherProductID = parseInt(request.params.id)
 
-		const anotherConnection = await pool.getConnection()
+		const connection = await pool.getConnection()
 
-		const anotherProductQuery = "SELECT * FROM Products WHERE productID = ?"
+		const productQuery = "SELECT * FROM Products WHERE productID = ?"
 
-		const anotherProductValue = [parseInt(anotherProductID)]
+		const productValue = [parseInt(anotherProductID)]
 
-		const anotherProductToSend = await anotherConnection.query(anotherProductQuery, anotherProductValue)
+		const productToSend = await connection.query(productQuery, productValue)
 
-		response.status(200).json(anotherProductToSend)
+		response.status(200).json(productToSend)
 	} catch (error) {
 		response.status(500).end()
 	}
 })
+
+//----------------------- Delete products ----------------------
+
+
+router.get("/:id/delete", async function (request, response) {
+
+	try {
+		const productID = parseInt(request.params.id)
+		const connection = await pool.getConnection()
+		const productQuery = "SELECT * FROM Products WHERE productID = ?"
+		const productValue = [parseInt(productID)]
+		const productToSend = await connection.query(productQuery, productValue)
+
+		response.status(200).json(productToSend)
+	} catch (error) {
+		response.status(500).end()
+	}
+})
+
+router.delete("/:id/delete", async function (request, response) {
+
+	const productID = parseInt(request.params.id)
+
+	try {
+		const connection = await pool.getConnection()
+
+		const deleteProductQuery = "DELETE FROM Products WHERE productID = ?"
+		const deleteProductValues = [productID]
+
+		await connection.query(deleteProductQuery, deleteProductValues)
+
+		response.status(200).end()
+	} catch (error) {
+		response.status(500).end()
+	}
+})
+
 
 //----------------------- Update products ----------------------
 

@@ -139,7 +139,7 @@
 				{#if fetchedProduct.productIsInWishList}
 					<p>this product is already in your wishlist</p>
 				{:else}
-					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.productID)}>
+					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct[0].productID)}>
 						Add to WishList
 					</button>
 				{/if}
@@ -149,9 +149,12 @@
 							Update Product
 						</button>
 					</Link>
+					<Link class="Links" to="/products/{id}/delete" id="delete-product-link" style="color: white; text-decoration: none; margin-right: 40px">
 						<button class="delete-button">
 							Delete Product
 						</button>
+					</Link>
+						
 					{/if}
 				</div>
 			{/if}
