@@ -7,7 +7,7 @@
 
 	import User from './lib/User.svelte'
 
-
+	import jwt_decode from 'jwt-decode'
 	import Following from './lib/Following.svelte'
 	import MyWishList from './lib/MyWishList.svelte'
 	import Followers from './lib/Followers.svelte'
@@ -68,12 +68,15 @@ window.addEventListener('popstate', () => {
       switch (response.status) {
         case 200:
           body = await response.json()
+		  const jwtDecoded = jwt_decode(body.id_token)
+		  //@ts-ignore
+		  const userID = jwtDecoded.sub
           console.log("nu kommer logged in token: " + body.access_token)
 
           $user = {
             isLoggedIn: true,
             accessToken: body.access_token,
-            userID: body.userID,
+			userID: userID,
             admin: body.admin
           }
           closedDropDown = true

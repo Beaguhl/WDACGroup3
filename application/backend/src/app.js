@@ -91,12 +91,27 @@ app.post('/tokens', async function (request, response) {
 					if (error) {
 						response.status(500).end()
 					} else {
-						response.status(200).json({
-							access_token: accesToken,
-							type: "bearer",
-							userID: result[0].userID,
-							admin: result[0].admin
+						const payloadIDToken = {
+							sub: `${result[0].userID}`,
+							iss: `http://localhost:8080`,
+							aud: `wishes.com`,
+							exp: Math.floor(Date.now() / 1000) + 600
+						}
+
+						jwt.sign(payloadIDToken, ACCESS_TOKEN_SECRET, function (error, id_token) {
+							if (error) {
+								response.status(500).end()
+							} else {
+								response.status(200).json({
+									access_token: accesToken,
+									id_token: id_token,
+									type: "bearer",
+									userID: result[0].userID,
+									admin: result[0].admin
+								})
+							}
 						})
+
 					}
 				})
 

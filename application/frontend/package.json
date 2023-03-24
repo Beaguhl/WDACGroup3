@@ -19,6 +19,7 @@
     "vite": "^4.2.1"
   },
   "dependencies": {
+    "jwt-decode": "^3.1.2",
     "svelte-routing": "^1.6.0",
     "sveltestrap": "^5.10.0"
   }
