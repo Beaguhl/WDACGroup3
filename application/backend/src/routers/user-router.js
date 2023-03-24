@@ -71,6 +71,7 @@ router.post("/", async function(request, response){
 
 	const validationArr = await validateUser(user)
 
+	console.log(validationArr)
 	if (validationArr.length > 0){
 		response.status(400).json(validationArr)
 		return
@@ -84,15 +85,20 @@ router.post("/", async function(request, response){
 			const hashedPassword = await hashPassword(user.password)
         	const createUserValues = [user.username, hashedPassword, false]
 			
-			const test = await connection.query(createUserQuery, createUserValues)
-			console.log("snälla" + json(test.userID))
+			await connection.query(createUserQuery, createUserValues)
 
 			const getUserIDQUery = "SELECT userID FROM Users WHERE username = ?"
 			const getUserIDValues = [user.username]
 
-			const userID = await connection.query(getUserIDQUery, getUserIDValues)
-	
-			response.set('Location', '/users/${userID}')
+			const fetchedUserID = await connection.query(getUserIDQUery, getUserIDValues)
+			const userID = fetchedUserID[0].userID
+
+			const createWishListQuery = "INSERT INTO WishList (userID) VALUES (?)"
+			const createWishListValue = [userID]
+
+			await connection.query(createWishListQuery, createWishListValue)
+
+			//response.set('Location', '/users/${userID}')
 			response.status(201).end()
 			
 		} catch(error) { 

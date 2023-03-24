@@ -45,7 +45,7 @@ router.get('/followers', async function (request, response) {
 		} else {
 			response.status(200).json(followerUsers)
 		}
-	} catch {
+	} catch(error) {
 		console.log("error is: " + error)
 		response.status(500).end()
 	}
@@ -206,6 +206,7 @@ router.get('/followings', async function (request, response) {
 			const fetchedUser = await connection.query(getUserQuery)
 			followingUsers[i] = fetchedUser[0]
 		}
+		console.log("längden är: " + followingUsers.length)
 
 		if (followingUsers.length == 0) {
 			response.status(404).end()
