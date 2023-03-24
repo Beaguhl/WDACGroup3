@@ -139,7 +139,7 @@
 				</h2>
 				
 				{#if fetchedProduct.productIsInWishList}
-					<p>this product is already in your wishlist</p>
+					<p class="alreadyInWish">this product is already in your wishlist</p>
 				{:else}
 
 					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct[0].productID)}>
@@ -213,8 +213,15 @@
 		margin-bottom: 20px;
 	}
 
+	.alreadyInWish{
+		grid-area: cardBotMid;
+	}
+
 	.update-button{
 		grid-area: cardBotRight;
+		position: relative;
+		left: 15%;
+		top: 25%;
 		background-color: #2A7BE6;
 		border: none;
 		color: white;
@@ -230,6 +237,9 @@
 
 	.delete-button{
 		grid-area: cardBotLeft;
+		position: relative;
+		left:15%;
+		top: 25%;
 		background-color: #F32626;
 		border: none;
 		color: white;
@@ -244,6 +254,8 @@
 	}
 
 	.card-button {
+		position: relative;
+		left: 50%;
 		grid-area: cardBotMid;
 		background-color:#3e8e41;
 		border: none;
