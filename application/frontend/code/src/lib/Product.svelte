@@ -54,6 +54,7 @@
 				case 200:
 					fetchedProduct = await response.json()
 					console.log("fetched product: " + fetchedProduct.product.productName)
+					console.log("fetched product id: " + fetchedProduct.productID)
 					console.log(fetchedProduct.productIsInWishList)
 					isFetchingProduct = false
 					break
@@ -87,6 +88,7 @@
 
 			switch(response.status){
 				case 200:
+					loadProduct()
 					break
 				
 				case 500:
@@ -139,7 +141,9 @@
 				{#if fetchedProduct.productIsInWishList}
 					<p>this product is already in your wishlist</p>
 				{:else}
+
 					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct[0].productID)}>
+
 						Add to WishList
 					</button>
 				{/if}

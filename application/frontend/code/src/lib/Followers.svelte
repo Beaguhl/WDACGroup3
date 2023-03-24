@@ -49,7 +49,7 @@
 					break
 
 				case 404:
-					console.log("404")
+					isFetchingFollowers = false
 					break
 
 			}
@@ -147,11 +147,16 @@
 								{:else if isServerError}
 									<p>Website has server errors. Try again later</p>
 								{/if}
-								{#each followers as searchedUseri}
-									<Link class="Links" to="/users/{searchedUseri.userID}">
-										<h3>{searchedUseri.username}</h3>
-									</Link> 
-								{/each}
+								{#if followers.length != 0}
+									{#each followers as searchedUseri}
+										<Link class="Links" to="/users/{searchedUseri.userID}">
+											<h3>{searchedUseri.username}</h3>
+										</Link> 
+									{/each}
+								{:else}
+									<p>You do not have any followers</p>
+								{/if}
+								
 							{/if}
 						</div>
 					</div>

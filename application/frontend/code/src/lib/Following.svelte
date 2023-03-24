@@ -48,7 +48,7 @@
 			}
 			
 		} catch(error){
-
+			console.log(error)
 		}
 	}
 
@@ -130,6 +130,7 @@
 								{/if}
 							{:else}
 								{#if isFetchingFollowings}
+									<p>{isFetchingFollowings}</p>
 									<p>Wait, I'm loading</p>
 								{:else if isUnAuthorized} 
 									<p>Need to be logged in to view users.</p>
