@@ -81,12 +81,18 @@ window.addEventListener('popstate', () => {
     		password = ""
 			emptyField = false
 			dropdownShown = false
+			noMatch = false
           break
 
         case 400:
           emptyField = true
+		  noMatch = false
           console.log("case 400")
           break
+
+		case 403:
+			emptyField = false
+			noMatch = true
       }
     } catch (error) {
     }
@@ -145,9 +151,10 @@ window.addEventListener('popstate', () => {
 									<Link class="Links create-account-link"  to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
 								</div>
 								{#if emptyField}
-									<div class="error-message">
-									<p>No field can be left empty</p>
-									</div>
+									<p class="error-message">No field can be left empty</p>
+								{/if}
+								{#if noMatch}
+									<p class="error-message" >Username and password is not a match</p>
 								{/if}
 								<Route path="/create-account" component="{CreateUser}"></Route>
 								</main>
