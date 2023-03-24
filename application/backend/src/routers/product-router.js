@@ -223,3 +223,20 @@ router.put("/:id/update", async function (request, response) {
 		response.status(500).end()
 	}
 })
+
+router.post("/", async function (request, response) {
+
+	const product = request.body
+	try {
+		const connection = await pool.getConnection()
+
+		const createProductQuery = "INSERT INTO Products (productName, description) VALUES (?, ?)"
+		const createProductValues = [product.productName, product.description]
+
+		await connection.query(createProductQuery, createProductValues)
+
+		response.status(201).end()
+	} catch (error) {
+		response.status(500).end()
+	}
+})

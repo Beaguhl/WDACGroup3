@@ -255,7 +255,8 @@
 
 	.card-button {
 		position: relative;
-		left: 50%;
+		left: 5%;
+		top: 25%;
 		grid-area: cardBotMid;
 		background-color:#3e8e41;
 		border: none;
