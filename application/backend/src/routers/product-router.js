@@ -1,5 +1,6 @@
 const express = require('express')
 
+
 const router = express.Router()
 const { createPool } = require('mariadb')
 
@@ -17,7 +18,7 @@ pool.on('error', function (error) {
 
 module.exports = router
 
-const app = express()
+
 
 
 router.get("/", async function (request, response) {
@@ -34,11 +35,9 @@ router.get("/", async function (request, response) {
 		const getAllProductsValues = [userID]
 		const products = await connection.query(getAllProductsQuery, getAllProductsValues)
 
-		console.log("products are-__ " + products[1])
 		response.status(200).json(products)
 
 	} catch (error) {
-		console.log(error)
 		response.status(500).end()
 	}
 }
@@ -59,7 +58,6 @@ router.get('/search', async function (request, response) {
 
 		const getSearchedProductsQuery = `SELECT * FROM Products WHERE productID != ${userID} AND productName LIKE '%${searchQuery}%'`
 		const searchedProducts = await connection.query(getSearchedProductsQuery)
-		console.log("search useds inside: " + searchedProducts)
 
 		if (searchedProducts.length == 0) {
 			response.status(404).end()
@@ -74,38 +72,74 @@ router.get('/search', async function (request, response) {
 
 //----------------------- products ----------------------
 
-router.get("/:id", async function (request, response) {
-	console.log("går in i products id")
 
+router.get("/:id", async function (request, response) {
 
 	try {
 		const otherProductID = parseInt(request.params.id)
-		console.log("other procut är: " + otherProductID)
 
 		const connection = await pool.getConnection()
-		console.log("har connectat")
 
 		const productQuery = "SELECT * FROM Products WHERE productID = ?"
 
 
 
 		const productValue = [parseInt(otherProductID)]
-		console.log("har 1")
 
 		const productToSend = await connection.query(productQuery, productValue)
-		console.log("procudt to send is: " + productToSend)
-
-		console.log("HÄR ÄR PRODUCTTOSEND!!!!! " + productToSend)
-		console.log("HÄR ÄR PRODUCTTOSEND!!!!! ")
 
 		const product = productToSend[0]
 
-		console.log("HAUHDFJHWJLAHLJF " + product)
-
-
-
 		response.status(200).json(product)
 	} catch (error) {
+		response.status(500).end()
+	}
+})
+
+
+router.get("/:id/update", async function (request, response) {
+
+	try {
+		const anotherProductID = parseInt(request.params.id)
+
+		const anotherConnection = await pool.getConnection()
+
+		const anotherProductQuery = "SELECT * FROM Products WHERE productID = ?"
+
+		const anotherProductValue = [parseInt(anotherProductID)]
+
+		const anotherProductToSend = await anotherConnection.query(anotherProductQuery, anotherProductValue)
+
+		response.status(200).json(anotherProductToSend)
+	} catch (error) {
+		response.status(500).end()
+	}
+})
+
+//----------------------- Update products ----------------------
+
+router.put("/:id/update", async function (request, response) {
+	console.log("WE ARE HERE!!!!")
+	const anotherProductID = parseInt(request.params.id)
+	const newProductName = request.body.NewProductName
+	const newProductDescription = request.body.NewProductDescription
+
+	try {
+		const connection = await pool.getConnection()
+		console.log("Connection established successfully")
+		console.log(anotherProductID)
+		console.log(newProductName)
+		console.log(newProductDescription)
+
+		const updateProductQuery = "UPDATE Products SET productName = ?, description = ? WHERE productID = ?"
+		const updateProductValues = [newProductName, newProductDescription, anotherProductID]
+
+		await connection.query(updateProductQuery, updateProductValues)
+		console.log("Product updated successfully")
+
+		response.status(200).end()
+	} catch (error) {
+		console.log("Error updating product: ", error)
 		response.status(500).end()
 	}
 })

@@ -336,10 +336,6 @@ label {
 	background-color: rgb(212, 247, 213);
 }
 
-.lined-up {
-  display: flex;
-  align-items: center;
-}
 
 input[type="submit"] {
 	background-color: #276047;

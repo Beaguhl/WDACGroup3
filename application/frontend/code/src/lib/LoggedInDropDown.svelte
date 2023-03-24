@@ -1,7 +1,5 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
-
-
 <script>
 	import {fly} from 'svelte/transition'
 	let activeMenu = 'main'
@@ -85,7 +83,7 @@
                             <label class="form-label" for="password">Password:</label>
                             <input class="form-input" type="password" id="password" name="password" bind:value={password}>
                         </div>
-                        <button class="form-btn" type="submit">Login</button>
+                        <button class="form-btn" id="pointer" type="submit">Login</button>
                     </form>
                     <Link class="Links create-account-link" to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
                     {#if noMatch}
@@ -105,6 +103,10 @@
 </div>
 {/if}
 <style>
+
+    #pointer{
+        cursor: pointer;
+    }
     .item {
         font-size: large;
         margin-right: 2vw;
@@ -143,12 +145,7 @@
 		grid-area: 1 / 1;
 	}
    
-    .form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 10px;
-}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -176,14 +173,6 @@
   width: 300px;
   font-size: 14px;
 }
-.create-account-link {
-  display: block;
-  text-align: center;
-  font-weight: bold;
-  margin-top: 20px;
-  color: #4CAF50;
-  text-decoration: none;
-  font-size: 14px;
-}
+
 	
 </style>

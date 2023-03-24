@@ -22,6 +22,7 @@
 	import { writable } from 'svelte/store';
 	import { user } from './user-store'
     import { text } from 'svelte/internal';
+	import UpdateProduct from './lib/UpdateProduct.svelte';
 
 	let currentRoute = ''
 	const currentPage = window.location.pathname;
@@ -90,20 +91,21 @@ let username = ""
 			{#if $user.isLoggedIn}
 				<Link class="Links" to="/users" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Users</Link>
 				<Link class="Links" to="/products" id="products-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
-				<Link class="Links" to="/wishlist" id="wishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
+				<Link class="Links" to="/my-wishlist" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishList</Link>
 				<Link class="Links" to="/follows/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
 				<Link class="Links" to="/follows/followings" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
 				<Link class="Links" to="/my-account" id="my-account-link" style="color: white; text-decoration: none; margin-right: 40px;">My Account</Link>
 				{#if $user.admin}
 					<Link class="Links" to="/create-products" id="create-product-link" style="color: white; text-decoration: none; margin-right: 40px;">Create Product</Link>
 				{/if}
+				
 			{/if}
 			
 		</div>
 		<div>
 
 		  <NavItem>
-			<span slot="trigger" on:click={toggleBar}>
+			<span slot="trigger" id="pointer" on:click={toggleBar}>
 				Login
 			</span>
 			{#if openBar}
@@ -126,8 +128,8 @@ let username = ""
 		<Route path="/follows/followings" component="{Following}"></Route>
 		<Route path="/my-account" component="{MyWishList}"></Route>
 		<Route path="/follows/followers" component="{Followers}"></Route>
-		<Route path="/wishlist" component="{MyWishList}"></Route>
 		<Route path="/create-products" component="{CreateProduct}"></Route>
+		<Route path="/products/:id/update" component="{UpdateProduct}"></Route>
 	</main>
 </Router>
 
@@ -150,29 +152,12 @@ let username = ""
     padding: 10px;
   }
 
-.droptxt {
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
+
+
+#pointer{
+	cursor: pointer;
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  background-color: #333;
-  min-width: 250;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  right: 0;
-  border-color: #484a4d;
-  border-width: 1px;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
 
 
   
@@ -196,47 +181,11 @@ let username = ""
 		background: #151616;
 		font-family: Helvetica;
 	}
-	button{
-		background-color: darkgray;
-		color: white;
-		padding: 10px 20px;
-		border-radius: 5px;
-		border: none;
-		cursor: pointer;
-		font-size: 16px;
-	}
 
 
-	.form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-}
 
-.form-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 14px;
-}
 
-.form-input {
-  padding: 3px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 290px;
-  font-size: 14px;
-}
 
-.form-btn {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 7px;
-  margin-left: 10px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  width: 300px;
-  font-size: 14px;
-}
+
+
 </style>
