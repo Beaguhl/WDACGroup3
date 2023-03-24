@@ -55,7 +55,7 @@ router.get("/", async function (request, response) {
 		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 		const getAllUsersValues = [userID]
 		const users = await connection.query(getAllUsersQuery, getAllUsersValues)
-
+		console.log(users)
 		response.status(200).json(users)
 
 	} catch (error) {

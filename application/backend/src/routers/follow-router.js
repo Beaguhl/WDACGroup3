@@ -192,25 +192,31 @@ router.get('/followings', async function (request, response) {
 	console.log("inside following")
 	const userID = request.get("UserID")
 
-	const connection = await pool.getConnection()
+	try {
+		const connection = await pool.getConnection()
 
-	const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
-	const followingsID = await connection.query(getAllFollowingQuery)
+		const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
+		const followingsID = await connection.query(getAllFollowingQuery)
 
-	let followingUsers = []
+		let followingUsers = []
 
-	for (let i = 0; i < followingsID.length; i += 1) {
-		console.log(followingsID[i].followingUserID)
-		const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`
-		const fetchedUser = await connection.query(getUserQuery)
-		followingUsers[i] = fetchedUser[0]
+		for (let i = 0; i < followingsID.length; i += 1) {
+			console.log(followingsID[i].followingUserID)
+			const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`
+			const fetchedUser = await connection.query(getUserQuery)
+			followingUsers[i] = fetchedUser[0]
+		}
+
+		if (followingUsers.length == 0) {
+			response.status(404).end()
+		} else {
+			response.status(200).json(followingUsers)
+		}
+	} catch(error) {
+		response.status(500).end()
 	}
 
-	if (followingUsers.length == 0) {
-		response.status(404).end()
-	} else {
-		response.status(200).json(followingUsers)
-	}
+	
 
 
 })

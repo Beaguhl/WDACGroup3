@@ -33,10 +33,7 @@
           console.log("got 200")
           wishListProducts = await response.json()
 					console.log("showing wishlistProducts: " + wishListProducts)
-          console.log(wishListProducts[1])
-          /*for (let i = 0; i < fetchedProducts.length; i += 1){
-            console.log("hiihhh" + fetchedProducts[i])
-          }*/
+          
           
 
       }
@@ -235,7 +232,7 @@
 
     <div id="profile">
       <h1>{fetchedUser.username}</h1>
-      {#if fetchedFollow[0] != null}
+      {#if fetchedFollow != null}
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
         <button class="follow-button" on:click={followUser}>Follow</button>
