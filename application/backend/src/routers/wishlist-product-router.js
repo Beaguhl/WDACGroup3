@@ -1,3 +1,4 @@
+const e = require('express')
 const express = require('express')
 
 const router = express.Router()
@@ -82,4 +83,40 @@ router.patch("/:id/undo-purchase", async function(request, response){
 
     }
 
+})
+
+router.post("/:id", async function(request, response){
+    console.log("trying to add")
+    
+    try {
+
+        const productID = parseInt(request.params.id)
+        const userID = request.get("UserID")
+
+        const connection = await pool.getConnection()
+
+        const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
+        const getWishListIDValue = [userID]
+
+        const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
+        
+
+        if (fetchedWishListID != null){
+            const wishListID = fetchedWishListID[0].wishListID
+            // INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
+            // const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
+
+            const addProductQuery = "INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)"
+            const addProductValues = [productID, wishListID, false, null]
+
+            await connection.query(addProductQuery, addProductValues)
+            response.status(200).end()
+        }
+
+        
+
+    } catch(error) {
+        console.log(error)
+        response.status(500).end()
+    }
 })

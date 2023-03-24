@@ -45,38 +45,32 @@
 
 	
 
-	//arrayOfProductInfo.push(new ProductInformation("Horse", 500, "It's a unicorn"))
+	async function addProductToWishList(productID){
+		console.log("got in this product id to add: " + productID)
+		try {
+			const response = await fetch("http://localhost:8080/wishlist-product/" + productID, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "bearer "+$user.accessToken,
+					"UserID": $user.userID
+				}
+			})
 
- // document.addEventListener ("DOMContentLoaded", function() {
+			switch(response.status){
+				case 200:
+					break
+				
+				case 500:
+					console.log("500 error")
+					break
+			}
+		} catch(error) {
 
-	// ------------------- following button, som laggar -------------
-	//var follow = false
-	/*document.getElementById("follow").addEventListener("click", ToggleFollow)
-	
-	function ToggleFollow() {
-	  
-	  var followOrNot = document.getElementById("follow")
-	  
-	  if (follow){
-		followOrNot.innerHTML = "Following ✔️"
-		follow = false
-	  } else {
-		followOrNot.innerHTML = "✚ Follow"
-		follow = true
-	  }
+		}
+	}
 
-	}*/
-  
- // })
-
-
- /* export let location
-
-  console.log("haha")
-
-  console.log(location)
-
-  const product = location.state*/
+ 
 
 </script>
 
@@ -102,7 +96,7 @@
 				<h2 class="card-subtitle">
 					{fetchedProduct.description}
 				</h2>
-				<button class="card-button">
+				<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.productID)}>
 					Add to WishList
 				</button>
 			</div>
