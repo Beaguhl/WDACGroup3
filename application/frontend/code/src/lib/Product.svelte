@@ -153,9 +153,6 @@
 							Delete Product
 						</button>
 					{/if}
-					<button class="card-button">
-						Add to WishList
-					</button>
 				</div>
 			{/if}
 
