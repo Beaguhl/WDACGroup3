@@ -23,6 +23,7 @@
 	import { user } from './user-store'
     import { text } from 'svelte/internal';
 	import UpdateProduct from './lib/UpdateProduct.svelte';
+	import DeleteProduct from './lib/DeleteProduct.svelte';
 
 	let currentRoute = ''
 	const currentPage = window.location.pathname;
@@ -130,6 +131,7 @@ let username = ""
 		<Route path="/follows/followers" component="{Followers}"></Route>
 		<Route path="/create-products" component="{CreateProduct}"></Route>
 		<Route path="/products/:id/update" component="{UpdateProduct}"></Route>
+		<Route path="/products/:id/delete" component="{DeleteProduct}"></Route>
 	</main>
 </Router>
 
