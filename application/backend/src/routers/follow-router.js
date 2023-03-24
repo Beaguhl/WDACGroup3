@@ -22,10 +22,12 @@ const app = express()
 
 //------------ all followers ----------------
 router.get('/followers', async function (request, response) {
+
 	const userID = request.get("UserID")
 
+	const connection = await pool.getConnection()
+
 	try {
-		const connection = await pool.getConnection()
 
 		const getAllFollowersQuery = `SELECT userID FROM Follow WHERE followingUserID = ${userID}`
 		const followerID = await connection.query(getAllFollowersQuery)
@@ -45,9 +47,13 @@ router.get('/followers', async function (request, response) {
 		} else {
 			response.status(200).json(followerUsers)
 		}
-	} catch(error) {
+	} catch (error) {
 		console.log("error is: " + error)
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
 
@@ -61,33 +67,42 @@ router.get('/followers/search', async function (request, response) {
 
 	const connection = await pool.getConnection()
 
-	const getSearchedFollowerQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
-	const searchedFollower = await connection.query(getSearchedFollowerQuery)
-	console.log("searched id är: " + searchedFollower)
+	try {
 
-	let followerSearchedUsers = []
+		const getSearchedFollowerQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
+		const searchedFollower = await connection.query(getSearchedFollowerQuery)
+		console.log("searched id är: " + searchedFollower)
 
-	for (let i = 0; i < searchedFollower.length; i += 1) {
-		console.log("folowing id är: " + searchedFollower[i].userID)
-		const getSearchedFollower = `SELECT * FROM Follow WHERE followingUserID = ${userID} AND userID = ${searchedFollower[i].userID}`
-		const fetchedFollowing = await connection.query(getSearchedFollower)
-		console.log(fetchedFollowing)
-		if (fetchedFollowing.length != 0) {
-			console.log("fetched user is: " + searchedFollower[i])
-			let arrLenght = followerSearchedUsers.length
-			followerSearchedUsers[arrLenght] = searchedFollower[i]
+		let followerSearchedUsers = []
 
+		for (let i = 0; i < searchedFollower.length; i += 1) {
+			console.log("folowing id är: " + searchedFollower[i].userID)
+			const getSearchedFollower = `SELECT * FROM Follow WHERE followingUserID = ${userID} AND userID = ${searchedFollower[i].userID}`
+			const fetchedFollowing = await connection.query(getSearchedFollower)
+			console.log(fetchedFollowing)
+			if (fetchedFollowing.length != 0) {
+				console.log("fetched user is: " + searchedFollower[i])
+				let arrLenght = followerSearchedUsers.length
+				followerSearchedUsers[arrLenght] = searchedFollower[i]
+
+			}
 		}
-	}
 
-	console.log("detta fångade vi: " + followerSearchedUsers)
-	console.log("längden är: " + followerSearchedUsers.length)
-	if (followerSearchedUsers.length == 0) {
-		console.log("404")
-		response.status(404).end()
-	} else {
-		console.log("200")
-		response.status(200).json(followerSearchedUsers)
+		console.log("detta fångade vi: " + followerSearchedUsers)
+		console.log("längden är: " + followerSearchedUsers.length)
+		if (followerSearchedUsers.length == 0) {
+			console.log("404")
+			response.status(404).end()
+		} else {
+			console.log("200")
+			response.status(200).json(followerSearchedUsers)
+		}
+	} catch (error) {
+
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
@@ -96,38 +111,42 @@ router.post('/follow', async function (request, response) {
 	console.log("follow")
 
 	// add error handling and status codes
-
+	const connection = await pool.getConnection()
 	try {
 		const userID = request.get("UserID")
 
-		const connection = await pool.getConnection()
+
 
 
 		const userToFollow = request.get("UserToFollow")
-						
+
 		const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
 		const followValues = [userID, userToFollow]
-						
+
 		await connection.query(followQuery, followValues)
 		console.log("done following")
 
 		response.status(201).end()
-	} catch(error) {
+	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
-	
-			
+
+
 })
 
 //------------------- unfollow ---------------------
-router.delete('/unfollow', async function(request, response){
+router.delete('/unfollow', async function (request, response) {
 
 	// add error handling and status codes
 	const userID = request.get("UserID")
-
+	const connection = await pool.getConnection()
 	try {
-		const connection = await pool.getConnection()
+
 
 		const userToUnfollow = request.get("UserToUnfollow")
 
@@ -138,10 +157,14 @@ router.delete('/unfollow', async function(request, response){
 		console.log("deleted follow")
 
 		response.status(204).end()
-	} catch(error) {
+	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
-			
+
 
 })
 
@@ -149,11 +172,10 @@ router.delete('/unfollow', async function(request, response){
 router.get('/followings/search', async function (request, response) {
 	console.log("inside followings search")
 	const userID = request.get("UserID")
+	const connection = await pool.getConnection()
 
 	try {
 		const searchQuery = request.query.q
-
-		const connection = await pool.getConnection()
 
 		//gets all users that matches search string
 		const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`
@@ -179,11 +201,15 @@ router.get('/followings/search', async function (request, response) {
 		} else {
 			response.status(200).json(followingSearchedUsers)
 		}
-	} catch(error) {
+	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
-	
+
 
 })
 console.log("following")
@@ -191,9 +217,10 @@ console.log("following")
 router.get('/followings', async function (request, response) {
 	console.log("inside following")
 	const userID = request.get("UserID")
+	const connection = await pool.getConnection()
 
 	try {
-		const connection = await pool.getConnection()
+
 
 		const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
 		const followingsID = await connection.query(getAllFollowingQuery)
@@ -213,19 +240,23 @@ router.get('/followings', async function (request, response) {
 		} else {
 			response.status(200).json(followingUsers)
 		}
-	} catch(error) {
+	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
-	
+
 
 
 })
 router.get('/followers', async function (request, response) {
 	const userID = request.get("UserID")
-
+	const connection = await pool.getConnection()
 	try {
-		const connection = await pool.getConnection()
+
 
 		const getAllFollowersQuery = `SELECT userID FROM Follow WHERE followingUserID = ${userID}`
 		const followerID = await connection.query(getAllFollowersQuery)
@@ -248,6 +279,10 @@ router.get('/followers', async function (request, response) {
 	} catch {
 		console.log("error is: " + error)
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
 

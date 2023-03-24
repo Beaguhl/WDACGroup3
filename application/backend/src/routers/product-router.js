@@ -26,10 +26,12 @@ router.get("/", async function (request, response) {
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 	const userID = request.get("UserID")
+	const connection = await pool.getConnection()
 
 
 	try {
-		const connection = await pool.getConnection()
+
+
 
 		const getAllProductsQuery = "SELECT * FROM Products"
 		const getAllProductsValues = [userID]
@@ -39,6 +41,10 @@ router.get("/", async function (request, response) {
 
 	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 }
 )
@@ -49,12 +55,13 @@ router.get('/search', async function (request, response) {
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 	const userID = request.get("UserID")
+	const connection = await pool.getConnection()
 
 
 	try {
 		const searchQuery = request.query.q
 
-		const connection = await pool.getConnection()
+
 
 		const getSearchedProductsQuery = `SELECT * FROM Products WHERE productID != ${userID} AND productName LIKE '%${searchQuery}%'`
 		const searchedProducts = await connection.query(getSearchedProductsQuery)
@@ -67,6 +74,10 @@ router.get('/search', async function (request, response) {
 
 	} catch {
 		// add catch
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
@@ -75,10 +86,12 @@ router.get('/search', async function (request, response) {
 
 router.get("/:id", async function (request, response) {
 
+	const connection = await pool.getConnection()
+
 	try {
 		const otherProductID = parseInt(request.params.id)
 
-		const connection = await pool.getConnection()
+
 
 		const productQuery = "SELECT * FROM Products WHERE productID = ?"
 
@@ -121,6 +134,10 @@ router.get("/:id", async function (request, response) {
 
 			console.log(error)
 			response.status(500)
+		} finally {
+			if (connection) {
+				connection.release()
+			}
 		}
 
 
@@ -134,17 +151,20 @@ router.get("/:id", async function (request, response) {
 		response.status(200).json(model)
 	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
 
 router.get("/:id/update", async function (request, response) {
 
+	const connection = await pool.getConnection()
 
 	try {
 		const anotherProductID = parseInt(request.params.id)
-
-		const connection = await pool.getConnection()
 
 		const productQuery = "SELECT * FROM Products WHERE productID = ?"
 
@@ -155,6 +175,10 @@ router.get("/:id/update", async function (request, response) {
 		response.status(200).json(productToSend)
 	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
@@ -163,9 +187,10 @@ router.get("/:id/update", async function (request, response) {
 
 router.get("/:id/delete", async function (request, response) {
 
+	const connection = await pool.getConnection()
+
 	try {
 		const productID = parseInt(request.params.id)
-		const connection = await pool.getConnection()
 		const productQuery = "SELECT * FROM Products WHERE productID = ?"
 		const productValue = [parseInt(productID)]
 		const productToSend = await connection.query(productQuery, productValue)
@@ -173,15 +198,19 @@ router.get("/:id/delete", async function (request, response) {
 		response.status(200).json(productToSend)
 	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
 router.delete("/:id/delete", async function (request, response) {
 
 	const productID = parseInt(request.params.id)
+	const connection = await pool.getConnection()
 
 	try {
-		const connection = await pool.getConnection()
 
 		const deleteProductQuery = "DELETE FROM Products WHERE productID = ?"
 		const deleteProductValues = [productID]
@@ -191,6 +220,10 @@ router.delete("/:id/delete", async function (request, response) {
 		response.status(200).end()
 	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
@@ -203,8 +236,10 @@ router.put("/:id/update", async function (request, response) {
 	const newProductName = request.body.NewProductName
 	const newProductDescription = request.body.NewProductDescription
 
+	const connection = await pool.getConnection()
+
 	try {
-		const connection = await pool.getConnection()
+
 		console.log("Connection established successfully")
 		console.log(anotherProductID)
 		console.log(newProductName)
@@ -221,14 +256,20 @@ router.put("/:id/update", async function (request, response) {
 	} catch (error) {
 		console.log("Error updating product: ", error)
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
 router.post("/", async function (request, response) {
 
 	const product = request.body
+
+	const connection = await pool.getConnection()
+
 	try {
-		const connection = await pool.getConnection()
 
 		const createProductQuery = "INSERT INTO Products (productName, description) VALUES (?, ?)"
 		const createProductValues = [product.productName, product.description]
@@ -238,5 +279,9 @@ router.post("/", async function (request, response) {
 		response.status(201).end()
 	} catch (error) {
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })

@@ -5,28 +5,28 @@ const router = express.Router()
 const { createPool } = require('mariadb')
 
 const pool = createPool({
-	host: "db",
-	port: 3306,
-	user: "root",
-	password: "abc123",
-	database: "abc",
+    host: "db",
+    port: 3306,
+    user: "root",
+    password: "abc123",
+    database: "abc",
 })
 
 pool.on('error', function (error) {
-	console.log("Error from pool", error)
+    console.log("Error from pool", error)
 })
 
 module.exports = router
 
-router.patch("/:id/purchase", async function(request, response){
+router.patch("/:id/purchase", async function (request, response) {
     console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
     console.log("id to update is: " + id)
     console.log("my userID is: " + userID)
+    const connection = await pool.getConnection()
 
     try {
-        const connection = await pool.getConnection()
 
         console.log("got connection")
 
@@ -40,21 +40,26 @@ router.patch("/:id/purchase", async function(request, response){
         console.log("updated!")
         response.status(200).end()
 
-    } catch(error) {
+    } catch (error) {
 
+    } finally {
+        if (connection) {
+            connection.release()
+        }
     }
 
 })
 
-router.patch("/:id/undo-purchase", async function(request, response){
+router.patch("/:id/undo-purchase", async function (request, response) {
     console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
     console.log("id to update is: " + id)
     console.log("my userID is: " + userID)
+    const connection = await pool.getConnection()
 
     try {
-        const connection = await pool.getConnection()
+
 
         console.log("got connection")
 
@@ -65,7 +70,7 @@ router.patch("/:id/undo-purchase", async function(request, response){
         console.log(userPurchasedID[0].userPurchased + "bought this product")
         console.log("logged in as userID: " + userID)
 
-        if (userPurchasedID[0].userPurchased == userID){
+        if (userPurchasedID[0].userPurchased == userID) {
             const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
             const updatePurchasedValues = [false, null, id]
 
@@ -78,28 +83,34 @@ router.patch("/:id/undo-purchase", async function(request, response){
             response.status(403).end()
         }
 
-        
-    } catch(error) {
 
+    } catch (error) {
+
+    } finally {
+        if (connection) {
+            connection.release()
+        }
     }
 
 })
 
-router.post("/:id", async function(request, response){
-    
+router.post("/:id", async function (request, response) {
+
+    const connection = await pool.getConnection()
+
     try {
 
         const productID = parseInt(request.params.id)
         const userID = request.get("UserID")
 
-        const connection = await pool.getConnection()
+
 
         const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
         const getWishListIDValue = [userID]
 
         const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
-        
-        if (fetchedWishListID != null){
+
+        if (fetchedWishListID != null) {
             const wishListID = fetchedWishListID[0].wishListID
 
             const addProductQuery = "INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)"
@@ -109,9 +120,13 @@ router.post("/:id", async function(request, response){
             response.status(200).end()
         }
 
-    } catch(error) {
+    } catch (error) {
         console.log(error)
         response.status(500).end()
+    } finally {
+        if (connection) {
+            connection.release()
+        }
     }
 })
 

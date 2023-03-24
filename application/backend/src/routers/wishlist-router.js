@@ -20,14 +20,16 @@ module.exports = router
 const app = express()
 
 
-router.get("/:id", async function(request, response){
-    
+router.get("/:id", async function (request, response) {
+
     const id = parseInt(request.params.id)
 
     const userID = request.get("UserID")
 
+    const connection = await pool.getConnection()
+
     try {
-        const connection = await pool.getConnection()
+
 
         // gets one wishListID from "WishList"
         const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
@@ -66,25 +68,34 @@ router.get("/:id", async function(request, response){
         } catch (error) {
             console.log(error)
             response.status(500).end()
+        } finally {
+            if (connection) {
+                connection.release()
+            }
         }
 
     } catch (error) {
         console.log(error)
         response.status(500).end()
+    } finally {
+        if (connection) {
+            connection.release()
+        }
     }
 })
 
 
-router.get("/:id/search", async function(request, response){
+router.get("/:id/search", async function (request, response) {
     const id = parseInt(request.params.id)
 
 
     console.log("searching my wish list")
     const userID = request.get("UserID")
+    const connection = await pool.getConnection()
 
     try {
         const searchQuery = request.query.q
-        const connection = await pool.getConnection()
+
 
         // get wish list ID
         const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
@@ -131,6 +142,10 @@ router.get("/:id/search", async function(request, response){
 
     } catch (error) {
 
+    } finally {
+        if (connection) {
+            connection.release()
+        }
     }
 })
 
