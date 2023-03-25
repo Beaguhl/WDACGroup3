@@ -67,7 +67,6 @@
                     break
             }
             
-
         } catch {
             //handle error
         }
@@ -84,13 +83,16 @@
 		const enteredPassword = formData.get('password');
 
         try {
-            const response = await fetch("http://localhost:8080/tokens", {
-                method: "POST",
+            const response = await fetch("http://localhost:8080/my-account/verify-password", {
+                method: "GET",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(enteredPassword.toString())}`
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "bearer "+$user.accessToken,
+                    "UserID": $user.userID,
+                    "EnteredPassword": enteredPassword.toString()
+                }
             })
+
             switch(response.status){
                 case 200:
                     showEditAccount = true
@@ -109,41 +111,7 @@
                     break
             }
         } catch (error){
-            // handle error
-        }
-    }
-
-    async function verifyPasswordForDelete(event){
-        const formData = new FormData(event.target);
-		const enteredPassword = formData.get('password');
-
-        try {
-            const response = await fetch("http://localhost:8080/tokens", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(enteredPassword.toString())}`
-            })
-            switch(response.status){
-                case 200:
-                    showDeleteAccount = true
-                    showEnterPasswordForDelete = false
-                    showAccount = false
-                    break
-
-                case 403:
-                    incorrectPassword = true
-                    break
-
-                case 400:
-                    console.log("not matcing password")
-                    noMatch = true
-                    console.log("case 400")
-                    break
-            }
-        } catch (error){
-            // handle error
+            console.log(error)
         }
     }
 
@@ -175,7 +143,7 @@
             }
             
         } catch (error) {
-            // handle error
+            console.log(error)
         }
 
     }
@@ -207,7 +175,7 @@
             }
 
         } catch (error){
-            // handle error
+            console.log(error)
         }
     }
 
@@ -241,6 +209,17 @@
         }
     }
 
+    function makeShowDeleteAccountTrue(){
+        showDeleteAccount = true
+        showEditAccount = false
+    }
+
+    function dontWantToDelete(){
+        showDeleteAccount = false
+        showEditAccount = true
+        showEnterPasswordForEdit = false
+        showAccount = false
+    }
 
 
     /**
@@ -288,32 +267,10 @@
                         </div>
                         
                     </form>
-                    <form on:submit|preventDefault={makeShowEnterPasswordForDeleteTrue}>
-                        <div class="form-group">
-                            <input type="submit" value="Delete account">
-                        </div>
-                    </form>
+                    
                 {/if}
                 {#if showEnterPasswordForEdit}
                     <form on:submit|preventDefault={verifyPasswordForEdit}>
-                        <div class="form-group">
-                            <label for="password">Type current password to make changes:</label>
-                            <div class="underline-textfield">
-                                <input type="password" id="password" name="password">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <input type="submit" value="OK">
-                        </div>
-                        {#if incorrectPassword}
-                            <p>Incorrect password, try again.</p>
-                        {/if}
-                    </form>
-                {/if}
-
-                {#if showEnterPasswordForDelete}
-                    <form on:submit|preventDefault={verifyPasswordForDelete}>
                         <div class="form-group">
                             <label for="password">Type current password to make changes:</label>
                             <div class="underline-textfield">
@@ -337,9 +294,12 @@
                         <Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
                             <button style="background-color: red;" on:click={handleDelete}>Yes</button>
                         </Link>
-                        <Link class="Links" to="/">
-                            <button style="background-color: #2A7BE6">No</button>
-                        </Link>
+                        <form on:submit|preventDefault={dontWantToDelete}>
+                            <button class="no">No</button>
+                        </form>
+                        
+                        
+                        
                     </div>
                 {/if}
 
@@ -386,12 +346,16 @@
                                 {#if succesfulPasswordUpdate == true}
                                     <p>Password Updated</p>
                                 {:else}
-                                    <div class="form-group">
+                                    <div class="form-group delete">
                                         <input type="submit" value="Update password">
                                     </div> 
                                 {/if}
                                 
                             </div>
+                        </form>
+
+                        <form on:submit|preventDefault={makeShowDeleteAccountTrue}>  
+                            <input type="submit" value="Delete Account">
                         </form>
                 {/if}
             </div>
@@ -404,6 +368,10 @@
 
 
 <style>
+
+.no {
+    background-color: #2A7BE6
+}
 
 .container {
 	margin: 50px auto;

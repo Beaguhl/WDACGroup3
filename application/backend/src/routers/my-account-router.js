@@ -158,3 +158,39 @@ router.delete("/delete-account", async function (request, response) {
         }
     }
 })
+
+router.get("/verify-password", async function(request, response){
+    console.log("verify password")
+    const userID = request.get("UserID")
+	const connection = await pool.getConnection()
+	const enteredPassword = request.get("EnteredPassword")
+
+	try {
+
+		const getPasswordQuery = "SELECT password FROM Users WHERE userID = ?"
+		const getPasswordValue = [userID]
+
+		const password = await connection.query(getPasswordQuery, getPasswordValue)
+        console.log(enteredPassword)
+		console.log(password[0])
+
+		bcrypt.compare(enteredPassword, password[0].password, (error, result) => {
+			if (error) {
+				response.status(500).end()
+			}
+			if (result === true) {
+				response.status(200).end()
+			} else {
+                response.status(403).end()
+            }
+		})
+
+	} catch(error) {
+		console.log(error)
+		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
+	}
+})
