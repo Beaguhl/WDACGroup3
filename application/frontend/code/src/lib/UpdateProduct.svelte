@@ -3,7 +3,7 @@
 
 <script>
 	import { user } from "../user-store";
-	import {Router, Link, Route} from "svelte-routing"
+	import {Router, Link, Route, navigate} from "svelte-routing"
 	import { onMount } from "svelte";
 
 
@@ -96,6 +96,7 @@
 			const response = await updateProduct()
 			console.log("Name: " + newProductName)
 			console.log("Desc: " + newProductDescription)
+			navigate("/products")
 		}catch(error){
 
 		}

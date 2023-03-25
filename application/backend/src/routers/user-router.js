@@ -49,8 +49,9 @@ router.get("/", async function (request, response) {
 
 	const userID = request.get("UserID")
 
+	const connection = await pool.getConnection()
+
 	try {
-		const connection = await pool.getConnection()
 
 		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 		const getAllUsersValues = [userID]
@@ -61,30 +62,36 @@ router.get("/", async function (request, response) {
 	} catch (error) {
 		console.log(error)
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 })
 
-router.post("/", async function(request, response){
+router.post("/", async function (request, response) {
 
 	const user = request.body
 	console.log(user.username + user.password)
 
 	const validationArr = await validateUser(user)
 
+	const connection = await pool.getConnection()
+
 	console.log(validationArr)
-	if (validationArr.length > 0){
+	if (validationArr.length > 0) {
 		response.status(400).json(validationArr)
 		return
 
 	} else {
 
-		try{
-			const connection = await pool.getConnection()
-			
+		try {
+
+
 			const createUserQuery = "INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
 			const hashedPassword = await hashPassword(user.password)
-        	const createUserValues = [user.username, hashedPassword, false]
-			
+			const createUserValues = [user.username, hashedPassword, false]
+
 			await connection.query(createUserQuery, createUserValues)
 
 			const getUserIDQUery = "SELECT userID FROM Users WHERE username = ?"
@@ -100,23 +107,27 @@ router.post("/", async function(request, response){
 
 			//response.set('Location', '/users/${userID}')
 			response.status(201).end()
-			
-		} catch(error) { 
+
+		} catch (error) {
 			console.log(error)
 			response.status(500).end() // 500 = server error
+		} finally {
+			if (connection) {
+				connection.release()
+			}
 		}
 	}
-	
+
 })
 
 //----------- search users ----------------
 router.get('/search', async function (request, response) {
 	const userID = request.get("UserID")
 
+	const connection = await pool.getConnection()
+
 	try {
 		const searchQuery = request.query.q
-
-		const connection = await pool.getConnection()
 
 		const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${userID} AND username LIKE '%${searchQuery}%'`
 		const searchedUsers = await connection.query(getSearchedUsersQuery)
@@ -129,6 +140,10 @@ router.get('/search', async function (request, response) {
 
 	} catch {
 		// add catch
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
 })
@@ -138,6 +153,8 @@ router.get("/:id", async function (request, response) {
 
 	const userID = request.get("UserID")
 
+	const connection = await pool.getConnection()
+
 	try {
 		const otherUsersID = parseInt(request.params.id)
 
@@ -146,7 +163,7 @@ router.get("/:id", async function (request, response) {
 			response.status(403).end()
 		}
 
-		const connection = await pool.getConnection()
+
 
 		const userQuery = "SELECT userID, username FROM Users WHERE userID = ?"
 		const userValues = [otherUsersID]
@@ -161,11 +178,11 @@ router.get("/:id", async function (request, response) {
 		var followToSend = follow[0]
 		console.log("follow to send is: " + followToSend)
 
-		if (!followToSend){
+		if (!followToSend) {
 			console.log("follow not")
 			followToSend = null
-		} 
-		
+		}
+
 		const model = {
 			userToSend,
 			followToSend
@@ -176,8 +193,12 @@ router.get("/:id", async function (request, response) {
 	} catch (error) {
 		console.log("500 error: " + error)
 		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
+		}
 	}
 
-		
+
 })
 
