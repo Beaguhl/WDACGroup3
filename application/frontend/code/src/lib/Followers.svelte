@@ -22,7 +22,7 @@
 		console.log("loadAllFollowers")
 		showAllFollowers = true
 		try {
-			const response = await fetch("http://localhost:8080/follows/followers", {
+			const response = await fetch("http://localhost:8080/followers", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -68,7 +68,7 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/follows/followers/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/followers/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

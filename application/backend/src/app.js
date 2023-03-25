@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const { json } = require('express');
 
-const followRouter = require('./routers/follow-router')
+const followersRouter = require('./routers/followers-router')
+const followingsRouter = require('./routers/followings-router')
 const productRouter = require('./routers/product-router')
 const userRouter = require('./routers/user-router');
 const myAccountRouter = require('./routers/my-account-router')
@@ -129,7 +130,8 @@ app.post('/tokens', async function (request, response) {
 
 })
 
-app.use('/follows', followRouter)
+app.use('/followers', followersRouter)
+app.use('/followings', followingsRouter)
 app.use('/users', userRouter)
 app.use('/products', productRouter)
 app.use('/my-account', myAccountRouter)

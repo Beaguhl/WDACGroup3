@@ -17,7 +17,7 @@
 		showAllFollowings = true
 		try {
 			console.log("try to response")
-			const response = await fetch("http://localhost:8080/follows/followings" , {
+			const response = await fetch("http://localhost:8080/followings" , {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -62,7 +62,7 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/follows/followings/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/followings/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
