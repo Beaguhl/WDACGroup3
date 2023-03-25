@@ -159,7 +159,7 @@ router.get("/:id", async function (request, response) {
 })
 
 
-router.get("/:id/update", async function (request, response) {
+router.get("/:id/:action", async function (request, response) {
 
 	const connection = await pool.getConnection()
 
@@ -185,7 +185,7 @@ router.get("/:id/update", async function (request, response) {
 //----------------------- Delete products ----------------------
 
 
-router.get("/:id/delete", async function (request, response) {
+/*router.get("/:id/delete", async function (request, response) {
 
 	const connection = await pool.getConnection()
 
@@ -203,7 +203,7 @@ router.get("/:id/delete", async function (request, response) {
 			connection.release()
 		}
 	}
-})
+})*/
 
 router.delete("/:id/delete", async function (request, response) {
 
