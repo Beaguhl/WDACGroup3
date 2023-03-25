@@ -60,73 +60,82 @@ app.post('/tokens', async function (request, response) {
 	const username = request.body.username
 	const password = request.body.password
 
-	if (grantType != "password") {
-		response.status(400).json({ error: "unsupported_grant_type" }).end()
-		return
-	}
-
-	if (username == "" || password == "") {
-		response.status(400).json({ error: "invalid_request" }).end()
-		return
-	}
-
 	const connection = await pool.getConnection()
-	const compareUserQuery = "SELECT * FROM Users WHERE username = ?"
-	const compareUserValue = [username]
 
-	const result = await connection.query(compareUserQuery, compareUserValue)
+	try {
+		if (grantType != "password") {
+			response.status(400).json({ error: "unsupported_grant_type" }).end()
+			return
+		}
+	
+		if (username == "" || password == "") {
+			response.status(400).json({ error: "invalid_request" }).end()
+			return
+		}
+	
+		
+		const compareUserQuery = "SELECT * FROM Users WHERE username = ?"
+		const compareUserValue = [username]
+	
+		const result = await connection.query(compareUserQuery, compareUserValue)
+	
+		if (result.length != 0) {
+	
+			console.log("i tokens: " + result[0].userID)
+			bcrypt.compare(password, result[0].password, (err, res) => {
+				if (err) {
+					throw err;
 
-	if (result.length != 0) {
-
-		bcrypt.compare(password, result[0].password, (err, res) => {
-			if (err) {
-				throw err;
-			}
-			if (res === true) {
-				const payload = {
-					sub: `${result[0].userID}`
 				}
-
-				jwt.sign(payload, ACCESS_TOKEN_SECRET, function (error, accesToken) {
-					if (error) {
-						response.status(500).end()
-					} else {
-						const payloadIDToken = {
-							sub: `${result[0].userID}`,
-							iss: `http://localhost:8080`,
-							aud: `wishes.com`,
-							exp: Math.floor(Date.now() / 1000) + 600
-						}
-
-						jwt.sign(payloadIDToken, ACCESS_TOKEN_SECRET, function (error, id_token) {
-							if (error) {
-								response.status(500).end()
-							} else {
-								response.status(200).json({
-									access_token: accesToken,
-									id_token: id_token,
-									type: "bearer",
-									userID: result[0].userID,
-									admin: result[0].admin
-								})
-							}
-						})
-
+				if (res === true) {
+					const payload = {
+						sub: `${result[0].userID}`
 					}
-				})
-
-			} else {
-				response.status(403).end()
-			}
-		})
-
-
-
-	} else {
-		response.status(400).json({ error: "invalid_grant" })
-		return
+	
+					jwt.sign(payload, ACCESS_TOKEN_SECRET, function (error, accesToken) {
+						if (error) {
+							response.status(500).end()
+						} else {
+							const payloadIDToken = {
+								sub: `${result[0].userID}`,
+								iss: `http://localhost:8080`,
+								aud: `wishes.com`,
+								exp: Math.floor(Date.now() / 1000) + 600
+							}
+	
+							jwt.sign(payloadIDToken, ACCESS_TOKEN_SECRET, function (error, id_token) {
+								if (error) {
+									response.status(500).end()
+								} else {
+									response.status(200).json({
+										access_token: accesToken,
+										id_token: id_token,
+										type: "bearer",
+										userID: result[0].userID,
+										admin: result[0].admin
+									})
+								}
+							})
+	
+						}
+					})
+	
+				} else {
+					response.status(403).end()
+				}
+			})
+	
+		} else {
+			response.status(400).json({ error: "invalid_grant" })
+			return
+		} 
+	} catch(error) {
+		response.status(500).end()
+	} finally {
+		if (connection){
+			connection.release()
+		}
 	}
-
 })
 
 app.use('/followers', followersRouter)
