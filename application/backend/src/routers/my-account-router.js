@@ -21,7 +21,8 @@ pool.on('error', function (error) {
 
 module.exports = router
 
-const { validateUsername, validatePassword } = require('../user-validations')
+const { validateUsername, validatePassword } = require('../user-validations');
+const { json } = require('express');
 
 const app = express()
 
@@ -108,7 +109,7 @@ router.put("/update-password", async function (request, response) {
 
 router.put("/update-username", async function (request, response) {
     const userID = request.get("UserID")
-    const newUsername = request.get("NewUsername")
+    const newUsername = request.body.newUsername
     const connection = await pool.getConnection()
     try {
         const usernameErrors = await validateUsername(newUsername)
@@ -160,7 +161,6 @@ router.delete("/delete-account", async function (request, response) {
 })
 
 router.get("/verify-password", async function(request, response){
-    console.log("verify password")
     const userID = request.get("UserID")
 	const connection = await pool.getConnection()
 	const enteredPassword = request.get("EnteredPassword")
@@ -171,8 +171,6 @@ router.get("/verify-password", async function(request, response){
 		const getPasswordValue = [userID]
 
 		const password = await connection.query(getPasswordQuery, getPasswordValue)
-        console.log(enteredPassword)
-		console.log(password[0])
 
 		bcrypt.compare(enteredPassword, password[0].password, (error, result) => {
 			if (error) {

@@ -118,7 +118,7 @@ router.post('/follow', async function (request, response) {
 
 
 
-		const userToFollow = request.get("UserToFollow")
+		const userToFollow = request.body.id
 
 		const followQuery = "INSERT INTO Follows (userID, followingUserID) VALUES (?, ?)";
 		const followValues = [userID, userToFollow]
@@ -148,7 +148,7 @@ router.delete('/unfollow', async function (request, response) {
 	try {
 
 
-		const userToUnfollow = request.get("UserToUnfollow")
+		const userToUnfollow = request.body.id
 
 		const unfollowQuery = "DELETE FROM Follows WHERE userID = ? AND followingUserID = ?"
 		const unfollowValues = [userID, userToUnfollow]
