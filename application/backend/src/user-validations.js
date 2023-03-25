@@ -56,8 +56,6 @@ async function validateUsername(username){
 
     }
 
-    console.log("validate user: " + errorArr)
-
     return errorArr
 }
 

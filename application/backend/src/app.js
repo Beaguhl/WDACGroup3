@@ -78,7 +78,6 @@ app.post('/tokens', async function (request, response) {
 
 	if (result.length != 0) {
 
-		console.log("i tokens: " + result[0].userID)
 		bcrypt.compare(password, result[0].password, (err, res) => {
 			if (err) {
 				throw err;

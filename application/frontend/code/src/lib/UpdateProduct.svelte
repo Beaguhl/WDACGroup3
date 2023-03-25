@@ -19,10 +19,8 @@
 	let succesfulProductDescriptionUpdate = false
 
 	async function getProductToUpdate(){
-		console.log("AAAAAAAAAAAAAAAAAAAAAAAA")
 		try {
-			console.log(id)
-			const response = await fetch(`http://localhost:8080/products/${id}/update` ,{
+			const response = await fetch(`http://localhost:8080/products/${id}` ,{
 			  
 				method: "GET",
 				headers: {
@@ -33,11 +31,12 @@
 			})
 			switch(response.status){
 				case 200:
+					console.log("AAAAAAAAAAAAAA")
 					fetchedProduct = await response.json()
-					console.log("fetched not name: " + fetchedProduct.length)
-					console.log("fetched: " + fetchedProduct[0].productName)
-					newProductName = fetchedProduct[0].productName
-					newProductDescription = fetchedProduct[0].description
+					console.log(fetchedProduct)
+					console.log(fetchedProduct.product.productName)
+					newProductName = fetchedProduct.product.productName
+					newProductDescription = fetchedProduct.product.description
 					break
 
 				case 404:
@@ -46,6 +45,7 @@
 				
 			}
 		}catch(error){
+			console.log(error)
 		}
 	}
 
@@ -53,7 +53,7 @@
 
 	async function updateProduct(){
 		try{
-			const response = await fetch(`http://localhost:8080/products/${id}/update`, {
+			const response = await fetch(`http://localhost:8080/products/${id}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -68,17 +68,14 @@
 
 			switch(response.status){
 				case 200:
-					console.log("YEEEEEEEEEES")
 					succesfulProductNameUpdate = true
 					succesfulProductDescriptionUpdate = true
 					break
 				
 				case 500:
-					console.log("NOOOOOO")
 					break
 
 				case 400:
-					console.log("MAAAAAAYBEEEEEE")
 					break
 			}
 		}catch(error){
@@ -94,8 +91,6 @@
 
 		try{
 			const response = await updateProduct()
-			console.log("Name: " + newProductName)
-			console.log("Desc: " + newProductDescription)
 			navigate("/products")
 		}catch(error){
 

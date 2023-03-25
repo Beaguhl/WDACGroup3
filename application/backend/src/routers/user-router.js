@@ -56,7 +56,6 @@ router.get("/", async function (request, response) {
 		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?"
 		const getAllUsersValues = [userID]
 		const users = await connection.query(getAllUsersQuery, getAllUsersValues)
-		console.log(users)
 		response.status(200).json(users)
 
 	} catch (error) {
@@ -72,13 +71,11 @@ router.get("/", async function (request, response) {
 router.post("/", async function (request, response) {
 
 	const user = request.body
-	console.log(user.username + user.password)
 
 	const validationArr = await validateUser(user)
 
 	const connection = await pool.getConnection()
 
-	console.log(validationArr)
 	if (validationArr.length > 0) {
 		response.status(400).json(validationArr)
 		return
@@ -159,7 +156,6 @@ router.get("/:id", async function (request, response) {
 		const otherUsersID = parseInt(request.params.id)
 
 		if (userID == otherUsersID) {
-			console.log("403 error - user tried to view them self")
 			response.status(403).end()
 		}
 
@@ -172,14 +168,11 @@ router.get("/:id", async function (request, response) {
 
 		const followQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?"
 		const followValues = [userID, otherUsersID]
-		console.log("follow value: " + followValues)
 
 		const follow = await connection.query(followQuery, followValues)
 		var followToSend = follow[0]
-		console.log("follow to send is: " + followToSend)
 
 		if (!followToSend) {
-			console.log("follow not")
 			followToSend = null
 		}
 
@@ -191,7 +184,6 @@ router.get("/:id", async function (request, response) {
 		response.status(200).json(model)
 
 	} catch (error) {
-		console.log("500 error: " + error)
 		response.status(500).end()
 	} finally {
 		if (connection) {

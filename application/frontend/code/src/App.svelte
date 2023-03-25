@@ -57,7 +57,6 @@ window.addEventListener('popstate', () => {
 
 	async function login() {
     try {
-      console.log("Userud is" + $user.userID)
       const response = await fetch("http://localhost:8080/tokens", {
         method: "POST",
         headers: {
@@ -71,7 +70,6 @@ window.addEventListener('popstate', () => {
 		  const jwtDecoded = jwt_decode(body.id_token)
 		  //@ts-ignore
 		  const userID = jwtDecoded.sub
-          console.log("nu kommer logged in token: " + body.access_token)
 
           $user = {
             isLoggedIn: true,
@@ -90,7 +88,6 @@ window.addEventListener('popstate', () => {
         case 400:
           emptyField = true
 		  noMatch = false
-          console.log("case 400")
           break
 
 		case 403:

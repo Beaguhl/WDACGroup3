@@ -39,7 +39,6 @@
         navigate("/")
     }
 
-    console.log("user är: " + $user.userID)
 
     async function getUsername(){
         try {
@@ -55,7 +54,6 @@
             switch (response.status){
                 case 200:
                     username = await response.json()
-                    console.log("username is: " + username)
                     break
                 
                 case 404:
@@ -63,7 +61,6 @@
                     break
 
                 case 500:
-                    console.log("500 error")
                     break
             }
             
@@ -103,9 +100,7 @@
                     break
 
                 case 400:
-                    console.log("not matcing password")
                     noMatch = true
-                    console.log("case 400")
                     break
             }
         } catch (error){
@@ -137,9 +132,7 @@
                     break
 
                 case 400:
-                    console.log("not matcing password")
                     noMatch = true
-                    console.log("case 400")
                     break
             }
         } catch (error){
@@ -183,7 +176,7 @@
     async function updateUsername(){
         try {
             const response = await fetch("http://localhost:8080/my-account/update-username", {
-                method: "PUT",
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "bearer "+$user.accessToken,
@@ -224,16 +217,13 @@
             })
             switch(response.status){
                 case 200:
-                    console.log("YAY")
                     logout()
                     successfulDelete = true
 
                 case 500:
-                    console.log("NOT YAY!")
                     break
 
                 case 400:
-                    console.log("YAY?")
                     break
             }
         }catch(error){

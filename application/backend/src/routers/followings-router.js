@@ -22,7 +22,6 @@ const app = express()
 
 //---------------- search followings ------------------------
 router.get('/search', async function (request, response) {
-	console.log("inside followings search")
 	const userID = request.get("UserID")
 	const connection = await pool.getConnection()
 
@@ -37,7 +36,6 @@ router.get('/search', async function (request, response) {
 
 		//checking if a user is a following
 		for (let i = 0; i < searchedFollowing.length; i += 1) {
-			console.log("kraka userid is: " + userID)
 			const getSearchedFollowingQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?"
 			const getSearchedFollowingValues = [userID, searchedFollowing[i].userID]
 			const fetchedFollowing = await connection.query(getSearchedFollowingQuery, getSearchedFollowingValues)
@@ -47,7 +45,6 @@ router.get('/search', async function (request, response) {
 			}
 		}
 
-		console.log(followingSearchedUsers)
 		if (followingSearchedUsers.length == 0) {
 			response.status(404).end()
 		} else {
@@ -64,10 +61,8 @@ router.get('/search', async function (request, response) {
 
 
 })
-console.log("following")
 //-------------------- all followings ----------------------------
 router.get('/', async function (request, response) {
-	console.log("inside following")
 	const userID = request.get("UserID")
 	const connection = await pool.getConnection()
 
@@ -80,12 +75,10 @@ router.get('/', async function (request, response) {
 		let followingUsers = []
 
 		for (let i = 0; i < followingsID.length; i += 1) {
-			console.log(followingsID[i].followingUserID)
 			const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`
 			const fetchedUser = await connection.query(getUserQuery)
 			followingUsers[i] = fetchedUser[0]
 		}
-		console.log("längden är: " + followingUsers.length)
 
 		if (followingUsers.length == 0) {
 			response.status(404).end()

@@ -16,10 +16,8 @@
 	let showAllFollowers = true
 	let noSearchFound = false
 
-	console.log(user)
 
 	async function loadAllFollowers () {
-		console.log("loadAllFollowers")
 		showAllFollowers = true
 		try {
 			const response = await fetch("http://localhost:8080/followers", {
@@ -33,9 +31,7 @@
 
 			switch(response.status) {
 				case 200:
-					console.log("200")
 					followers = await response.json()
-					console.log(followers)
 					isFetchingFollowers = false
 					break
 				
@@ -79,9 +75,7 @@
 
 			switch(response.status) {
 				case 200:
-					console.log("got 200")
 					searchedFollowers = await response.json()
-					console.log("searched users are: " + searchedFollowers)
 					noSearchFound = false
 					isFetchingSearchedFollowers = false
 					break

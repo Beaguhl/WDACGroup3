@@ -13,10 +13,8 @@
 	let showAllFollowings = true
 
 	async function loadAllFollowings () {
-		console.log("load all followings")
 		showAllFollowings = true
 		try {
-			console.log("try to response")
 			const response = await fetch("http://localhost:8080/followings" , {
 				method: "GET",
 				headers: {
@@ -55,7 +53,6 @@
 	loadAllFollowings()
 
 	async function searchFollowings(event){
-		console.log("search followings")
 		showAllFollowings = false
 		startedSearch = true
 		const formData = new FormData(event.target);
@@ -74,7 +71,6 @@
 			switch(response.status) {
 				case 200:
 					searchedFollowings = await response.json()
-					console.log("searched users are: " + searchedFollowings)
 					isFetchingSearchedFollowings = false
 					break
 				
