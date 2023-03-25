@@ -67,7 +67,6 @@
                     break
             }
             
-
         } catch {
             //handle error
         }
@@ -84,13 +83,16 @@
 		const enteredPassword = formData.get('password');
 
         try {
-            const response = await fetch("http://localhost:8080/tokens", {
-                method: "POST",
+            const response = await fetch("http://localhost:8080/my-account/verify-password", {
+                method: "GET",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(enteredPassword.toString())}`
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "bearer "+$user.accessToken,
+                    "UserID": $user.userID,
+                    "EnteredPassword": enteredPassword.toString()
+                }
             })
+
             switch(response.status){
                 case 200:
                     showEditAccount = true
@@ -109,41 +111,7 @@
                     break
             }
         } catch (error){
-            // handle error
-        }
-    }
-
-    async function verifyPasswordForDelete(event){
-        const formData = new FormData(event.target);
-		const enteredPassword = formData.get('password');
-
-        try {
-            const response = await fetch("http://localhost:8080/tokens", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(enteredPassword.toString())}`
-            })
-            switch(response.status){
-                case 200:
-                    showDeleteAccount = true
-                    showEnterPasswordForDelete = false
-                    showAccount = false
-                    break
-
-                case 403:
-                    incorrectPassword = true
-                    break
-
-                case 400:
-                    console.log("not matcing password")
-                    noMatch = true
-                    console.log("case 400")
-                    break
-            }
-        } catch (error){
-            // handle error
+            console.log(error)
         }
     }
 
@@ -312,23 +280,7 @@
                     </form>
                 {/if}
 
-                {#if showEnterPasswordForDelete}
-                    <form on:submit|preventDefault={verifyPasswordForDelete}>
-                        <div class="form-group">
-                            <label for="password">Type current password to make changes:</label>
-                            <div class="underline-textfield">
-                                <input type="password" id="password" name="password">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <input type="submit" value="OK">
-                        </div>
-                        {#if incorrectPassword}
-                            <p>Incorrect password, try again.</p>
-                        {/if}
-                    </form>
-                {/if}
+               
 
                 {#if showDeleteAccount}
                     <div>
