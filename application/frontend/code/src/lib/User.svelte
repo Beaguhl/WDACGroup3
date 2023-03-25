@@ -90,9 +90,9 @@
 				headers: {
 					"Content-Type": "application/json",
           "Authorization": "bearer "+$user.accessToken,
-					"UserToFollow": id,
           "UserID": $user.userID
-				}
+				},
+        body: JSON.stringify({id})
       })
       
       switch(response.status) {
@@ -119,9 +119,9 @@
 				headers: {
 					"Content-Type": "application/json",
           "Authorization": "bearer "+$user.accessToken,
-					"UserToUnfollow": id,
           "UserID": $user.userID
-				}
+				},
+        body: JSON.stringify({id})
       })
       
       switch(response.status) {

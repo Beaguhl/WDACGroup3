@@ -39,6 +39,7 @@ function hashPassword(password) {
 }
 
 const { validateUser } = require('../user-validations')
+const { query } = require('express')
 //const { validateUser } = require('./validation')
 
 
@@ -159,8 +160,6 @@ router.get("/:id", async function (request, response) {
 			response.status(403).end()
 		}
 
-
-
 		const userQuery = "SELECT userID, username FROM Users WHERE userID = ?"
 		const userValues = [otherUsersID]
 		const user = await connection.query(userQuery, userValues)
@@ -191,6 +190,7 @@ router.get("/:id", async function (request, response) {
 		}
 	}
 
-
 })
+
+
 
