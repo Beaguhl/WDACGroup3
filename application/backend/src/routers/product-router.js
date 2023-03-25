@@ -63,7 +63,7 @@ router.get('/search', async function (request, response) {
 
 
 
-		const getSearchedProductsQuery = `SELECT * FROM Products WHERE productID != ${userID} AND productName LIKE '%${searchQuery}%'`
+		const getSearchedProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`
 		const searchedProducts = await connection.query(getSearchedProductsQuery)
 
 		if (searchedProducts.length == 0) {

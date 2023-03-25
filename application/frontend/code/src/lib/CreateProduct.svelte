@@ -1,5 +1,5 @@
 <script>
-	import {Router, Link, Route} from 'svelte-routing'
+	import {Router, Link, Route, navigate} from 'svelte-routing'
 	import { get_root_for_style, prevent_default } from 'svelte/internal';
 	import StartPage from "./StartPage.svelte"
 
@@ -29,6 +29,7 @@
 				case 201:
 					console.log("KANSKE!")
 					productCreated = true
+					navigate("/products")
 					break
 
 				case 400:
@@ -51,11 +52,6 @@
 	
 	<main>
 		<h1>Create Product</h1>
-
-		{#if productCreated}
-			<p>Product created!</p>
-			<Link to="/">Go to startPage</Link>
-		{:else}
 			<form on:submit|preventDefault={createProduct}>
 				<div>
 					<label for="productName">Product Name:</label>
@@ -77,7 +73,6 @@
 					{/each}
 				</ul>
 			{/if}
-		{/if}
 		<Route path="/StartPage" component="{StartPage}"></Route>
 	</main>
 </body>
