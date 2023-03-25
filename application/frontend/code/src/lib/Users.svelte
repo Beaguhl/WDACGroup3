@@ -14,7 +14,6 @@
 	let showAllUsers = null
 	let noSearchResults = false
 
-	console.log("user är: " + $user.userID)
 
 	async function loadAllUsers () {
 		showAllUsers = true
@@ -74,9 +73,7 @@
 			switch(response.status) {
 				case 200:
 					noSearchResults = false
-					console.log("got 200")
 					searchedUsers = await response.json()
-					console.log("searched users are: " + searchedUsers)
 					isFetchingSearchedUsers = false
 					break
 				

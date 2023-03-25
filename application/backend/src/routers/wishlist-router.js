@@ -36,7 +36,6 @@ router.get("/:id", async function (request, response) {
         const getWishListValue = [id]
 
         const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
-        console.log("33 wishlist id is: " + fetchedWishlistID[0])
         const wishListID = fetchedWishlistID[0].wishListID
 
         try {
@@ -54,15 +53,10 @@ router.get("/:id", async function (request, response) {
                 const getProductValue = [wishListProductID]
 
                 const product = await connection.query(getProductQuery, getProductValue)
-                console.log("----------------------------------")
-                console.log(product[0])
-                console.log(wishListProducts[i])
                 products.push([product[0], wishListProducts[i]])
-                console.log("----------------------------------")
 
 
             }
-            console.log("products är nu: " + products[0])
             response.status(200).json(products)
 
         } catch (error) {
@@ -89,7 +83,6 @@ router.get("/:id/search", async function (request, response) {
     const id = parseInt(request.params.id)
 
 
-    console.log("searching my wish list")
     const userID = request.get("UserID")
     const connection = await pool.getConnection()
 
@@ -109,7 +102,6 @@ router.get("/:id/search", async function (request, response) {
 
         // gets all products from "Products"
         const searchedProducts = await connection.query(getProductsQuery)
-        console.log("searchedProducts.length är: " + searchedProducts.length)
         var searchResults = []
 
         for (let i = 0; i < searchedProducts.length; i += 1) {
@@ -119,24 +111,18 @@ router.get("/:id/search", async function (request, response) {
             const wishListProduct = await connection.query(getWishListProductsQuery, getWishListProductsValue)
 
             if (wishListProduct.length != 0) {
-                console.log(searchedProducts[i].productName)
                 let arrLenght = searchResults.length
-                console.log("---------------------------------")
-                console.log(searchedProducts[i])
-                console.log(wishListProduct[0])
-                console.log("---------------------------------")
                 searchResults[arrLenght] = [searchedProducts[i], wishListProduct[0]]
 
             }
         }
 
-        console.log("detta fångade vi: " + searchResults)
-        console.log("längden är: " + searchResults.length)
+
         if (searchResults.length == 0) {
-            console.log("404")
+
             response.status(404).end()
         } else {
-            console.log("200")
+
             response.status(200).json(searchResults)
         }
 

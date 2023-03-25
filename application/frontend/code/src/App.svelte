@@ -57,7 +57,6 @@ window.addEventListener('popstate', () => {
 
 	async function login() {
     try {
-      console.log("Userud is" + $user.userID)
       const response = await fetch("http://localhost:8080/tokens", {
         method: "POST",
         headers: {
@@ -71,7 +70,6 @@ window.addEventListener('popstate', () => {
 		  const jwtDecoded = jwt_decode(body.id_token)
 		  //@ts-ignore
 		  const userID = jwtDecoded.sub
-          console.log("nu kommer logged in token: " + body.access_token)
 
           $user = {
             isLoggedIn: true,
@@ -90,7 +88,6 @@ window.addEventListener('popstate', () => {
         case 400:
           emptyField = true
 		  noMatch = false
-          console.log("case 400")
           break
 
 		case 403:
@@ -116,8 +113,8 @@ window.addEventListener('popstate', () => {
 				<Link class="Links" to="/users" id="users-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Users</Link>
 				<Link class="Links" to="/products" id="products-link" style="color: white; text-decoration: none; margin-right: 40px;">Find Products</Link>
 				<Link class="Links" to="/my-wishlist" id="mywishlist-link" style="color: white; text-decoration: none; margin-right: 40px;">My WishLists</Link>
-				<Link class="Links" to="/follows/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
-				<Link class="Links" to="/follows/followings" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
+				<Link class="Links" to="/followers" id="followers-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followers</Link>
+				<Link class="Links" to="/followings" id="followings-link" style="color: white; text-decoration: none; margin-right: 40px;">My Followings</Link>
 				<Link class="Links" to="/my-account" id="my-account-link" style="color: white; text-decoration: none; margin-right: 40px;">My Account</Link>
 				{#if $user.admin}
 					<Link class="Links" to="/create-products" id="create-product-link" style="color: white; text-decoration: none; margin-right: 40px;">Create Product</Link>
@@ -181,9 +178,9 @@ window.addEventListener('popstate', () => {
 		<Route path="/create-account" component="{CreateUser}"></Route>
 		<Route path="/products/:id" component="{Product}"></Route>
 		<Route path="/my-account" component="{MyAccount}"></Route>
-		<Route path="/follows/followings" component="{Following}"></Route>
+		<Route path="/followings" component="{Following}"></Route>
 		<Route path="/my-wishlist" component="{MyWishList}"></Route>
-		<Route path="/follows/followers" component="{Followers}"></Route>
+		<Route path="/followers" component="{Followers}"></Route>
 		<Route path="/create-products" component="{CreateProduct}"></Route>
 		<Route path="/products/:id/update" component="{UpdateProduct}"></Route>
 		<Route path="/products/:id/delete" component="{DeleteProduct}"></Route>

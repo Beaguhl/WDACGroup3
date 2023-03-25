@@ -19,25 +19,18 @@ pool.on('error', function (error) {
 module.exports = router
 
 router.patch("/:id/purchase", async function (request, response) {
-    console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
-    console.log("id to update is: " + id)
-    console.log("my userID is: " + userID)
     const connection = await pool.getConnection()
 
     try {
 
-        console.log("got connection")
 
         const updatePurchasedQuery = "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
-        console.log("1")
         const updatePurchasedValues = [true, userID, id]
-        console.log("2")
 
         await connection.query(updatePurchasedQuery, updatePurchasedValues)
 
-        console.log("updated!")
         response.status(200).end()
 
     } catch (error) {
@@ -51,24 +44,16 @@ router.patch("/:id/purchase", async function (request, response) {
 })
 
 router.patch("/:id/undo-purchase", async function (request, response) {
-    console.log("entering update purchased")
     const id = parseInt(request.params.id)
     const userID = request.get("UserID")
-    console.log("id to update is: " + id)
-    console.log("my userID is: " + userID)
     const connection = await pool.getConnection()
 
     try {
-
-
-        console.log("got connection")
 
         const getUserPurchasedQuery = "SELECT userPurchased FROM WishListProducts WHERE wishListProductID = ?"
         const getUserPurchasedValues = [id]
 
         const userPurchasedID = await connection.query(getUserPurchasedQuery, getUserPurchasedValues)
-        console.log(userPurchasedID[0].userPurchased + "bought this product")
-        console.log("logged in as userID: " + userID)
 
         if (userPurchasedID[0].userPurchased == userID) {
             const updatePurchasedQuery = "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
@@ -76,7 +61,6 @@ router.patch("/:id/undo-purchase", async function (request, response) {
 
             await connection.query(updatePurchasedQuery, updatePurchasedValues)
 
-            console.log("updated!")
             response.status(200).end()
 
         } else {

@@ -5,8 +5,6 @@
 	import { user } from "../user-store";
 
 	export let id = $user.userID
-	console.log("id to send in is: " + $user.userID)
-	console.log("id to send in is: " + id)
 	let wishListProducts = []
 
 	let listIsEmpty = true
@@ -30,7 +28,6 @@
           			wishListProducts = await response.json()
 					listIsEmpty = false
 					showSearch = false
-					console.log("showing wishlistProducts: " + wishListProducts)
           			break
         
         		case 500:

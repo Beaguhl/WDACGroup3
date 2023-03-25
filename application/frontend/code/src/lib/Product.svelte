@@ -28,7 +28,6 @@
 
 			switch(response.status){
 				case 200:
-					console.log("not in the wishlist")
 					alreadyInList = true
 					break
 
@@ -39,7 +38,6 @@
 	}
 
 	async function loadProduct(){
-		console.log("inside loadProduct")
 		try {
 			const response = await fetch("http://localhost:8080/products/" + id, {
 				method: "GET",
@@ -53,9 +51,6 @@
 			switch(response.status){
 				case 200:
 					fetchedProduct = await response.json()
-					console.log("fetched product: " + fetchedProduct.product.productName)
-					console.log("fetched product id: " + fetchedProduct.productID)
-					console.log(fetchedProduct.productIsInWishList)
 					isFetchingProduct = false
 					break
 				
@@ -75,7 +70,6 @@
 	
 
 	async function addProductToWishList(productID){
-		console.log("got in this product id to add: " + productID)
 		try {
 			const response = await fetch("http://localhost:8080/wishlist-product/" + productID, {
 				method: "POST",
@@ -92,7 +86,6 @@
 					break
 				
 				case 500:
-					console.log("500 error")
 					break
 			}
 		} catch(error) {

@@ -16,13 +16,11 @@
 	let showAllFollowers = true
 	let noSearchFound = false
 
-	console.log(user)
 
 	async function loadAllFollowers () {
-		console.log("loadAllFollowers")
 		showAllFollowers = true
 		try {
-			const response = await fetch("http://localhost:8080/follows/followers", {
+			const response = await fetch("http://localhost:8080/followers", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -33,9 +31,7 @@
 
 			switch(response.status) {
 				case 200:
-					console.log("200")
 					followers = await response.json()
-					console.log(followers)
 					isFetchingFollowers = false
 					break
 				
@@ -68,7 +64,7 @@
 		const searchString = formData.get('q');
 
 		try {
-			const response = await fetch("http://localhost:8080/follows/followers/search?q=" + searchString, {
+			const response = await fetch("http://localhost:8080/followers/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -79,9 +75,7 @@
 
 			switch(response.status) {
 				case 200:
-					console.log("got 200")
 					searchedFollowers = await response.json()
-					console.log("searched users are: " + searchedFollowers)
 					noSearchFound = false
 					isFetchingSearchedFollowers = false
 					break
