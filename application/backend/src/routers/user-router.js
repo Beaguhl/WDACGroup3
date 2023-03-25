@@ -100,7 +100,7 @@ router.post("/", async function (request, response) {
 			const fetchedUserID = await connection.query(getUserIDQUery, getUserIDValues)
 			const userID = fetchedUserID[0].userID
 
-			const createWishListQuery = "INSERT INTO WishList (userID) VALUES (?)"
+			const createWishListQuery = "INSERT INTO WishLists (userID) VALUES (?)"
 			const createWishListValue = [userID]
 
 			await connection.query(createWishListQuery, createWishListValue)
@@ -170,7 +170,7 @@ router.get("/:id", async function (request, response) {
 		const user = await connection.query(userQuery, userValues)
 		const userToSend = user[0]
 
-		const followQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const followQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?"
 		const followValues = [userID, otherUsersID]
 		console.log("follow value: " + followValues)
 

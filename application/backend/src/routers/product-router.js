@@ -108,7 +108,7 @@ router.get("/:id", async function (request, response) {
 
 			const userID = request.get("UserID")
 
-			const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
+			const getWishListIDQuery = "SELECT wishListID FROM WishLists WHERE userID = ?"
 			const getWishListIDValue = [userID]
 
 			const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
@@ -117,10 +117,10 @@ router.get("/:id", async function (request, response) {
 				const wishListID = fetchedWishListID[0].wishListID
 				console.log("wishListID is: " + wishListID)
 
-				const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE wishListID = ? AND productID = ?"
-				const getWishListProductValues = [wishListID, productValue]
+				const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE wishListID = ? AND productID = ?"
+				const getWishListProductsValues = [wishListID, productValue]
 
-				const result = await connection.query(getWishListProductQuery, getWishListProductValues)
+				const result = await connection.query(getWishListProductsQuery, getWishListProductsValues)
 
 				console.log("result is: " + result)
 				if (result.length != 0) {

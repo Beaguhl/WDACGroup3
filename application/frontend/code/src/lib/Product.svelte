@@ -144,7 +144,7 @@
 
 					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.product.productID)}>
 
-						Add to WishList
+						Add to WishLists
 					</button>
 				{/if}
 					{#if $user.admin}

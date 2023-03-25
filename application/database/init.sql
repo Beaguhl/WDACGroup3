@@ -27,7 +27,7 @@ INSERT INTO Users (username, password, admin)
 VALUES ("nisse2", "$2b$12$h1W/m.Ut5L99..OaZNaYcelKI/6jT.VbAT2CKkI2arM.jG57D9DNK", FALSE);
 
 
-CREATE TABLE IF NOT EXISTS Follow (
+CREATE TABLE IF NOT EXISTS Follows (
 	followID INT PRIMARY KEY AUTO_INCREMENT,
 	userID INT,
 	followingUserID INT,
@@ -35,32 +35,32 @@ CREATE TABLE IF NOT EXISTS Follow (
 	FOREIGN KEY (followingUserID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
-INSERT INTO Follow (userID, followingUserID)
+INSERT INTO Follows (userID, followingUserID)
 VALUES (2, 1);
-INSERT INTO Follow (userID, followingUserID)
+INSERT INTO Follows (userID, followingUserID)
 VALUES (1, 2);
-INSERT INTO Follow (userID, followingUserID)
+INSERT INTO Follows (userID, followingUserID)
 VALUES (2, 3);
-INSERT INTO Follow (userID, followingUserID)
+INSERT INTO Follows (userID, followingUserID)
 VALUES (3, 1);
-INSERT INTO Follow (userID, followingUserID)
+INSERT INTO Follows (userID, followingUserID)
 VALUES (3, 2);
 
-CREATE TABLE IF NOT EXISTS WishList (
+CREATE TABLE IF NOT EXISTS WishLists (
 	wishListID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	userID INT,
 	FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
-INSERT INTO WishList (userID) VALUES (1);
-INSERT INTO WishList (userID) VALUES (2);
-INSERT INTO WishList (userID) VALUES (3);
-INSERT INTO WishList (userID) VALUES (4);
-INSERT INTO WishList (userID) VALUES (5);
-INSERT INTO WishList (userID) VALUES (6);
-INSERT INTO WishList (userID) VALUES (7);
-INSERT INTO WishList (userID) VALUES (8);
-INSERT INTO WishList (userID) VALUES (9);
+INSERT INTO WishLists (userID) VALUES (1);
+INSERT INTO WishLists (userID) VALUES (2);
+INSERT INTO WishLists (userID) VALUES (3);
+INSERT INTO WishLists (userID) VALUES (4);
+INSERT INTO WishLists (userID) VALUES (5);
+INSERT INTO WishLists (userID) VALUES (6);
+INSERT INTO WishLists (userID) VALUES (7);
+INSERT INTO WishLists (userID) VALUES (8);
+INSERT INTO WishLists (userID) VALUES (9);
 
 CREATE TABLE IF NOT EXISTS Products (
 	productID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -86,32 +86,32 @@ INSERT INTO Products (productName, description) VALUES ("Mufasa", "He is dead");
 INSERT INTO Products (productName, description) VALUES ("Movie", "A dvd");
 
 
-CREATE TABLE IF NOT EXISTS WishListProduct (
+CREATE TABLE IF NOT EXISTS WishListProducts (
 	wishListProductID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	productID INT NOT NULL,
 	wishListID INT NOT NULL,
 	purchased Boolean NOT NULL, 
 	userPurchased INT,
-	FOREIGN KEY (wishListID) REFERENCES WishList(wishListID) ON DELETE CASCADE,
+	FOREIGN KEY (wishListID) REFERENCES WishLists(wishListID) ON DELETE CASCADE,
 	FOREIGN KEY (productID) REFERENCES Products(productID) ON DELETE CASCADE
 );
 
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 1, TRUE, 2);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (6, 3, TRUE, 1);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 3, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (4, 4, TRUE, 3);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (14, 5, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (15, 6, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (9, 1, TRUE, 2);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (3, 7, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (13, 8, TRUE, 1);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (15, 5, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (7, 3, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (3, 6, TRUE, 3);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (11, 2, FALSE, NULL);
-INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (12, 5, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (1, 1, TRUE, 2);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (6, 3, TRUE, 1);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (1, 3, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (4, 4, TRUE, 3);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (14, 5, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (15, 6, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (9, 1, TRUE, 2);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (3, 7, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (13, 8, TRUE, 1);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (15, 5, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (7, 3, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (3, 6, TRUE, 3);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (11, 2, FALSE, NULL);
+INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (12, 5, FALSE, NULL);
 
 
 

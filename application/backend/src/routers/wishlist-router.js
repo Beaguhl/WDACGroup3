@@ -31,8 +31,8 @@ router.get("/:id", async function (request, response) {
     try {
 
 
-        // gets one wishListID from "WishList"
-        const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
+        // gets one wishListID from "WishLists"
+        const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?"
         const getWishListValue = [id]
 
         const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
@@ -40,10 +40,10 @@ router.get("/:id", async function (request, response) {
         const wishListID = fetchedWishlistID[0].wishListID
 
         try {
-            // gets all wishListProduct from "WishListProduct"
-            const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE wishListID = ?"
-            const getWishListProductValue = [wishListID]
-            const wishListProducts = await connection.query(getWishListProductQuery, getWishListProductValue)
+            // gets all wishListProduct from "WishListProducts"
+            const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE wishListID = ?"
+            const getWishListProductsValue = [wishListID]
+            const wishListProducts = await connection.query(getWishListProductsQuery, getWishListProductsValue)
 
             var products = []
 
@@ -98,7 +98,7 @@ router.get("/:id/search", async function (request, response) {
 
 
         // get wish list ID
-        const getWishListQuery = "SELECT * FROM WishList WHERE userID = ?"
+        const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?"
         const getWishListValue = [id]
 
         const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue)
@@ -114,9 +114,9 @@ router.get("/:id/search", async function (request, response) {
 
         for (let i = 0; i < searchedProducts.length; i += 1) {
             // search through products to see if it exists in wishListProduct
-            const getWishListProductQuery = "SELECT * FROM WishListProduct WHERE productID = ? AND wishListID = ?"
-            const getWishListProductValue = [searchedProducts[i].productID, wishListID]
-            const wishListProduct = await connection.query(getWishListProductQuery, getWishListProductValue)
+            const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE productID = ? AND wishListID = ?"
+            const getWishListProductsValue = [searchedProducts[i].productID, wishListID]
+            const wishListProduct = await connection.query(getWishListProductsQuery, getWishListProductsValue)
 
             if (wishListProduct.length != 0) {
                 console.log(searchedProducts[i].productName)
@@ -155,6 +155,6 @@ router.get("/:id/search", async function (request, response) {
     try {
         const connection = await pool.getConnection()
 
-        const postWishlistProductQuery = "SELECT * FROM WishListProduct INNER JOIN Products ON Products.productID = WishListProduct.productID WHERE WishListProduct.wishListID = ? AND WishListProduct.productID = ?"
+        const postWishlistProductQuery = "SELECT * FROM WishListProducts INNER JOIN Products ON Products.productID = WishListProducts.productID WHERE WishListProducts.wishListID = ? AND WishListProducts.productID = ?"
     }
 })*/

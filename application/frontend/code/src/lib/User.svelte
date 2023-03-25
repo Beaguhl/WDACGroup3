@@ -235,7 +235,7 @@
       {#if fetchedFollow != null}
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
-        <button class="follow-button" on:click={followUser}>Follow</button>
+        <button class="follow-button" on:click={followUser}>Follows</button>
       {/if}
 
       {#if unableToUnfollow}

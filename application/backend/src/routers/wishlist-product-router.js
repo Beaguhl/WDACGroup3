@@ -30,7 +30,7 @@ router.patch("/:id/purchase", async function (request, response) {
 
         console.log("got connection")
 
-        const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
+        const updatePurchasedQuery = "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
         console.log("1")
         const updatePurchasedValues = [true, userID, id]
         console.log("2")
@@ -63,7 +63,7 @@ router.patch("/:id/undo-purchase", async function (request, response) {
 
         console.log("got connection")
 
-        const getUserPurchasedQuery = "SELECT userPurchased FROM WishListProduct WHERE wishListProductID = ?"
+        const getUserPurchasedQuery = "SELECT userPurchased FROM WishListProducts WHERE wishListProductID = ?"
         const getUserPurchasedValues = [id]
 
         const userPurchasedID = await connection.query(getUserPurchasedQuery, getUserPurchasedValues)
@@ -71,7 +71,7 @@ router.patch("/:id/undo-purchase", async function (request, response) {
         console.log("logged in as userID: " + userID)
 
         if (userPurchasedID[0].userPurchased == userID) {
-            const updatePurchasedQuery = "UPDATE WishListProduct SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
+            const updatePurchasedQuery = "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?"
             const updatePurchasedValues = [false, null, id]
 
             await connection.query(updatePurchasedQuery, updatePurchasedValues)
@@ -105,7 +105,7 @@ router.post("/:id", async function (request, response) {
 
 
 
-        const getWishListIDQuery = "SELECT wishListID FROM WishList WHERE userID = ?"
+        const getWishListIDQuery = "SELECT wishListID FROM WishLists WHERE userID = ?"
         const getWishListIDValue = [userID]
 
         const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue)
@@ -113,7 +113,7 @@ router.post("/:id", async function (request, response) {
         if (fetchedWishListID != null) {
             const wishListID = fetchedWishListID[0].wishListID
 
-            const addProductQuery = "INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)"
+            const addProductQuery = "INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)"
             const addProductValues = [productID, wishListID, false, null]
 
             await connection.query(addProductQuery, addProductValues)

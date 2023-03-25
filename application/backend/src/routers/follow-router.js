@@ -29,7 +29,7 @@ router.get('/followers', async function (request, response) {
 
 	try {
 
-		const getAllFollowersQuery = `SELECT userID FROM Follow WHERE followingUserID = ${userID}`
+		const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ${userID}`
 		const followerID = await connection.query(getAllFollowersQuery)
 		console.log("followerID are: " + followerID)
 
@@ -77,7 +77,7 @@ router.get('/followers/search', async function (request, response) {
 
 		for (let i = 0; i < searchedFollower.length; i += 1) {
 			console.log("folowing id är: " + searchedFollower[i].userID)
-			const getSearchedFollower = `SELECT * FROM Follow WHERE followingUserID = ${userID} AND userID = ${searchedFollower[i].userID}`
+			const getSearchedFollower = `SELECT * FROM Follows WHERE followingUserID = ${userID} AND userID = ${searchedFollower[i].userID}`
 			const fetchedFollowing = await connection.query(getSearchedFollower)
 			console.log(fetchedFollowing)
 			if (fetchedFollowing.length != 0) {
@@ -120,7 +120,7 @@ router.post('/follow', async function (request, response) {
 
 		const userToFollow = request.get("UserToFollow")
 
-		const followQuery = "INSERT INTO Follow (userID, followingUserID) VALUES (?, ?)";
+		const followQuery = "INSERT INTO Follows (userID, followingUserID) VALUES (?, ?)";
 		const followValues = [userID, userToFollow]
 
 		await connection.query(followQuery, followValues)
@@ -150,7 +150,7 @@ router.delete('/unfollow', async function (request, response) {
 
 		const userToUnfollow = request.get("UserToUnfollow")
 
-		const unfollowQuery = "DELETE FROM Follow WHERE userID = ? AND followingUserID = ?"
+		const unfollowQuery = "DELETE FROM Follows WHERE userID = ? AND followingUserID = ?"
 		const unfollowValues = [userID, userToUnfollow]
 
 		await connection.query(unfollowQuery, unfollowValues)
@@ -186,7 +186,7 @@ router.get('/followings/search', async function (request, response) {
 		//checking if a user is a following
 		for (let i = 0; i < searchedFollowing.length; i += 1) {
 			console.log("kraka userid is: " + userID)
-			const getSearchedFollowingQuery = "SELECT * FROM Follow WHERE userID = ? AND followingUserID = ?"
+			const getSearchedFollowingQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?"
 			const getSearchedFollowingValues = [userID, searchedFollowing[i].userID]
 			const fetchedFollowing = await connection.query(getSearchedFollowingQuery, getSearchedFollowingValues)
 			if (fetchedFollowing.length != 0) {
@@ -222,7 +222,7 @@ router.get('/followings', async function (request, response) {
 	try {
 
 
-		const getAllFollowingQuery = `SELECT followingUserID FROM Follow WHERE userID = ${userID}`
+		const getAllFollowingQuery = `SELECT followingUserID FROM Follows WHERE userID = ${userID}`
 		const followingsID = await connection.query(getAllFollowingQuery)
 
 		let followingUsers = []
@@ -258,7 +258,7 @@ router.get('/followers', async function (request, response) {
 	try {
 
 
-		const getAllFollowersQuery = `SELECT userID FROM Follow WHERE followingUserID = ${userID}`
+		const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ${userID}`
 		const followerID = await connection.query(getAllFollowersQuery)
 		console.log("followerID are: " + followerID)
 
