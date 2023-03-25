@@ -14,7 +14,7 @@
 	async function loadProductToDelete(){
 		
 		try{
-			const response = await fetch(`http://localhost:8080/products/${id}/delete`, {
+			const response = await fetch(`http://localhost:8080/products/${id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -42,7 +42,7 @@
 	async function deleteProduct(){
 		
 		try{
-			const response = await fetch(`http://localhost:8080/products/${id}/delete`, {
+			const response = await fetch(`http://localhost:8080/products/${id}`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
@@ -52,16 +52,13 @@
 				body: JSON.stringify({})
 			})
 			switch(response.status){
-				case 200:
-					console.log("YAY!")
+				case 204:
 					successfulProductDelete = true
 
 				case 500:
-					console.log("NOT YAY!")
 					break
 
 				case 400:
-					console.log("yay?")
 					break
 
 			}
@@ -79,7 +76,6 @@
 
 		try{
 			await deleteProduct()
-			console.log("I GOT HERE SOMEHOW....")
 			navigate("/products")
 		}catch(error){
 

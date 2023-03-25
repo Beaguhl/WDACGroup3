@@ -49,7 +49,6 @@ function hashPassword(password) {
 //---------------- get my account -------------------------
 router.get('/', async function (request, response) {
     const userID = request.get("UserID")
-    console.log("userID is: " + userID)
     const enteredPassword = request.get("Password")
     const connection = await pool.getConnection()
     try {
@@ -57,7 +56,6 @@ router.get('/', async function (request, response) {
         const getUsernameQuery = 'SELECT username FROM Users WHERE userID = ?'
         const getUsernameValue = [userID]
         const username = await connection.query(getUsernameQuery, getUsernameValue)
-        console.log("username length is: " + username.length)
 
         if (username.length == 0) {
             response.status(404).end()
@@ -98,7 +96,6 @@ router.put("/update-password", async function (request, response) {
         }
 
     } catch (error) {
-        console.log("500 error: " + error)
         response.status(500).end()
     } finally {
         if (connection) {
@@ -107,7 +104,7 @@ router.put("/update-password", async function (request, response) {
     }
 })
 
-router.put("/update-username", async function (request, response) {
+router.patch("/update-username", async function (request, response) {
     const userID = request.get("UserID")
     const newUsername = request.body.newUsername
     const connection = await pool.getConnection()
@@ -123,12 +120,10 @@ router.put("/update-username", async function (request, response) {
             const updateUsernameValues = [newUsername, userID]
 
             await connection.query(updateUsernameQuery, updateUsernameValues)
-            console.log("username updated")
 
             response.status(200).end()
         }
     } catch (error) {
-        console.log("500 error: " + error)
         response.status(500).end()
     } finally {
         if (connection) {
@@ -141,18 +136,13 @@ router.delete("/delete-account", async function (request, response) {
     const userID = request.get("UserID")
     const connection = await pool.getConnection()
     try {
-        console.log("Query is:")
         const deleteUserQuery = "DELETE FROM Users WHERE userID = ?"
         const deleteUserValues = [userID]
-        console.log("Queary was:")
         await connection.query(deleteUserQuery, deleteUserValues)
-        console.log("Connection made")
-        response.status(200).end()
-        console.log("200")
+        response.status(204).end()
     } catch (error) {
         response.status(500).end()
         console.log(error)
-        console.log("500")
     } finally {
         if (connection) {
             connection.release()

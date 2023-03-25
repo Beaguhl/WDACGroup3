@@ -16,7 +16,6 @@
 		}
 
 		try {
-			console.log("NEJ!")
 			const response = await fetch("http://localhost:8080/products", {
 				method: "POST",
 				headers: {
@@ -24,22 +23,19 @@
 				},
 				body: JSON.stringify(product)
 			})
-			console.log("JA!")
 			switch(response.status){
 				case 201:
-					console.log("KANSKE!")
+					console.log("AAAAAAAAAAAAA")
 					productCreated = true
 					navigate("/products")
 					break
 
 				case 400:
-					console.log("HEJ!")
 					errorArr = await response.json()
 					errorArr = errorArr
 					break
 			}
 		}catch(error){
-			console.log("ERROR!")
 			errorArr.push("COMMUNICATION_ERROR")
 		}
 	}

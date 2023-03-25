@@ -19,7 +19,6 @@
     let closedDropDown = false
     async function login(){
         try {
-            console.log("UserID that login is" + $user.userID)
             const response = await fetch("http://localhost:8080/tokens", {
                 method: "POST",
                 headers: {
@@ -30,7 +29,6 @@
             switch(response.status){
                 case 200:
                     body = await response.json()
-                    console.log("nu kommer logged in token: " + body.access_token)
                     
                     $user = {
                         isLoggedIn: true,
@@ -45,7 +43,6 @@
                     
                 case 400:
                     noMatch = true
-                    console.log("case 400")
                     break
             }
         } catch (error){
@@ -70,14 +67,12 @@
                 body: JSON.stringify(user)
             })
 
-            console.log("response status is: " + response.status)
             switch(response.status){
                 case 201:
                     login()
                     break
 
                 case 400:
-                    console.log("found error!")
                     errorArr = await response.json()
                     errorArr = errorArr
                     break

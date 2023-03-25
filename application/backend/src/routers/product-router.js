@@ -87,6 +87,7 @@ router.get('/search', async function (request, response) {
 router.get("/:id", async function (request, response) {
 
 	const connection = await pool.getConnection()
+	console.log("GET ID")
 
 	try {
 		const otherProductID = parseInt(request.params.id)
@@ -115,16 +116,13 @@ router.get("/:id", async function (request, response) {
 
 			if (fetchedWishListID.length != 0) {
 				const wishListID = fetchedWishListID[0].wishListID
-				console.log("wishListID is: " + wishListID)
 
 				const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE wishListID = ? AND productID = ?"
 				const getWishListProductsValues = [wishListID, productValue]
 
 				const result = await connection.query(getWishListProductsQuery, getWishListProductsValues)
 
-				console.log("result is: " + result)
 				if (result.length != 0) {
-					console.log("found the product")
 					productIsInWishList = true
 				}
 
@@ -146,7 +144,6 @@ router.get("/:id", async function (request, response) {
 			productIsInWishList
 		}
 
-		console.log(model)
 
 		response.status(200).json(model)
 	} catch (error) {
@@ -159,28 +156,7 @@ router.get("/:id", async function (request, response) {
 })
 
 
-router.get("/:id/:action", async function (request, response) {
 
-	const connection = await pool.getConnection()
-
-	try {
-		const anotherProductID = parseInt(request.params.id)
-
-		const productQuery = "SELECT * FROM Products WHERE productID = ?"
-
-		const productValue = [parseInt(anotherProductID)]
-
-		const productToSend = await connection.query(productQuery, productValue)
-
-		response.status(200).json(productToSend)
-	} catch (error) {
-		response.status(500).end()
-	} finally {
-		if (connection) {
-			connection.release()
-		}
-	}
-})
 
 //----------------------- Delete products ----------------------
 
@@ -205,7 +181,7 @@ router.get("/:id/:action", async function (request, response) {
 	}
 })*/
 
-router.delete("/:id/delete", async function (request, response) {
+router.delete("/:id", async function (request, response) {
 
 	const productID = parseInt(request.params.id)
 	const connection = await pool.getConnection()
@@ -217,7 +193,7 @@ router.delete("/:id/delete", async function (request, response) {
 
 		await connection.query(deleteProductQuery, deleteProductValues)
 
-		response.status(200).end()
+		response.status(204).end()
 	} catch (error) {
 		response.status(500).end()
 	} finally {
@@ -230,8 +206,7 @@ router.delete("/:id/delete", async function (request, response) {
 
 //----------------------- Update products ----------------------
 
-router.put("/:id/update", async function (request, response) {
-	console.log("WE ARE HERE!!!!")
+router.put("/:id", async function (request, response) {
 	const anotherProductID = parseInt(request.params.id)
 	const newProductName = request.body.NewProductName
 	const newProductDescription = request.body.NewProductDescription
@@ -240,21 +215,15 @@ router.put("/:id/update", async function (request, response) {
 
 	try {
 
-		console.log("Connection established successfully")
-		console.log(anotherProductID)
-		console.log(newProductName)
-		console.log(newProductDescription)
 
 		const updateProductQuery = "UPDATE Products SET productName = ?, description = ? WHERE productID = ?"
 		const updateProductValues = [newProductName, newProductDescription, anotherProductID]
 
 		await connection.query(updateProductQuery, updateProductValues)
-		console.log("Product updated successfully")
 
 		response.status(200).end()
 
 	} catch (error) {
-		console.log("Error updating product: ", error)
 		response.status(500).end()
 	} finally {
 		if (connection) {

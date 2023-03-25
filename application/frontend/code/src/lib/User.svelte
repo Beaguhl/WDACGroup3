@@ -16,9 +16,7 @@
   let wishListProductID;
 
   async function loadUsersWishList(){
-    console.log("loadUsersWishList")
     try {
-      console.log("id to view (not mine) is: " + id)
       const response = await fetch("http://localhost:8080/wishlist/" + id, {
         method: "GET",
 				headers: {
@@ -30,9 +28,7 @@
 
       switch(response.status) {
         case 200:
-          console.log("got 200")
           wishListProducts = await response.json()
-					console.log("showing wishlistProducts: " + wishListProducts)
           
           
 
@@ -44,7 +40,6 @@
   }
 
   async function loadUser(){
-    console.log("going into loadUser")
     try {
       const response = await fetch("http://localhost:8080/users/" + id, {
         method: "GET",
@@ -60,18 +55,13 @@
       switch(response.status) {
         
         case 200:
-          console.log("user/id got 200")
           const {userToSend, followToSend} = await response.json()
-          console.log("users kommer nu: ", userToSend, followToSend)
 
           id = userToSend.userID
-          console.log("id to send is now: " + id)
           await loadUsersWishList()
           fetchedUser = userToSend
 
-          console.log(fetchedUser)
           fetchedFollow = followToSend
-          console.log(fetchedFollow)
 
           isFetchingUser = false
           break
@@ -94,7 +84,6 @@
   loadUser()  
 
   async function followUser(){
-    console.log("clicked follow")
     try {
       const response = await fetch("http://localhost:8080/follows/follow", {
         method: "POST",
@@ -124,7 +113,6 @@
   let unableToUnfollow = false
 
   async function unfollowUser(){
-    console.log("clicked unfollow")
     try {
       const response = await fetch("http://localhost:8080/follows/unfollow", {
         method: "DELETE",
@@ -156,8 +144,6 @@
   }
 
   async function purchaseProduct(wishListProductID){
-    console.log("click")
-    console.log(wishListProductID)
     try {
 
       const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID + "/purchase", {
@@ -172,7 +158,6 @@
 
       switch(response.status) {
         case 200:
-          console.log("updated suceeded")
           loadUser()
       }
 
@@ -182,8 +167,7 @@
   } 
 
   async function undoPurchaseProduct(wishListProductID){
-    console.log("click")
-    console.log(wishListProductID)
+
     try {
 
       const response = await fetch("http://localhost:8080/wishlist-product/" + wishListProductID + "/undo-purchase", {
@@ -198,11 +182,9 @@
 
       switch(response.status) {
         case 200:
-          console.log("updated suceeded")
           loadUser()
 
         case 403:
-          console.log("anouteziered")
       }
 
     } catch(error) {
