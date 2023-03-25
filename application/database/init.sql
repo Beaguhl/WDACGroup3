@@ -31,8 +31,8 @@ CREATE TABLE IF NOT EXISTS Follow (
 	followID INT PRIMARY KEY AUTO_INCREMENT,
 	userID INT,
 	followingUserID INT,
-	FOREIGN KEY (userID) REFERENCES Users(userID),
-	FOREIGN KEY (followingUserID) REFERENCES Users(userID)
+	FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE,
+	FOREIGN KEY (followingUserID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 INSERT INTO Follow (userID, followingUserID)
@@ -49,7 +49,7 @@ VALUES (3, 2);
 CREATE TABLE IF NOT EXISTS WishList (
 	wishListID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	userID INT,
-	FOREIGN KEY (userID) REFERENCES Users(userID)
+	FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE
 );
 
 INSERT INTO WishList (userID) VALUES (1);
@@ -92,8 +92,8 @@ CREATE TABLE IF NOT EXISTS WishListProduct (
 	wishListID INT NOT NULL,
 	purchased Boolean NOT NULL, 
 	userPurchased INT,
-	FOREIGN KEY (wishListID) REFERENCES WishList(wishListID),
-	FOREIGN KEY (productID) REFERENCES Products(productID)
+	FOREIGN KEY (wishListID) REFERENCES WishList(wishListID) ON DELETE CASCADE,
+	FOREIGN KEY (productID) REFERENCES Products(productID) ON DELETE CASCADE
 );
 
 INSERT INTO WishListProduct (productID, wishListID, purchased, userPurchased) VALUES (1, 1, TRUE, 2);
