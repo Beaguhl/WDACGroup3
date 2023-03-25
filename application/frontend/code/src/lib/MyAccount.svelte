@@ -156,8 +156,8 @@
                     "Content-Type": "application/json",
                     "Authorization": "bearer "+$user.accessToken,
                     "UserID": $user.userID,
-                    "NewUsername": newUsername
-                }
+                },
+                body: JSON.stringify({newUsername})
             })
 
             switch(response.status){
@@ -205,7 +205,7 @@
                     break
             }
         }catch(error){
-
+            console.log(error)
         }
     }
 

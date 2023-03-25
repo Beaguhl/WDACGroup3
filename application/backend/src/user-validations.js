@@ -35,6 +35,7 @@ async function validateUsername(username){
     const MAX_USERNAME_LENGTH = 12
     
     var errorArr = []
+    console.log("new username is: " + username)
 
     if (username.length == 0) {
         errorArr.push("Can not leave username field empty")
