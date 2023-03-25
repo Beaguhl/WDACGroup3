@@ -161,11 +161,6 @@ h3 {
 	color: white;
 }
 
-h3:hover {
-	color: rgb(143, 249, 205);
-	text-decoration: underline;
-}
-
 .search-container {
 	display: flex;
 	align-items: center;

@@ -33,6 +33,7 @@ async function validateUser(user) {
 async function validateUsername(username){
     const MIN_USERNAME_LENGTH = 2
     const MAX_USERNAME_LENGTH = 12
+    const regexForSpace = /\s/;
     
     var errorArr = []
     console.log("new username is: " + username)
@@ -43,6 +44,9 @@ async function validateUsername(username){
         errorArr.push("Username must be at least 2 characters long")
     } else if (username.length > MAX_USERNAME_LENGTH) {
         errorArr.push("Username can have a maximum of 12 characters")
+    }
+    else if (regexForSpace.test(username)){
+            errorArr.push("Username can not contain any space")
     } else {
         const connection = await pool.getConnection()
 
@@ -56,13 +60,13 @@ async function validateUsername(username){
         }
 
     }
-
     return errorArr
 }
 
 function validatePassword(password){
     const MIN_PASSWORD_LENGTH = 2
     const MAX_PASSWORD_LENGTH = 20
+    const regexForSpace = /\s/;
 
     var errorArr = []
 
@@ -72,6 +76,8 @@ function validatePassword(password){
         errorArr.push("Password must be at least 2 characters long")
     } else if (password.length > MAX_PASSWORD_LENGTH) {
         errorArr.push("Password can have a maximum of 20 characters")
+    } else if (regexForSpace.test(password)){
+        errorArr.push("Password can not contain any space")
     }
 
     return errorArr

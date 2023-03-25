@@ -24,7 +24,6 @@
 	import DeleteProduct from './lib/DeleteProduct.svelte';
 
 	let currentRoute = ''
-	const currentPage = window.location.pathname;
   
 onMount(async () => {
   currentRoute = window.location.pathname;
@@ -36,7 +35,6 @@ window.addEventListener('popstate', () => {
 	let username = ""
     let password = ""
     let body = null
-    let accessToken = null
     let noMatch = false
     let closedDropDown = true
 	let emptyField = false
@@ -56,6 +54,7 @@ window.addEventListener('popstate', () => {
 
 
 	async function login() {
+		console.log(username + " " + password)
     try {
       const response = await fetch("http://localhost:8080/tokens", {
         method: "POST",
@@ -86,15 +85,16 @@ window.addEventListener('popstate', () => {
           break
 
         case 400:
-          emptyField = true
-		  noMatch = false
+		  noMatch = true
           break
 
 		case 403:
 			emptyField = false
 			noMatch = true
+			break
       }
     } catch (error) {
+		console.log(error)
     }
   }
 
@@ -147,7 +147,8 @@ window.addEventListener('popstate', () => {
 									</div>
 									<button class="form-btn" id="pointer" type="submit">Login</button>
 								</form>
-								<div >
+								<!-- svelte-ignore a11y-click-events-have-key-events -->
+								<div on:click|preventDefault={toggleDropDown}>
 									<Link class="Links create-account-link"  to="/create-account" style="font-size: small; color: #fff;">Don't have an Account? Create account.</Link>
 								</div>
 								{#if emptyField}

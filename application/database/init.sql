@@ -99,7 +99,6 @@ CREATE TABLE IF NOT EXISTS WishListProducts (
 INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (1, 1, TRUE, 2);
 INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
 INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (6, 3, TRUE, 1);
-INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (2, 2, FALSE, NULL);
 INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (1, 3, FALSE, NULL);
 INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (4, 4, TRUE, 3);
 INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (14, 5, FALSE, NULL);

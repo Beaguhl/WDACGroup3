@@ -95,65 +95,8 @@ router.get('/search', async function (request, response) {
 	}
 })
 
-//---------------------- follow --------------------
-router.post('/follow', async function (request, response) {
 
-	// add error handling and status codes
-	const connection = await pool.getConnection()
-	try {
-		const userID = request.get("UserID")
-
-
-
-
-		const userToFollow = request.body.id
-
-		const followQuery = "INSERT INTO Follows (userID, followingUserID) VALUES (?, ?)";
-		const followValues = [userID, userToFollow]
-
-		await connection.query(followQuery, followValues)
-
-		response.status(201).end()
-	} catch (error) {
-		response.status(500).end()
-	} finally {
-		if (connection) {
-			connection.release()
-		}
-	}
-
-
-
-})
-
-//------------------- unfollow ---------------------
-router.delete('/unfollow', async function (request, response) {
-
-	// add error handling and status codes
-	const userID = request.get("UserID")
-	const connection = await pool.getConnection()
-	try {
-
-
-		const userToUnfollow = request.body.id
-
-		const unfollowQuery = "DELETE FROM Follows WHERE userID = ? AND followingUserID = ?"
-		const unfollowValues = [userID, userToUnfollow]
-
-		await connection.query(unfollowQuery, unfollowValues)
-
-		response.status(204).end()
-	} catch (error) {
-		response.status(500).end()
-	} finally {
-		if (connection) {
-			connection.release()
-		}
-	}
-
-
-})
-
+//----------------- get all followers ----------------------
 router.get('/followers', async function (request, response) {
 	const userID = request.get("UserID")
 	const connection = await pool.getConnection()

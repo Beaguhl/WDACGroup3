@@ -88,8 +88,8 @@
 	{#if fetchedProduct}
 	<div class="card">
 		
-				<h1 class="card-title">Are you sure you want to delete {fetchedProduct[0].productName}</h1>
-				<p class="card-subtitle">{fetchedProduct[0].description}</p>
+				<h1 class="card-title">Are you sure you want to delete {fetchedProduct.product.productName}</h1>
+				<p class="card-subtitle">{fetchedProduct.product.description}</p>
 			<Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
 				<button class="yes-button" on:click={handleDelete}>Yes</button>
 			</Link>

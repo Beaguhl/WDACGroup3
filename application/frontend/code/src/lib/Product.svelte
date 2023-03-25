@@ -2,40 +2,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
 <script>
-	import {Router, Route, Link} from 'svelte-routing'
-
-
+	import {Router, Link} from 'svelte-routing'
 	import { user } from "../user-store"
-
-	import UpdateProduct from './UpdateProduct.svelte'
 
 	export let id
 	let isFetchingProduct = true
 	let failedToFetchProduct = false
 	let fetchedProduct = null
 	let alreadyInList = false
-
-	async function isInWishList(productID){
-		try {
-			const response = await fetch("http://localhost:8080/wishlist-product/" + productID, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken,
-					"UserID": $user.userID
-				}
-			})
-
-			switch(response.status){
-				case 200:
-					alreadyInList = true
-					break
-
-			}
-		} catch(error) {
-
-		}
-	}
+	
 
 	async function loadProduct(){
 		try {
@@ -62,7 +37,6 @@
 		}catch(error){
 			failedToFetchProduct = true
 		}
-		
 	}
 
 	loadProduct()
@@ -86,87 +60,61 @@
 					break
 				
 				case 500:
+					console.log("500 error")
 					break
 			}
 		} catch(error) {
 
 		}
 	}
-
- 
-
 </script>
 
-<!------------ HTML code ----------->
+	<Router>
+		<div class="mainContent">
+			{#if $user.isLoggedIn}
 
+				{#if isFetchingProduct}
+					<p>Wait, fetching data...</p>
+				{:else if failedToFetchProduct}
+					<p>Couldn't fetch product. Check your Internet connection.</p>
+				{:else if fetchedProduct}
+				<div class="card">
+					<h1 class="card-title">
+						{fetchedProduct.product.productName}
+					</h1>
+					<h2 class="card-subtitle">
+						{fetchedProduct.product.description}
+					</h2>
+					
+					{#if fetchedProduct.productIsInWishList}
+						<p class="alreadyInWish">this product is already in your wishlist</p>
+					{:else}
+						<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.product.productID)}>
 
-
-
-
-
-
-
-	
-		
-		
-
-			
-
-
-<!-- alla färger är bara tillfälliga för att det ska vara enkelt att se vad som är vad, dom ska ändras sen -->
-<Router>
-	<div class="mainContent">
-		{#if $user.isLoggedIn}
-
-			{#if isFetchingProduct}
-				<p>Wait, fetching data...</p>
-			{:else if failedToFetchProduct}
-				<p>Couldn't fetch product. Check your Internet connection.</p>
-			{:else if fetchedProduct}
-			<div class="card">
-				<h1 class="card-title">
-					{fetchedProduct.product.productName}
-				</h1>
-				<h2 class="card-subtitle">
-					{fetchedProduct.product.description}
-				</h2>
-				
-				{#if fetchedProduct.productIsInWishList}
-					<p class="alreadyInWish">this product is already in your wishlist</p>
-				{:else}
-
-					<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.product.productID)}>
-
-						Add to WishLists
-					</button>
-				{/if}
-					{#if $user.admin}
-					<Link class="Links" to="/products/{id}/update" id="update-product-link" style="color: white; text-decoration: none; margin-right: 40px;">
-						<button class="update-button">
-							Update Product
+							Add to WishList
 						</button>
-					</Link>
-					<Link class="Links" to="/products/{id}/delete" id="delete-product-link" style="color: white; text-decoration: none; margin-right: 40px">
-						<button class="delete-button">
-							Delete Product
-						</button>
-					</Link>
-						
 					{/if}
-				</div>
+						{#if $user.admin}
+						<Link class="Links" to="/products/{id}/update" id="update-product-link" style="color: white; text-decoration: none; margin-right: 40px;">
+							<button class="update-button">
+								Update Product
+							</button>
+						</Link>
+						<Link class="Links" to="/products/{id}/delete" id="delete-product-link" style="color: white; text-decoration: none; margin-right: 40px">
+							<button class="delete-button">
+								Delete Product
+							</button>
+						</Link>
+						{/if}
+					</div>
+				{/if}
 			{/if}
-
-		{/if}
-	</div>
-	<main>
-	</main>
-</Router>
+		</div>
+	</Router>
 
 
 
 <style>
-	
-	
 	.mainContent{
 		height: 80vh;
 		padding: 0;
@@ -267,5 +215,4 @@
 	.card-button:hover {
 		background-color: #3e8e41;
 	}
-
 </style>

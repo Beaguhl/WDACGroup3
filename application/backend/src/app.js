@@ -64,20 +64,24 @@ app.post('/tokens', async function (request, response) {
 
 	try {
 		if (grantType != "password") {
+			console.log("password")
 			response.status(400).json({ error: "unsupported_grant_type" }).end()
 			return
 		}
 	
 		if (username == "" || password == "") {
+			console.log("username or password")
 			response.status(400).json({ error: "invalid_request" }).end()
 			return
 		}
 	
-		
+		console.log(username)
 		const compareUserQuery = "SELECT * FROM Users WHERE username = ?"
 		const compareUserValue = [username]
 	
 		const result = await connection.query(compareUserQuery, compareUserValue)
+		console.log(result)
+		console.log(result.length)
 	
 		if (result.length != 0) {
 	
@@ -126,6 +130,7 @@ app.post('/tokens', async function (request, response) {
 			})
 	
 		} else {
+			console.log("invalid grant")
 			response.status(400).json({ error: "invalid_grant" })
 			return
 		} 

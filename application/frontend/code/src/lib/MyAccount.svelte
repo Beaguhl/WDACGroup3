@@ -139,7 +139,7 @@
                     break
             }
         } catch (error){
-            // handle error
+            console.log(error)
         }
     }
 
@@ -407,6 +407,10 @@
 }
 
 p {
+    color: white;
+}
+
+li {
     color: white;
 }
 

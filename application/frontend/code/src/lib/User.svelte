@@ -85,7 +85,7 @@
 
   async function followUser(){
     try {
-      const response = await fetch("http://localhost:8080/follows/follow", {
+      const response = await fetch("http://localhost:8080/followings", {
         method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -114,7 +114,7 @@
 
   async function unfollowUser(){
     try {
-      const response = await fetch("http://localhost:8080/follows/unfollow", {
+      const response = await fetch("http://localhost:8080/followings", {
         method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
@@ -217,7 +217,7 @@
       {#if fetchedFollow != null}
         <button class="follow-button following" on:click={unfollowUser}>Following</button>
       {:else}
-        <button class="follow-button" on:click={followUser}>Follows</button>
+        <button class="follow-button" on:click={followUser}>Follow</button>
       {/if}
 
       {#if unableToUnfollow}
