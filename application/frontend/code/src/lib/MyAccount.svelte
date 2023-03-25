@@ -1,14 +1,17 @@
 <script>
     import { user } from "../user-store";
-    import {Router, Link, Route} from 'svelte-routing';
+    import {Router, Link, Route, navigate} from 'svelte-routing';
     import { each } from "svelte/internal";
 
+
     let showAccount = true
-    let showEnterPassword = false
+    let showEnterPasswordForEdit = false
+    let showEnterPasswordForDelete = false
     let incorrectPassword = null
     let showEditAccount = false
     let username = null
     let userNotFound = false
+    let showDeleteAccount = false
 
     let newUsername = ""
     let newPassword = ""
@@ -16,12 +19,24 @@
     let succesfulUsernameUpdate = false
     let succesfulPasswordUpdate = false
 
+    let successfulDelete = false
+
     let passwordErrors = []
     let usernameErrors = []
 
-    function makeShowEnterPasswordTrue(){
-        showEnterPassword = true
+    function makeShowEnterPasswordForEditTrue(){
+        showEnterPasswordForEdit = true
         showAccount = false
+    }
+
+    function makeShowEnterPasswordForDeleteTrue(){
+        showEnterPasswordForDelete = true
+        showAccount = false
+    }
+
+    function logout(){
+        $user.isLoggedIn = false
+        navigate("/")
     }
 
     console.log("user är: " + $user.userID)
@@ -64,7 +79,7 @@
     let noMatch = false
 
 
-    async function verifyPassword(event){
+    async function verifyPasswordForEdit(event){
         const formData = new FormData(event.target);
 		const enteredPassword = formData.get('password');
 
@@ -79,7 +94,41 @@
             switch(response.status){
                 case 200:
                     showEditAccount = true
-                    showEnterPassword = false
+                    showEnterPasswordForEdit = false
+                    showAccount = false
+                    break
+
+                case 403:
+                    incorrectPassword = true
+                    break
+
+                case 400:
+                    console.log("not matcing password")
+                    noMatch = true
+                    console.log("case 400")
+                    break
+            }
+        } catch (error){
+            // handle error
+        }
+    }
+
+    async function verifyPasswordForDelete(event){
+        const formData = new FormData(event.target);
+		const enteredPassword = formData.get('password');
+
+        try {
+            const response = await fetch("http://localhost:8080/tokens", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `grant_type=password&username=${encodeURIComponent(username)}&password=${encodeURIComponent(enteredPassword.toString())}`
+            })
+            switch(response.status){
+                case 200:
+                    showDeleteAccount = true
+                    showEnterPasswordForDelete = false
                     showAccount = false
                     break
 
@@ -162,6 +211,51 @@
         }
     }
 
+    async function deleteUser(){
+        try{
+            const response = await fetch("http://localhost:8080/my-account/delete-account", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "bearer "+$user.accessToken,
+                    "UserID": $user.userID
+                },
+                body: JSON.stringify({})
+            })
+            switch(response.status){
+                case 200:
+                    console.log("YAY")
+                    logout()
+                    successfulDelete = true
+
+                case 500:
+                    console.log("NOT YAY!")
+                    break
+
+                case 400:
+                    console.log("YAY?")
+                    break
+            }
+        }catch(error){
+
+        }
+    }
+
+
+
+    /**
+	 * @param {{ preventDefault: () => void; }} event
+	 */
+    async function handleDelete(event){
+        event.preventDefault()
+
+        try{
+            await deleteUser()
+        }catch(error){
+
+        }
+    }
+
 </script>
 
 <head>
@@ -176,7 +270,7 @@
             <div class="container">
                 <h1>My Account</h1>
                 {#if showAccount}
-                    <form on:submit|preventDefault={makeShowEnterPasswordTrue}>
+                    <form on:submit|preventDefault={makeShowEnterPasswordForEditTrue}>
                         <div class="form-group">
                             <label for="username">Username:</label>
                             <div class="underline-textfield">
@@ -192,10 +286,16 @@
                         <div class="form-group">
                             <input type="submit" value="Edit account details">
                         </div>
+                        
+                    </form>
+                    <form on:submit|preventDefault={makeShowEnterPasswordForDeleteTrue}>
+                        <div class="form-group">
+                            <input type="submit" value="Delete account">
+                        </div>
                     </form>
                 {/if}
-                {#if showEnterPassword}
-                    <form on:submit|preventDefault={verifyPassword}>
+                {#if showEnterPasswordForEdit}
+                    <form on:submit|preventDefault={verifyPasswordForEdit}>
                         <div class="form-group">
                             <label for="password">Type current password to make changes:</label>
                             <div class="underline-textfield">
@@ -210,6 +310,37 @@
                             <p>Incorrect password, try again.</p>
                         {/if}
                     </form>
+                {/if}
+
+                {#if showEnterPasswordForDelete}
+                    <form on:submit|preventDefault={verifyPasswordForDelete}>
+                        <div class="form-group">
+                            <label for="password">Type current password to make changes:</label>
+                            <div class="underline-textfield">
+                                <input type="password" id="password" name="password">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="submit" value="OK">
+                        </div>
+                        {#if incorrectPassword}
+                            <p>Incorrect password, try again.</p>
+                        {/if}
+                    </form>
+                {/if}
+
+                {#if showDeleteAccount}
+                    <div>
+                        <h1>Are you sure you want to delete your account: {username}</h1>
+                        <p style="text-align: center;">This cannot be undone</p>
+                        <Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
+                            <button style="background-color: red;" on:click={handleDelete}>Yes</button>
+                        </Link>
+                        <Link class="Links" to="/">
+                            <button style="background-color: #2A7BE6">No</button>
+                        </Link>
+                    </div>
                 {/if}
 
                 {#if showEditAccount == true}

@@ -135,3 +135,26 @@ router.put("/update-username", async function (request, response) {
         }
     }
 })
+
+router.delete("/delete-account", async function (request, response) {
+    const userID = request.get("UserID")
+    const connection = await pool.getConnection()
+    try {
+        console.log("Query is:")
+        const deleteUserQuery = "DELETE FROM Users WHERE userID = ?"
+        const deleteUserValues = [userID]
+        console.log("Queary was:")
+        await connection.query(deleteUserQuery, deleteUserValues)
+        console.log("Connection made")
+        response.status(200).end()
+        console.log("200")
+    } catch (error) {
+        response.status(500).end()
+        console.log(error)
+        console.log("500")
+    } finally {
+        if (connection) {
+            connection.release()
+        }
+    }
+})
