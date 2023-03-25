@@ -143,7 +143,7 @@
             }
             
         } catch (error) {
-            // handle error
+            console.log(error)
         }
 
     }
@@ -175,7 +175,7 @@
             }
 
         } catch (error){
-            // handle error
+            console.log(error)
         }
     }
 
@@ -209,6 +209,17 @@
         }
     }
 
+    function makeShowDeleteAccountTrue(){
+        showDeleteAccount = true
+        showEditAccount = false
+    }
+
+    function dontWantToDelete(){
+        showDeleteAccount = false
+        showEditAccount = true
+        showEnterPasswordForEdit = false
+        showAccount = false
+    }
 
 
     /**
@@ -256,11 +267,7 @@
                         </div>
                         
                     </form>
-                    <form on:submit|preventDefault={makeShowEnterPasswordForDeleteTrue}>
-                        <div class="form-group">
-                            <input type="submit" value="Delete account">
-                        </div>
-                    </form>
+                    
                 {/if}
                 {#if showEnterPasswordForEdit}
                     <form on:submit|preventDefault={verifyPasswordForEdit}>
@@ -280,8 +287,6 @@
                     </form>
                 {/if}
 
-               
-
                 {#if showDeleteAccount}
                     <div>
                         <h1>Are you sure you want to delete your account: {username}</h1>
@@ -289,9 +294,12 @@
                         <Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
                             <button style="background-color: red;" on:click={handleDelete}>Yes</button>
                         </Link>
-                        <Link class="Links" to="/">
-                            <button style="background-color: #2A7BE6">No</button>
-                        </Link>
+                        <form on:submit|preventDefault={dontWantToDelete}>
+                            <button class="no">No</button>
+                        </form>
+                        
+                        
+                        
                     </div>
                 {/if}
 
@@ -338,12 +346,16 @@
                                 {#if succesfulPasswordUpdate == true}
                                     <p>Password Updated</p>
                                 {:else}
-                                    <div class="form-group">
+                                    <div class="form-group delete">
                                         <input type="submit" value="Update password">
                                     </div> 
                                 {/if}
                                 
                             </div>
+                        </form>
+
+                        <form on:submit|preventDefault={makeShowDeleteAccountTrue}>  
+                            <input type="submit" value="Delete Account">
                         </form>
                 {/if}
             </div>
@@ -356,6 +368,10 @@
 
 
 <style>
+
+.no {
+    background-color: #2A7BE6
+}
 
 .container {
 	margin: 50px auto;

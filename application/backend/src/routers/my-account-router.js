@@ -176,13 +176,14 @@ router.get("/verify-password", async function(request, response){
 
 		bcrypt.compare(enteredPassword, password[0].password, (error, result) => {
 			if (error) {
-				response.status(403).end()
+				response.status(500).end()
 			}
 			if (result === true) {
 				response.status(200).end()
-			}
+			} else {
+                response.status(403).end()
+            }
 		})
-
 
 	} catch(error) {
 		console.log(error)
