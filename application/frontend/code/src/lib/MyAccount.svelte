@@ -64,6 +64,7 @@
                     break
             }
             
+
         } catch {
             //handle error
         }
@@ -106,7 +107,6 @@
                     break
             }
         } catch (error){
-<<<<<<< HEAD
             // handle error
         }
     }
@@ -140,9 +140,6 @@
             }
         } catch (error){
             // handle error
-=======
-            console.log(error)
->>>>>>> origin/development
         }
     }
 
@@ -222,7 +219,7 @@
                 body: JSON.stringify({})
             })
             switch(response.status){
-                case 200:
+                case 204:
                     logout()
                     successfulDelete = true
 
