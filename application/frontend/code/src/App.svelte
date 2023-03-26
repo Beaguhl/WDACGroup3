@@ -43,6 +43,7 @@
 	function logout() {
 		$user.isLoggedIn = false;
 		navigate("/");
+
 	}
 
 	async function login() {
@@ -308,6 +309,7 @@
 		left: -240px;
 		background-color: #333;
 		padding: 20px;
+
 	}
 
 	.dropbtn {
@@ -359,3 +361,5 @@
 		font-size: 14px;
 	}
 </style>
+
+
