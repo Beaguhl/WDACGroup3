@@ -4,7 +4,6 @@
 
 	let showAccount = true;
 	let showEnterPasswordForEdit = false;
-	let showEnterPasswordForDelete = false;
 	let incorrectPassword = null;
 	let showEditAccount = false;
 	let username = null;
@@ -62,7 +61,6 @@
 
 	getUsername();
 
-	let body = null;
 	let noMatch = false;
 
 	async function verifyPasswordForEdit(event) {

@@ -53,7 +53,6 @@
 					break;
 
 				case 500:
-					console.log("500 error");
 					break;
 			}
 		} catch (error) {

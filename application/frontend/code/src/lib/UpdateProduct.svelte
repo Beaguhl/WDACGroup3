@@ -1,7 +1,6 @@
 <script>
 	import { user } from "../user-store";
-	import { Router, Link, Route, navigate } from "svelte-routing";
-	import { onMount } from "svelte";
+	import { navigate } from "svelte-routing";
 
 	export let id;
 
@@ -12,6 +11,10 @@
 
 	let succesfulProductNameUpdate = false;
 	let succesfulProductDescriptionUpdate = false;
+
+	let productErrors = [];
+	let productNameError = "";
+	let productDesriptionError = "";
 
 	async function getProductToUpdate() {
 		try {
@@ -54,33 +57,27 @@
 					NewProductDescription: newProductDescription,
 				}),
 			});
-
+			console.log("HAHAHHAHA");
+			console.log(newProductName);
+			console.log(newProductDescription);
 			switch (response.status) {
 				case 200:
 					succesfulProductNameUpdate = true;
 					succesfulProductDescriptionUpdate = true;
+					productErrors = [];
+					navigate("/products");
 					break;
 
 				case 500:
+					console.log("HAHAHAHAHA NEJ");
 					break;
 
 				case 400:
+					const body = await response.json();
+					productErrors = body.productErrors;
+					console.log("HERE WE GO " + body.productErrors);
 					break;
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-	/**
-	 * @param {{ preventDefault: () => void; }} event
-	 */
-	async function handleUpdate(event) {
-		event.preventDefault();
-
-		try {
-			const response = await updateProduct();
-			navigate("/products");
 		} catch (error) {
 			console.log(error);
 		}
@@ -91,36 +88,42 @@
 	rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
 />
-
-<div class="container">
-	{#if fetchedProduct}
-		<form on:submit={handleUpdate}>
-			<div class="form-group">
-				<label for="fetchedProductName">Product Name:</label>
-				<div class="underline-textfield">
-					<input
-						type="text"
-						id="fetchedProductName"
-						name="fetchedProduct"
-						bind:value={newProductName}
-					/>
-				</div>
-				<label for="fetchedProductDescription">Description</label>
-				<div class="underline-textfield">
-					<input
-						type="text"
-						id="fetchedProductDescription"
-						name="fetchedProduct"
-						bind:value={newProductDescription}
-					/>
-				</div>
+{#if $user.isLoggedIn}
+	<div class="container">
+		{#if fetchedProduct}
+			<form on:submit|preventDefault={updateProduct}>
 				<div class="form-group">
-					<input type="submit" value="Update product" />
+					<label for="fetchedProductName">Product Name:</label>
+					<div class="underline-textfield">
+						<input
+							type="text"
+							id="fetchedProductName"
+							name="fetchedProduct"
+							bind:value={newProductName}
+						/>
+					</div>
+					<label for="fetchedProductDescription">Description</label>
+					<div class="underline-textfield">
+						<input
+							type="text"
+							id="fetchedProductDescription"
+							name="fetchedProduct"
+							bind:value={newProductDescription}
+						/>
+					</div>
+					<div class="form-group">
+						<input type="submit" value="Update product" />
+					</div>
+					<ul>
+						{#each productErrors as error}
+							<li>{error}</li>
+						{/each}
+					</ul>
 				</div>
-			</div>
-		</form>
-	{/if}
-</div>
+			</form>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.container {
@@ -139,6 +142,10 @@
 		margin-bottom: 20px;
 		display: flex;
 		flex-direction: column;
+	}
+
+	ul {
+		list-style-type: none;
 	}
 
 	label {

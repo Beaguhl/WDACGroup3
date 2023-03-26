@@ -23,7 +23,6 @@
 			});
 			switch (response.status) {
 				case 201:
-					console.log("AAAAAAAAAAAAA");
 					productCreated = true;
 					navigate("/products");
 					break;

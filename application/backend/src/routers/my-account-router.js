@@ -55,7 +55,7 @@ router.get("/", async function (request, response) {
             response.status(200).json(username[0].username);
         }
     } catch (error) {
-        console.error(error);
+        console.log(error);
         response.status(500).end();
     } finally {
         if (connection) {

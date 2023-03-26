@@ -2,6 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 const { createPool } = require("mariadb");
+const { validateProductErrors } = require("../product-validations");
 
 const pool = createPool({
 	host: "db",
@@ -158,6 +159,7 @@ router.delete("/:id", async function (request, response) {
 //----------------------- Update products ----------------------
 
 router.put("/:id", async function (request, response) {
+	const product = request.body.product
 	const anotherProductID = parseInt(request.params.id);
 	const newProductName = request.body.NewProductName;
 	const newProductDescription = request.body.NewProductDescription;
@@ -165,13 +167,23 @@ router.put("/:id", async function (request, response) {
 	const connection = await pool.getConnection();
 
 	try {
-		const updateProductQuery =
-			"UPDATE Products SET productName = ?, description = ? WHERE productID = ?";
-		const updateProductValues = [newProductName, newProductDescription, anotherProductID];
+		const productErrors = await validateProductErrors(newProductName, newProductDescription)
+		console.log("YIPPIE KI YAY MO " + productErrors.length)
 
-		await connection.query(updateProductQuery, updateProductValues);
 
-		response.status(200).end();
+		if (productErrors.length > 0) {
+			response.status(400).json({ productErrors });
+		} else {
+			const updateProductQuery =
+				"UPDATE Products SET productName = ?, description = ? WHERE productID = ?";
+			const updateProductValues = [newProductName, newProductDescription, anotherProductID];
+
+			await connection.query(updateProductQuery, updateProductValues);
+
+			response.status(200).end();
+		}
+
+
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();
@@ -180,6 +192,7 @@ router.put("/:id", async function (request, response) {
 			connection.release();
 		}
 	}
+
 });
 
 router.post("/", async function (request, response) {

@@ -186,8 +186,8 @@
 										</div>
 										<div class="form-group">
 											<label class="form-label" for="password"
-												>Password:</label
-											>
+												>Password:
+											</label>
 											<input
 												class="form-input"
 												type="password"
@@ -252,6 +252,13 @@
 		width: 100%;
 		background: #151616;
 	}
+
+	.form-label {
+		font-weight: bold;
+		margin-bottom: 5px;
+		font-size: 14px;
+	}
+
 	nav {
 		display: flex;
 		justify-content: space-between;
