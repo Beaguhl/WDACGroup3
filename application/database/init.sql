@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS Users (
 	admin BOOLEAN
 );
 
-
 INSERT INTO Users (username, password, admin)
 VALUES ("jocke", "$2b$12$SxN/g01Ktw4BVmaPGsE0q.94UoRtYI/QvPlwkyheUgkHnubxI90vm", TRUE);
 INSERT INTO Users (username, password, admin)
@@ -25,7 +24,6 @@ INSERT INTO Users (username, password, admin)
 VALUES ("ellen2", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
 INSERT INTO Users (username, password, admin)
 VALUES ("nisse2", "$2b$12$h1W/m.Ut5L99..OaZNaYcelKI/6jT.VbAT2CKkI2arM.jG57D9DNK", FALSE);
-
 
 CREATE TABLE IF NOT EXISTS Follows (
 	followID INT PRIMARY KEY AUTO_INCREMENT,
@@ -84,7 +82,6 @@ INSERT INTO Products (productName, description) VALUES ("My little pony", "It is
 INSERT INTO Products (productName, description) VALUES ("Troll", "Big hair");
 INSERT INTO Products (productName, description) VALUES ("Mufasa", "He is dead");
 INSERT INTO Products (productName, description) VALUES ("Movie", "A dvd");
-
 
 CREATE TABLE IF NOT EXISTS WishListProducts (
 	wishListProductID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,

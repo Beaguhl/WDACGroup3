@@ -1,139 +1,131 @@
 <script>
-	import { user } from "../user-store"
-	import { Router, Link, Route, navigate } from "svelte-routing"
-	import { onMount } from "svelte";
-	import Products from "./Products.svelte";
+	import { user } from "../user-store";
+	import { Link, navigate } from "svelte-routing";
 
-	export let id
-	let isFetchingProduct = true
-	let fetchedProduct = null
-	let failedToFetchProduct = false
+	export let id;
+	let isFetchingProduct = true;
+	let fetchedProduct = null;
+	let failedToFetchProduct = false;
 
-	let successfulProductDelete = false
+	let successfulProductDelete = false;
 
-	async function loadProductToDelete(){
-		
-		try{
+	async function loadProductToDelete() {
+		try {
 			const response = await fetch(`http://localhost:8080/products/${id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer " + $user.accessToken,
-					"UserID": $user.userID
-				}
-			})
-			switch(response.status){
+					Authorization: "bearer " + $user.accessToken,
+					UserID: $user.userID,
+				},
+			});
+			switch (response.status) {
 				case 200:
-					fetchedProduct = await response.json()
-					isFetchingProduct = false
-					break
+					fetchedProduct = await response.json();
+					isFetchingProduct = false;
+					break;
 
 				case 404:
-					isFetchingProduct = false
-					break
+					isFetchingProduct = false;
+					break;
 			}
-		}catch(error){
-			failedToFetchProduct = true
+		} catch (error) {
+			failedToFetchProduct = true;
 		}
 	}
-	
-	loadProductToDelete()
 
-	async function deleteProduct(){
-		
-		try{
+	loadProductToDelete();
+
+	async function deleteProduct() {
+		try {
 			const response = await fetch(`http://localhost:8080/products/${id}`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer " +$user.accessToken,
-					"UserID": $user.userID
+					Authorization: "bearer " + $user.accessToken,
+					UserID: $user.userID,
 				},
-				body: JSON.stringify({})
-			})
-			switch(response.status){
+				body: JSON.stringify({}),
+			});
+			switch (response.status) {
 				case 204:
-					successfulProductDelete = true
+					successfulProductDelete = true;
 
 				case 500:
-					break
+					break;
 
 				case 400:
-					break
-
+					break;
 			}
-		}catch(error){
-
-		}
+		} catch (error) {}
 	}
-
 
 	/**
 	 * @param {{ preventDefault: () => void; }} event
 	 */
-	async function handleDelete(event){
-		event.preventDefault()
+	async function handleDelete(event) {
+		event.preventDefault();
 
-		try{
-			await deleteProduct()
-			navigate("/products")
-		}catch(error){
-
-		}
+		try {
+			await deleteProduct();
+			navigate("/products");
+		} catch (error) {}
 	}
-
 </script>
 
 <div class="mainContent">
 	{#if fetchedProduct}
-	<div class="card">
-		
-				<h1 class="card-title">Are you sure you want to delete {fetchedProduct.product.productName}</h1>
-				<p class="card-subtitle">{fetchedProduct.product.description}</p>
-			<Link class="Links" to="" id="null" style="color: white; text-decoration: none; margin-right: 40px;">
+		<div class="card">
+			<h1 class="card-title">
+				Are you sure you want to delete {fetchedProduct.product.productName}
+			</h1>
+			<p class="card-subtitle">{fetchedProduct.product.description}</p>
+			<Link
+				class="Links"
+				to=""
+				id="null"
+				style="color: white; text-decoration: none; margin-right: 40px;"
+			>
 				<button class="yes-button" on:click={handleDelete}>Yes</button>
 			</Link>
-			<p class="emptyGridSpace"></p>
+			<p class="emptyGridSpace" />
 			<Link class="Links" to="/products/{id}">
 				<button class="no-button">No</button>
 			</Link>
-			
-	</div>
-			
+		</div>
 	{/if}
 </div>
 
 <style>
-
-.mainContent{
+	.mainContent {
 		height: 80vh;
 		padding: 0;
 		margin: 0;
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
-		grid-template-areas: 
-		". . ."
-		". mid ."
-		". . .";
+		grid-template-areas:
+			". . ."
+			". mid ."
+			". . .";
 	}
 
-	.card{
+	.card {
 		grid-area: mid;
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
-		grid-template-areas: 
-		"cardTop cardTop cardTop"
-		"cardMid cardMid cardMid"
-		"cardBotLeft cardBotMid cardBotRight";
+		grid-template-areas:
+			"cardTop cardTop cardTop"
+			"cardMid cardMid cardMid"
+			"cardBotLeft cardBotMid cardBotRight";
 		background-color: gray;
 		border-radius: 5px;
 		text-align: center;
 		width: 600px;
 	}
 
-	.card-title{
+	.card-title {
 		grid-area: cardTop;
 		font-size: 30px;
 		font-weight: bold;
@@ -141,16 +133,16 @@
 		text-align: center;
 	}
 
-	.card-subtitle{
+	.card-subtitle {
 		grid-area: cardMid;
 		font-size: 20px;
 		color: lightgray;
 		margin-bottom: 20px;
 	}
 
-	.yes-button{
+	.yes-button {
 		grid-area: cardBotLeft;
-		background-color: #F32626;
+		background-color: #f32626;
 		border: none;
 		color: white;
 		padding: 10px 20px;
@@ -163,13 +155,13 @@
 		transition: background-color 0.3s ease;
 	}
 
-	.emptyGridSpace{
+	.emptyGridSpace {
 		grid-area: cardBotMid;
 	}
 
-	.no-button{
+	.no-button {
 		grid-area: cardBotRight;
-		background-color: #2A7BE6;
+		background-color: #2a7be6;
 		border: none;
 		color: white;
 		padding: 10px 20px;
