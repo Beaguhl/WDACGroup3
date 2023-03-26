@@ -75,26 +75,36 @@
 	}
 </script>
 
-{#if $user.isLoggedIn}
-	<section>
-		<div class="container">
-			<div class="squareContainer">
-				<div class="container">
-					<h1>My Wish List</h1>
-					<form on:submit|preventDefault={searchProducts}>
-						<div class="search-container">
-							<input type="text" name="q" placeholder="Search for wish products..." />
-							<button type="submit" id="search-button">Search</button>
-							<button type="button" id="show-all-button" on:click={loadWishList}
-								>Show All Wish Products</button
-							>
-						</div>
-					</form>
-					<div class="search-container" />
-					<div class="user-container">
-						{#if showSearch}
-							{#if searchResults.length != 0}
-								{#each searchResults as result}
+
+	{#if $user.isLoggedIn}
+		<section>
+			<div class="container">
+				<div class="squareContainer">
+					<div class="container">
+						<h1>My Wish List</h1>
+							<form on:submit|preventDefault={searchProducts}>
+								<div class="search-container">
+									<input type="text" name="q" placeholder="Filter wish products...">
+									<button type="submit" id="search-button">Filter</button>
+									<button type="button" id="show-all-button" on:click={loadWishList}>Show All Wish Products</button>
+								</div>
+							</form>
+							<div class="search-container"></div>
+						<div class="user-container">
+							{#if showSearch}
+								{#if searchResults.length != 0}
+									{#each searchResults as result}
+										<div class="object">
+											<h3>{result[0].productName}</h3>
+											<p>{result[0].description}</p>
+										</div>
+									{/each}
+								{:else}
+									<p>No wishlist products found</p>
+								{/if}
+							{:else}
+								{#if wishListProducts.length != 0}
+									{#each wishListProducts as product}
 									<div class="object">
 										<h3>{result[0].productName}</h3>
 										<p>{result[0].description}</p>

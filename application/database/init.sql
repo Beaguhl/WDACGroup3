@@ -13,17 +13,17 @@ VALUES ("ellen", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq",
 INSERT INTO Users (username, password, admin)
 VALUES ("nisse", "$2b$12$h1W/m.Ut5L99..OaZNaYcelKI/6jT.VbAT2CKkI2arM.jG57D9DNK", FALSE);
 INSERT INTO Users (username, password, admin)
-VALUES ("jocke1", "$2b$12$SxN/g01Ktw4BVmaPGsE0q.94UoRtYI/QvPlwkyheUgkHnubxI90vm", TRUE);
+VALUES ("aljona_cool", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
 INSERT INTO Users (username, password, admin)
-VALUES ("ellen1", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
+VALUES ("santa.claus", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
 INSERT INTO Users (username, password, admin)
-VALUES ("nisse1", "$2b$12$h1W/m.Ut5L99..OaZNaYcelKI/6jT.VbAT2CKkI2arM.jG57D9DNK", FALSE);
+VALUES ("NoccoLover", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", FALSE);
 INSERT INTO Users (username, password, admin)
-VALUES ("jocke2", "$2b$12$SxN/g01Ktw4BVmaPGsE0q.94UoRtYI/QvPlwkyheUgkHnubxI90vm", TRUE);
+VALUES ("PLG", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
 INSERT INTO Users (username, password, admin)
-VALUES ("ellen2", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
+VALUES ("Elinoo", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", TRUE);
 INSERT INTO Users (username, password, admin)
-VALUES ("nisse2", "$2b$12$h1W/m.Ut5L99..OaZNaYcelKI/6jT.VbAT2CKkI2arM.jG57D9DNK", FALSE);
+VALUES ("Rödluvan", "$2b$12$WsKB6biwEx.IE07bKf.XHOBtWDvSCEShh01ymS/.3DsZ9/DmuIyXq", FALSE);
 
 CREATE TABLE IF NOT EXISTS Follows (
 	followID INT PRIMARY KEY AUTO_INCREMENT,

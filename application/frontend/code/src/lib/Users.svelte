@@ -90,31 +90,42 @@
 		<section>
 			<div class="container">
 				<div class="squareContainer">
-					<div class="container">
-						<h1>Find users</h1>
-						<form on:submit|preventDefault={searchUsers}>
-							<div class="search-container">
-								<input type="text" name="q" placeholder="Search for users..." />
-								<button type="submit" id="search-button">Search</button>
-								<button type="button" id="show-all-button" on:click={loadAllUsers}
-									>Show All Users</button
-								>
-							</div>
-						</form>
-						<div class="search-container" />
-						<div class="user-container">
-							{#if showAllUsers == false}
-								{#if startedSearch}
-									{#if isFetchingSearchedUsers}
-										<p>searching...</p>
-									{:else if noSearchResults}
-										<p>No search results found</p>
-									{:else}
-										{#each searchedUsers as searchedUser}
-											<Link class="Links" to="/users/{searchedUser.userID}">
-												<h3>{searchedUser.username}</h3>
-											</Link>
-										{/each}
+						<div class="container">
+							<h1>Find users</h1>
+								<form on:submit|preventDefault={searchUsers}>
+									<div class="search-container">
+										<input type="text" name="q" placeholder="Filter users...">
+										<button type="submit" id="search-button">Filter</button>
+										<button type="button" id="show-all-button" on:click={loadAllUsers}>Show All Users</button>
+									</div>
+								</form>
+								<div class="search-container"></div>
+							<div class="user-container">
+
+								{#if showAllUsers == false}
+									{#if startedSearch}
+										{#if isFetchingSearchedUsers}
+											<p>searching...</p>
+										{:else}
+										
+											{#if noSearchResults}
+												<p>No search results found</p>
+											{:else}
+												{#each searchedUsers as searchedUser}
+													<Link class="Links" to="/users/{searchedUser.userID}">
+														<h3>{searchedUser.username}</h3>
+													</Link> 
+												{/each}
+											{/if}
+										{/if}
+									{/if}
+								{:else if showAllUsers == true}
+									{#if isFetchingUsers}
+										<p>Wait, I'm loading</p>
+									{:else if isUnAuthorized} 
+										<p>Need to be logged in to view users.</p>
+									{:else if isServerError}
+										<p>Website has server errors. Try again later</p>
 									{/if}
 								{/if}
 							{:else if showAllUsers == true}

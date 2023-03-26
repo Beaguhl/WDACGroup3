@@ -84,49 +84,34 @@
 </script>
 
 {#if $user.isLoggedIn}
-	<Router>
-		<section>
-			<div class="container">
-				<div class="squareContainer">
-					<div class="container">
-						<h1>Find Products</h1>
-						<form on:submit|preventDefault={searchProducts}>
-							<div class="search-container">
-								<input type="text" name="q" placeholder="Search for products..." />
-								<button type="submit" id="search-button">Search</button>
-								<button
-									type="button"
-									id="show-all-button"
-									on:click={loadAllProducts}>Show All Products</button
-								>
-							</div>
-						</form>
-						<div class="search-container" />
-						<div class="product-container">
-							{#if showAllProducts == false}
-								{#if startedSearch}
-									{#if isFetchingSearchedProdcucts}
-										<p>Searching...</p>
-									{:else if searchedProducts.length == 0}
-										<p>No search result found</p>
-									{:else}
-										{#each searchedProducts as searchedProduct}
-											<Link
-												class="Links"
-												to="/products/{searchedProduct.productID}"
-											>
-												<h3>{searchedProduct.productName}</h3>
-											</Link>
-										{/each}
-									{/if}
-								{/if}
-							{:else if showAllProducts == true}
-								{#if isFetchingProducts}
-									<p>Wait, I'm loading</p>
-								{:else if isUnAuthorized}
-									<p>Need to be logged in to view proudcts</p>
-								{:else if isServerError}
-									<p>Internal server error, try again later</p>
+<Router>
+	<section>
+		<div class="container">
+			<div class="squareContainer">
+				<div class="container">
+					<h1>Find Products</h1>
+					<form on:submit|preventDefault={searchProducts}>
+						<div class="search-container">
+							<input type="text" name="q" placeholder="Filter products...">
+							<button type="submit" id="search-button">Filter</button>
+							<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Products</button>
+						</div>
+					</form>
+					<div class="search-container"></div>
+					<div class="product-container">
+					{#if showAllProducts == false}
+						{#if startedSearch}
+							{#if isFetchingSearchedProdcucts}
+								<p>Searching...</p>
+							{:else}
+								{#if searchedProducts.length == 0}
+									<p>No search result found</p>
+								{:else}
+									{#each searchedProducts as searchedProduct}
+										<Link class="Links" to="/products/{searchedProduct.productID}">
+											<h3>{searchedProduct.productName}</h3>
+										</Link>
+									{/each}
 								{/if}
 								{#each products as searchedProducti}
 									<Link class="Links" to="/products/{searchedProducti.productID}">
