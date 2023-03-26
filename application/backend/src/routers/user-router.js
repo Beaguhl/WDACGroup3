@@ -122,8 +122,8 @@ router.get("/search", async function (request, response) {
 		} else {
 			response.status(200).json(searchedUsers);
 		}
-	} catch {
-		// add catch
+	} catch (error) {
+		console.log(error);
 	} finally {
 		if (connection) {
 			connection.release();
@@ -166,6 +166,7 @@ router.get("/:id", async function (request, response) {
 
 		response.status(200).json(model);
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {

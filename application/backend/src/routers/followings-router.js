@@ -53,6 +53,7 @@ router.get("/search", async function (request, response) {
 			response.status(200).json(followingSearchedUsers);
 		}
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
@@ -83,6 +84,7 @@ router.get("/", async function (request, response) {
 			response.status(200).json(followingUsers);
 		}
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {

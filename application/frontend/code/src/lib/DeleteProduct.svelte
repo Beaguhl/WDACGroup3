@@ -30,6 +30,7 @@
 					break;
 			}
 		} catch (error) {
+			console.log(error);
 			failedToFetchProduct = true;
 		}
 	}
@@ -57,7 +58,9 @@
 				case 400:
 					break;
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	/**
@@ -69,7 +72,9 @@
 		try {
 			await deleteProduct();
 			navigate("/products");
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 </script>
 

@@ -207,7 +207,9 @@
 
 		try {
 			await deleteUser();
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 </script>
 

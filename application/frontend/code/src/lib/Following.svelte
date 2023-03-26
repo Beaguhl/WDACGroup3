@@ -79,7 +79,9 @@
 					isFetchingSearchedFollowings = false;
 					break;
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 </script>
 

@@ -25,10 +25,7 @@
 			});
 			switch (response.status) {
 				case 200:
-					console.log("AAAAAAAAAAAAAA");
 					fetchedProduct = await response.json();
-					console.log(fetchedProduct);
-					console.log(fetchedProduct.product.productName);
 					newProductName = fetchedProduct.product.productName;
 					newProductDescription = fetchedProduct.product.description;
 					break;

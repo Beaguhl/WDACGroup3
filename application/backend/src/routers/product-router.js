@@ -30,6 +30,7 @@ router.get("/", async function (request, response) {
 
 		response.status(200).json(products);
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
@@ -55,8 +56,8 @@ router.get("/search", async function (request, response) {
 		} else {
 			response.status(200).json(searchedProducts);
 		}
-	} catch {
-		// add catch
+	} catch (error) {
+		console.log(error);
 	} finally {
 		if (connection) {
 			connection.release();
@@ -68,7 +69,6 @@ router.get("/search", async function (request, response) {
 
 router.get("/:id", async function (request, response) {
 	const connection = await pool.getConnection();
-	console.log("GET ID");
 
 	try {
 		const otherProductID = parseInt(request.params.id);
@@ -125,6 +125,7 @@ router.get("/:id", async function (request, response) {
 
 		response.status(200).json(model);
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
@@ -145,6 +146,7 @@ router.delete("/:id", async function (request, response) {
 
 		response.status(204).end();
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
@@ -171,6 +173,7 @@ router.put("/:id", async function (request, response) {
 
 		response.status(200).end();
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
@@ -192,6 +195,7 @@ router.post("/", async function (request, response) {
 
 		response.status(201).end();
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {

@@ -31,6 +31,7 @@ router.patch("/:id/purchase", async function (request, response) {
 
         response.status(200).end();
     } catch (error) {
+        console.log(error);
     } finally {
         if (connection) {
             connection.release();
@@ -65,6 +66,7 @@ router.patch("/:id/undo-purchase", async function (request, response) {
             response.status(403).end();
         }
     } catch (error) {
+        console.log(error);
     } finally {
         if (connection) {
             connection.release();

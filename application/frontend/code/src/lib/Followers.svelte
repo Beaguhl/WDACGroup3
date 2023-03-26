@@ -44,7 +44,9 @@
 					isFetchingFollowers = false;
 					break;
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	loadAllFollowers();
@@ -80,7 +82,9 @@
 					isFetchingSearchedFollowers = false;
 					break;
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 </script>
 

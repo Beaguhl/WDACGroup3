@@ -72,6 +72,7 @@
 					break;
 			}
 		} catch (error) {
+			console.log(error);
 			errorArr.push("COMMUNICATION_ERROR");
 		}
 	}

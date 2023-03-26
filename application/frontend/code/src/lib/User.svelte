@@ -86,7 +86,9 @@
 
 				case 404:
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	let unableToUnfollow = false;
@@ -112,7 +114,9 @@
 					unableToUnfollow = true;
 					break;
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	async function purchaseProduct(wishListProductID) {
@@ -133,7 +137,9 @@
 				case 200:
 					loadUser();
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	async function undoPurchaseProduct(wishListProductID) {
@@ -156,7 +162,9 @@
 
 				case 403:
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 </script>
 

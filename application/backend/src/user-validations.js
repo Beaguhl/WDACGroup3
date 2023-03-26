@@ -36,7 +36,6 @@ async function validateUsername(username) {
     const regexForSpace = /\s/;
 
     var errorArr = [];
-    console.log("new username is: " + username);
 
     if (username.length == 0) {
         errorArr.push("Can not leave username field empty");

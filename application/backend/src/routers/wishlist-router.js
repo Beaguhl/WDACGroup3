@@ -17,12 +17,8 @@ pool.on("error", function (error) {
 
 module.exports = router;
 
-const app = express();
-
 router.get("/:id", async function (request, response) {
     const id = parseInt(request.params.id);
-
-    const userID = request.get("UserID");
 
     const connection = await pool.getConnection();
 
@@ -76,7 +72,6 @@ router.get("/:id", async function (request, response) {
 router.get("/:id/search", async function (request, response) {
     const id = parseInt(request.params.id);
 
-    const userID = request.get("UserID");
     const connection = await pool.getConnection();
 
     try {
@@ -117,6 +112,7 @@ router.get("/:id/search", async function (request, response) {
             response.status(200).json(searchResults);
         }
     } catch (error) {
+        console.log(error);
     } finally {
         if (connection) {
             connection.release();

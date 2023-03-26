@@ -41,6 +41,7 @@ router.get("/", async function (request, response) {
 			response.status(200).json(followerUsers);
 		}
 	} catch (error) {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
@@ -108,6 +109,7 @@ router.get("/followers", async function (request, response) {
 			response.status(200).json(followerUsers);
 		}
 	} catch {
+		console.log(error);
 		response.status(500).end();
 	} finally {
 		if (connection) {
