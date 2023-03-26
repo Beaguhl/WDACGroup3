@@ -1,83 +1,79 @@
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-
 <script>
-	import {Router, Link} from 'svelte-routing'
-	import { user } from "../user-store"
+	import { Router, Link } from "svelte-routing";
+	import { user } from "../user-store";
 
-	export let id
-	let isFetchingProduct = true
-	let failedToFetchProduct = false
-	let fetchedProduct = null
-	let alreadyInList = false
-	
+	export let id;
+	let isFetchingProduct = true;
+	let failedToFetchProduct = false;
+	let fetchedProduct = null;
 
-	async function loadProduct(){
+	async function loadProduct() {
 		try {
 			const response = await fetch("http://localhost:8080/products/" + id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken,
-					"UserID": $user.userID
-				}
-			})
+					Authorization: "bearer " + $user.accessToken,
+					UserID: $user.userID,
+				},
+			});
 
-			switch(response.status){
+			switch (response.status) {
 				case 200:
-					fetchedProduct = await response.json()
-					isFetchingProduct = false
-					break
-				
-				case 404:
-					isFetchingProduct = false
-					break
+					fetchedProduct = await response.json();
+					isFetchingProduct = false;
+					break;
 
+				case 404:
+					isFetchingProduct = false;
+					break;
 			}
-		}catch(error){
-			failedToFetchProduct = true
+		} catch (error) {
+			failedToFetchProduct = true;
+			console.log(error);
 		}
 	}
 
-	loadProduct()
+	loadProduct();
 
-	
-
-	async function addProductToWishList(productID){
+	async function addProductToWishList(productID) {
 		try {
 			const response = await fetch("http://localhost:8080/wishlist-product/" + productID, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": "bearer "+$user.accessToken,
-					"UserID": $user.userID
-				}
-			})
+					Authorization: "bearer " + $user.accessToken,
+					UserID: $user.userID,
+				},
+			});
 
-			switch(response.status){
+			switch (response.status) {
 				case 200:
-					loadProduct()
-					break
-				
-				case 500:
-					console.log("500 error")
-					break
-			}
-		} catch(error) {
+					loadProduct();
+					break;
 
+				case 500:
+					break;
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 </script>
 
-	<Router>
-		<div class="mainContent">
-			{#if $user.isLoggedIn}
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+/>
 
-				{#if isFetchingProduct}
-					<p>Wait, fetching data...</p>
-				{:else if failedToFetchProduct}
-					<p>Couldn't fetch product. Check your Internet connection.</p>
-				{:else if fetchedProduct}
+<Router>
+	<div class="mainContent">
+		{#if $user.isLoggedIn}
+			{#if isFetchingProduct}
+				<p>Wait, fetching data...</p>
+			{:else if failedToFetchProduct}
+				<p>Couldn't fetch product. Check your Internet connection.</p>
+			{:else if fetchedProduct}
 				<div class="card">
 					<h1 class="card-title">
 						{fetchedProduct.product.productName}
@@ -85,55 +81,61 @@
 					<h2 class="card-subtitle">
 						{fetchedProduct.product.description}
 					</h2>
-					
+
 					{#if fetchedProduct.productIsInWishList}
 						<p class="alreadyInWish">this product is already in your wishlist</p>
 					{:else}
-						<button class="card-button" on:click={() => addProductToWishList(fetchedProduct.product.productID)}>
-
+						<button
+							class="card-button"
+							on:click={() => addProductToWishList(fetchedProduct.product.productID)}
+						>
 							Add to WishList
 						</button>
 					{/if}
-						{#if $user.admin}
-						<Link class="Links" to="/products/{id}/update" id="update-product-link" style="color: white; text-decoration: none; margin-right: 40px;">
-							<button class="update-button">
-								Update Product
-							</button>
+					{#if $user.admin}
+						<Link
+							class="Links"
+							to="/products/{id}/update"
+							id="update-product-link"
+							style="color: white; text-decoration: none; margin-right: 40px;"
+						>
+							<button class="update-button"> Update Product </button>
 						</Link>
-						<Link class="Links" to="/products/{id}/delete" id="delete-product-link" style="color: white; text-decoration: none; margin-right: 40px">
-							<button class="delete-button">
-								Delete Product
-							</button>
+						<Link
+							class="Links"
+							to="/products/{id}/delete"
+							id="delete-product-link"
+							style="color: white; text-decoration: none; margin-right: 40px"
+						>
+							<button class="delete-button"> Delete Product </button>
 						</Link>
-						{/if}
-					</div>
-				{/if}
+					{/if}
+				</div>
 			{/if}
-		</div>
-	</Router>
-
-
+		{/if}
+	</div>
+</Router>
 
 <style>
-	.mainContent{
+	.mainContent {
 		height: 80vh;
 		padding: 0;
 		margin: 0;
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr;
 		grid-template-rows: 1fr 1fr 1fr;
-		grid-template-areas: 
-		". . ."
-		". mid ."
-		". . .";
+		grid-template-areas:
+			". . ."
+			". mid ."
+			". . .";
 	}
 	.card {
 		grid-area: mid;
 		display: grid;
-		grid-template-areas: 
-		"cardTop cardTop cardTop"
-		"cardMid cardMid cardMid"
-		"cardBotLeft cardBotMid cardBotRight";
+		grid-template-areas:
+			"cardTop cardTop cardTop"
+			"cardMid cardMid cardMid"
+			"cardBotLeft cardBotMid cardBotRight";
 		background-color: gray;
 		border-radius: 5px;
 		text-align: center;
@@ -154,16 +156,16 @@
 		margin-bottom: 20px;
 	}
 
-	.alreadyInWish{
+	.alreadyInWish {
 		grid-area: cardBotMid;
 	}
 
-	.update-button{
+	.update-button {
 		grid-area: cardBotRight;
 		position: relative;
 		left: 15%;
 		top: 25%;
-		background-color: #2A7BE6;
+		background-color: #2a7be6;
 		border: none;
 		color: white;
 		padding: 10px 20px;
@@ -176,12 +178,12 @@
 		transition: background-color 0.3s ease;
 	}
 
-	.delete-button{
+	.delete-button {
 		grid-area: cardBotLeft;
 		position: relative;
-		left:15%;
+		left: 15%;
 		top: 25%;
-		background-color: #F32626;
+		background-color: #f32626;
 		border: none;
 		color: white;
 		padding: 10px 20px;
@@ -199,7 +201,7 @@
 		left: 5%;
 		top: 25%;
 		grid-area: cardBotMid;
-		background-color:#3e8e41;
+		background-color: #3e8e41;
 		border: none;
 		color: white;
 		padding: 10px 20px;

@@ -1,19 +1,19 @@
 <script>
-
 </script>
+
 <body>
 	<div class="container">
 		<h2 class="title">Welcome to Wish List!</h2>
 		<p class="mainContent">
-			Wish List is a website where you can create and share wish lists with your friends and family. Whether it's for your birthday, wedding, or any other special occasion, you can add items to your wish list and let your loved ones know what you're hoping for. 
-			Sign up now and start creating your wish lists today!
+			Wish List is a website where you can create and share wish lists with your friends and
+			family. Whether it's for your birthday, wedding, or any other special occasion, you can
+			add items to your wish list and let your loved ones know what you're hoping for. Sign up
+			now and start creating your wish lists today!
 		</p>
 	</div>
 </body>
 
 <style>
-
-
 	body {
 		font-family: Arial, sans-serif;
 		margin: 0;
@@ -39,7 +39,4 @@
 		margin-bottom: 40px;
 		color: white;
 	}
-
 </style>
-
-
