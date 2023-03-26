@@ -92,8 +92,8 @@ loadAllProducts()
 					<h1>Find Products</h1>
 					<form on:submit|preventDefault={searchProducts}>
 						<div class="search-container">
-							<input type="text" name="q" placeholder="Search for products...">
-							<button type="submit" id="search-button">Search</button>
+							<input type="text" name="q" placeholder="Filter products...">
+							<button type="submit" id="search-button">Filter</button>
 							<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Products</button>
 						</div>
 					</form>

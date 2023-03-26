@@ -336,7 +336,6 @@ button .done-checkbox {
   line-height: 20px; /* set the line height to match the height of the checkbox */
 }
 
-/* hide the text "done" */
 button .done-checkbox.done::after {
   content: "";
   display: none;
@@ -361,13 +360,6 @@ button .done-checkbox.done::after {
         cursor: pointer;
         color: white
       }
-
-      /* Hide all answers by default. */ #faq dd{
-display: none; }
-/* Show answers with the class "show". */ #faq dd.show{
-display: initial; }
-
-
 
       .wish-item .done-checkbox {
         height: 20px;

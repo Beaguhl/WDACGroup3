@@ -88,8 +88,8 @@
 						<h1>My Wish List</h1>
 							<form on:submit|preventDefault={searchProducts}>
 								<div class="search-container">
-									<input type="text" name="q" placeholder="Search for wish products...">
-									<button type="submit" id="search-button">Search</button>
+									<input type="text" name="q" placeholder="Filter wish products...">
+									<button type="submit" id="search-button">Filter</button>
 									<button type="button" id="show-all-button" on:click={loadWishList}>Show All Wish Products</button>
 								</div>
 							</form>

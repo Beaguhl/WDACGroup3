@@ -40,7 +40,6 @@ window.addEventListener('popstate', () => {
 	let emptyField = false
 	let dropdownShown = false
 
-	
 
 	export let openBar = false
 	function toggleBar(){
@@ -251,13 +250,6 @@ window.addEventListener('popstate', () => {
 		padding: 20px;
     }
 
-    .dropdown-content a {
-        display: block;
-        text-align: left;
-    }
-
-    
-
     .dropbtn {
         color: white;
         background-color: transparent;
@@ -269,18 +261,6 @@ window.addEventListener('popstate', () => {
     .dropbtn:hover {
         text-decoration: underline;
     }
-
-
-	
-  
-.stack {
-  display: grid;
-  align-items: start;
-}
-  
-.stack > :global(*) {
-  grid-area: 1 / 1;
-}
 
 .form-group {
   display: flex;

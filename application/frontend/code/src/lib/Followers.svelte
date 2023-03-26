@@ -104,8 +104,8 @@
 						<h1>My followers</h1>
 							<form on:submit|preventDefault={searchFollowers}>
 								<div class="search-container">
-								<input type="text" name="q" placeholder="Search for followers...">
-								<button type="submit" id="search-button">Search</button>
+								<input type="text" name="q" placeholder="Filter followers...">
+								<button type="submit" id="search-button">Filter</button>
 								<button type="button" id="show-all-button" on:click={loadAllFollowers}>Show All Followers</button>
 								</div>
 							</form>

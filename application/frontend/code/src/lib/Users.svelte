@@ -103,8 +103,8 @@
 							<h1>Find users</h1>
 								<form on:submit|preventDefault={searchUsers}>
 									<div class="search-container">
-										<input type="text" name="q" placeholder="Search for users...">
-										<button type="submit" id="search-button">Search</button>
+										<input type="text" name="q" placeholder="Filter users...">
+										<button type="submit" id="search-button">Filter</button>
 										<button type="button" id="show-all-button" on:click={loadAllUsers}>Show All Users</button>
 									</div>
 								</form>
