@@ -133,7 +133,6 @@ app.use("/my-account", myAccountRouter);
 app.use("/wishlist", myWishListRouter);
 app.use("/wishlist-product", wishListproduct);
 
-//app.listen(8080)
 app.listen(8080, () => {
 	console.log("Server started on port 8080");
 });

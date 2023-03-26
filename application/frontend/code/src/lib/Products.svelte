@@ -27,7 +27,6 @@
 			switch (response.status) {
 				case 200:
 					products = await response.json();
-					console.log(products);
 					isFetchingProducts = false;
 					break;
 
