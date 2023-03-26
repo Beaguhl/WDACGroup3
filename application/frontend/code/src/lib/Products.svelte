@@ -27,6 +27,7 @@
 			switch (response.status) {
 				case 200:
 					products = await response.json();
+					console.log(products);
 					isFetchingProducts = false;
 					break;
 
@@ -84,38 +85,49 @@
 </script>
 
 {#if $user.isLoggedIn}
-<Router>
-	<section>
-		<div class="container">
-			<div class="squareContainer">
-				<div class="container">
-					<h1>Find Products</h1>
-					<form on:submit|preventDefault={searchProducts}>
-						<div class="search-container">
-							<input type="text" name="q" placeholder="Filter products...">
-							<button type="submit" id="search-button">Filter</button>
-							<button type="button" id="show-all-button" on:click={loadAllProducts}>Show All Products</button>
-						</div>
-					</form>
-					<div class="search-container"></div>
-					<div class="product-container">
-					{#if showAllProducts == false}
-						{#if startedSearch}
-							{#if isFetchingSearchedProdcucts}
-								<p>Searching...</p>
-							{:else}
-								{#if searchedProducts.length == 0}
-									<p>No search result found</p>
-								{:else}
-									{#each searchedProducts as searchedProduct}
-										<Link class="Links" to="/products/{searchedProduct.productID}">
-											<h3>{searchedProduct.productName}</h3>
-										</Link>
-									{/each}
+	<Router>
+		<section>
+			<div class="container">
+				<div class="squareContainer">
+					<div class="container">
+						<h1>Find Products</h1>
+						<form on:submit|preventDefault={searchProducts}>
+							<div class="search-container">
+								<input type="text" name="q" placeholder="Filter products..." />
+								<button type="submit" id="search-button">Filter</button>
+								<button
+									type="button"
+									id="show-all-button"
+									on:click={loadAllProducts}>Show All Products</button
+								>
+							</div>
+						</form>
+						<div class="search-container" />
+						<div class="product-container">
+							{#if showAllProducts == false}
+								{#if startedSearch}
+									{#if isFetchingSearchedProdcucts}
+										<p>Searching...</p>
+									{:else if searchedProducts.length == 0}
+										<p>No search result found</p>
+									{:else}
+										{#each searchedProducts as searchedProduct}
+											<Link
+												class="Links"
+												to="/products/{searchedProduct.productID}"
+											>
+												<h3>{searchedProduct.productName}</h3>
+											</Link>
+										{/each}
+									{/if}
 								{/if}
-								{#each products as searchedProducti}
-									<Link class="Links" to="/products/{searchedProducti.productID}">
-										<h3>{searchedProducti.productName}</h3>
+							{:else}
+								{#each products as product}
+									<Link class="Links" to="/products/{product.productID}">
+										<div class="object">
+											<h3 class="cursor">{product.productName}</h3>
+											<p>{product.description}</p>
+										</div>
 									</Link>
 								{/each}
 							{/if}
@@ -125,7 +137,6 @@
 			</div>
 		</section>
 		<main>
-			<!-- Här ska Route vara -->
 			<Route path="/products" component={Product} />
 		</main>
 	</Router>
@@ -138,6 +149,17 @@
 		box-sizing: border-box;
 		margin: 0;
 		padding: 0;
+	}
+
+	.object {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.cursor {
+		cursor: pointer;
 	}
 
 	h1 {

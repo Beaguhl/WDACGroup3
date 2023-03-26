@@ -18,16 +18,13 @@ pool.on("error", function (error) {
 
 module.exports = router;
 
+//----------------------- get all Products ----------------------
 router.get("/", async function (request, response) {
-	const authorizationHeaderValue = request.get("Authorization");
-	const accessToken = authorizationHeaderValue.substring(7);
-	const userID = request.get("UserID");
 	const connection = await pool.getConnection();
 
 	try {
 		const getAllProductsQuery = "SELECT * FROM Products";
-		const getAllProductsValues = [userID];
-		const products = await connection.query(getAllProductsQuery, getAllProductsValues);
+		const products = await connection.query(getAllProductsQuery);
 
 		response.status(200).json(products);
 	} catch (error) {
@@ -40,10 +37,8 @@ router.get("/", async function (request, response) {
 	}
 });
 
+//----------------------- search Products ----------------------
 router.get("/search", async function (request, response) {
-	const authorizationHeaderValue = request.get("Authorization");
-	const accessToken = authorizationHeaderValue.substring(7);
-	const userID = request.get("UserID");
 	const connection = await pool.getConnection();
 
 	try {
@@ -67,7 +62,6 @@ router.get("/search", async function (request, response) {
 });
 
 //----------------------- products ----------------------
-
 router.get("/:id", async function (request, response) {
 	const connection = await pool.getConnection();
 
