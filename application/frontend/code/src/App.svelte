@@ -46,7 +46,6 @@
 	}
 
 	async function login() {
-		console.log(username + " " + password);
 		try {
 			const response = await fetch("http://localhost:8080/tokens", {
 				method: "POST",

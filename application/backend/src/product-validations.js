@@ -43,12 +43,10 @@ async function validateProductName(productName) {
     } else {
         const connection = await pool.getConnection();
         try {
-            console.log("IDK")
             const productNameQuery = "SELECT * FROM Products WHERE productName = ?"
             const productNameValues = [productName];
 
             const result = await connection.query(productNameQuery, productNameValues)
-            console.log(result.length)
             if (result.length != 0) {
                 errorStr = "That product already exists"
             }

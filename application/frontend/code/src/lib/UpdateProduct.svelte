@@ -57,9 +57,6 @@
 					NewProductDescription: newProductDescription,
 				}),
 			});
-			console.log("HAHAHHAHA");
-			console.log(newProductName);
-			console.log(newProductDescription);
 			switch (response.status) {
 				case 200:
 					succesfulProductNameUpdate = true;
@@ -69,13 +66,11 @@
 					break;
 
 				case 500:
-					console.log("HAHAHAHAHA NEJ");
 					break;
 
 				case 400:
 					const body = await response.json();
 					productErrors = body.productErrors;
-					console.log("HERE WE GO " + body.productErrors);
 					break;
 			}
 		} catch (error) {

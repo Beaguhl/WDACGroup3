@@ -168,8 +168,6 @@ router.put("/:id", async function (request, response) {
 
 	try {
 		const productErrors = await validateProductErrors(newProductName, newProductDescription)
-		console.log("YIPPIE KI YAY MO " + productErrors.length)
-
 
 		if (productErrors.length > 0) {
 			response.status(400).json({ productErrors });
