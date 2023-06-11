@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { createPool } = require("mariadb");
+//import { pool } from '../app.js'
 
 const pool = createPool({
 	host: "db",
@@ -9,6 +10,8 @@ const pool = createPool({
 	password: "abc123",
 	database: "abc",
 });
+
+//const pool = require("../app");
 
 pool.on("error", function (error) {
 	console.log("Error from pool", error);
@@ -24,16 +27,8 @@ router.get("/", async function (request, response) {
 	const connection = await pool.getConnection();
 
 	try {
-		const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ${userID}`;
-		const followerID = await connection.query(getAllFollowersQuery);
-
-		let followerUsers = [];
-
-		for (let i = 0; i < followerID.length; i += 1) {
-			const getFollowerQuery = `SELECT * FROM Users WHERE userID = ${followerID[i].userID}`;
-			const fetchedFollower = await connection.query(getFollowerQuery);
-			followerUsers[i] = fetchedFollower[0];
-		}
+		const getFollowerUsersQuery = `SELECT Users.* FROM Users JOIN Follows ON Users.userID = Follows.userID WHERE Follows.followingUserID = ?`;
+		const followerUsers = await connection.query(getFollowerUsersQuery, [userID]);
 
 		if (followerUsers.length == 0) {
 			response.status(404).end();
@@ -57,14 +52,14 @@ router.get("/search", async function (request, response) {
 	const connection = await pool.getConnection();
 
 	try {
-		const getSearchedFollowerQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`;
-		const searchedFollower = await connection.query(getSearchedFollowerQuery);
+		const getSearchedFollowerQuery = 'SELECT * FROM Users WHERE username LIKE CONCAT("%", ?, "%")';
+		const searchedFollower = await connection.query(getSearchedFollowerQuery, [searchQuery]);
 
 		let followerSearchedUsers = [];
 
 		for (let i = 0; i < searchedFollower.length; i += 1) {
-			const getSearchedFollower = `SELECT * FROM Follows WHERE followingUserID = ${userID} AND userID = ${searchedFollower[i].userID}`;
-			const fetchedFollowing = await connection.query(getSearchedFollower);
+			const getSearchedFollower = `SELECT * FROM Follows WHERE followingUserID = ? AND userID = ?`;
+			const fetchedFollowing = await connection.query(getSearchedFollower, [userID, searchedFollower[i].userID]);
 
 			if (fetchedFollowing.length != 0) {
 				let arrLenght = followerSearchedUsers.length;
@@ -92,20 +87,18 @@ router.get("/followers", async function (request, response) {
 	const connection = await pool.getConnection();
 
 	try {
-		const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ${userID}`;
-		const followerID = await connection.query(getAllFollowersQuery);
+		const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ?`;
+		const followers = await connection.query(getAllFollowersQuery, [userID]);
 
 		let followerUsers = [];
 
-		for (let i = 0; i < followerID.length; i += 1) {
-			const getFollowerQuery = `SELECT * FROM Users WHERE userID = ${followerID[i].userID}`;
-			const fetchedFollower = await connection.query(getFollowerQuery);
+		for (let i = 0; i < followers.length; i += 1) {
+			const getFollowerQuery = `SELECT * FROM Users WHERE userID = ?`;
+			const fetchedFollower = await connection.query(getFollowerQuery, [followers[i].userID]);
 			followerUsers[i] = fetchedFollower[0];
 		}
 
-		if (followerUsers.length == 0) {
-			response.status(404).end();
-		} else {
+		if (followerUsers.length != 0) {
 			response.status(200).json(followerUsers);
 		}
 	} catch {

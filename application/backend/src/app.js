@@ -13,6 +13,8 @@ const wishListproduct = require("./routers/wishlist-product-router");
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2";
 
+module.exports = ACCESS_TOKEN_SECRET;
+
 const pool = createPool({
 	host: "db",
 	port: 3306,
@@ -20,6 +22,8 @@ const pool = createPool({
 	password: "abc123",
 	database: "abc",
 });
+
+//module.exports = pool;
 
 pool.on("error", function (error) {
 	console.log("Error from pool", error);
@@ -39,9 +43,6 @@ app.use(function (request, response, next) {
 	next();
 });
 
-app.get("/", function (request, response) {
-	response.send("It works");
-});
 
 //----------------------- tokens ----------------------
 app.post("/tokens", async function (request, response) {
