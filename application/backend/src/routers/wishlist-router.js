@@ -23,7 +23,7 @@ router.get("/:id", async function (request, response) {
     const connection = await pool.getConnection();
 
     try {
-        // gets one wishListID from "WishLists"
+
         const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
         const getWishListValue = [id];
 
@@ -31,7 +31,7 @@ router.get("/:id", async function (request, response) {
         const wishListID = fetchedWishlistID[0].wishListID;
 
         try {
-            // gets all wishListProduct from "WishListProducts"
+
             const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE wishListID = ?";
             const getWishListProductsValue = [wishListID];
             const wishListProducts = await connection.query(
@@ -42,7 +42,7 @@ router.get("/:id", async function (request, response) {
             var products = [];
 
             for (let i = 0; i < wishListProducts.length; i += 1) {
-                // gets one product from "Products"
+
                 const getProductQuery = "SELECT * FROM Products WHERE productID = ?";
                 const wishListProductID = wishListProducts[i].productID;
                 const getProductValue = [wishListProductID];
@@ -77,7 +77,6 @@ router.get("/:id/search", async function (request, response) {
     try {
         const searchQuery = request.query.q;
 
-        // get wish list ID
         const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
         const getWishListValue = [id];
 
@@ -86,12 +85,10 @@ router.get("/:id/search", async function (request, response) {
 
         const getProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`;
 
-        // gets all products from "Products"
         const searchedProducts = await connection.query(getProductsQuery);
         var searchResults = [];
 
         for (let i = 0; i < searchedProducts.length; i += 1) {
-            // search through products to see if it exists in wishListProduct
             const getWishListProductsQuery =
                 "SELECT * FROM WishListProducts WHERE productID = ? AND wishListID = ?";
             const getWishListProductsValue = [searchedProducts[i].productID, wishListID];

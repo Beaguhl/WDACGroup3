@@ -1,18 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { createPool } = require("mariadb");
+const pool = require('../context.js')
 
-const pool = createPool({
-	host: "db",
-	port: 3306,
-	user: "root",
-	password: "abc123",
-	database: "abc",
-});
-
-pool.on("error", function (error) {
+/*pool.on("error", function (error) {
 	console.log("Error from pool", error);
-});
+});*/
+
+
 
 module.exports = router;
 
@@ -26,8 +20,8 @@ router.get("/search", async function (request, response) {
 	try {
 		const searchQuery = request.query.q;
 		//gets all users that matches search string
-		const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE '%${searchQuery}%'`;
-		const searchedFollowing = await connection.query(getSearchedFollowingQuery);
+		const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE ?`;
+		const searchedFollowing = await connection.query(getSearchedFollowingQuery, `%${searchQuery}%`);
 
 		let followingSearchedUsers = [];
 
@@ -67,14 +61,14 @@ router.get("/", async function (request, response) {
 	const connection = await pool.getConnection();
 
 	try {
-		const getAllFollowingQuery = `SELECT followingUserID FROM Follows WHERE userID = ${userID}`;
-		const followingsID = await connection.query(getAllFollowingQuery);
+		const getAllFollowingQuery = `SELECT followingUserID FROM Follows WHERE userID = ?`;
+		const followingsID = await connection.query(getAllFollowingQuery, `${userID}`);
 
 		let followingUsers = [];
 
 		for (let i = 0; i < followingsID.length; i += 1) {
-			const getUserQuery = `SELECT * FROM Users WHERE userID = ${followingsID[i].followingUserID}`;
-			const fetchedUser = await connection.query(getUserQuery);
+			const getUserQuery = `SELECT * FROM Users WHERE userID = ?`;
+			const fetchedUser = await connection.query(getUserQuery, `${followingsID[i].followingUserID}`);
 			followingUsers[i] = fetchedUser[0];
 		}
 

@@ -92,11 +92,10 @@ router.post("/", async function (request, response) {
 
 			await connection.query(createWishListQuery, createWishListValue);
 
-			//response.set('Location', '/users/${userID}')
 			response.status(201).end();
 		} catch (error) {
 			console.log(error);
-			response.status(500).end(); // 500 = server error
+			response.status(500).end();
 		} finally {
 			if (connection) {
 				connection.release();
