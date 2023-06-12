@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const pool = require('./context.js')
+const pool = require('./context')
 
 const followersRouter = require("./routers/followers-router");
 const followingsRouter = require("./routers/followings-router");
@@ -12,17 +12,6 @@ const myWishListRouter = require("./routers/wishlist-router");
 const wishListproduct = require("./routers/wishlist-product-router");
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2";
-
-const pool = createPool({
-	host: "db",
-	port: 3306,
-	user: "root",
-	password: "abc123",
-	database: "abc",
-});
-
-
-//module.exports = pool;
 
 pool.on("error", function (error) {
 	console.log("Error from pool", error);

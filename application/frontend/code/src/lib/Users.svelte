@@ -126,9 +126,9 @@
 									<p>Website has server errors. Try again later</p>
 								{/if}
 							{/if}
-							{#each users as searchedUseri}
-								<Link class="Links" to="/users/{searchedUseri.userID}">
-									<h3>{searchedUseri.username}</h3>
+							{#each users as theSearchedUser}
+								<Link class="Links" to="/users/{theSearchedUser.userID}">
+									<h3>{theSearchedUser.username}</h3>
 								</Link>
 							{/each}
 						</div>
