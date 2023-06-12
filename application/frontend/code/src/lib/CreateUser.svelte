@@ -1,16 +1,20 @@
+
 <script>
-	import { Router, Link, Route, navigate } from "svelte-routing";
+	import { Router, Route, navigate } from "svelte-routing";
 	import StartPage from "./StartPage.svelte";
 	import { user } from "../user-store";
 
+	
+
 	let username = "";
 	let password = "";
-	let errorArr = [];
+	let errors = [];
 
 	let body = null;
-	let noMatch = false;
 	let closedDropDown = false;
-	async function login() {
+	
+	
+	export async function tryToLogin() {
 		try {
 			const response = await fetch("http://localhost:8080/tokens", {
 				method: "POST",
@@ -33,11 +37,10 @@
 					};
 					closedDropDown = true;
 					navigate("/");
-
 					break;
 
 				case 400:
-					noMatch = true;
+					errors = await response.json();
 					break;
 			}
 		} catch (error) {
@@ -62,17 +65,16 @@
 
 			switch (response.status) {
 				case 201:
-					login();
+					tryToLogin();
 					break;
 
 				case 400:
-					errorArr = await response.json();
-					errorArr = errorArr;
+					errors = await response.json();
 					break;
 			}
 		} catch (error) {
 			console.log(error);
-			errorArr.push("COMMUNICATION_ERROR");
+			errors = [errors, "COMMUNICATION_ERROR"]
 		}
 	}
 </script>
@@ -95,10 +97,10 @@
 			<input type="submit" value="Create Account" />
 		</form>
 
-		{#if errorArr.length > 0}
+		{#if errors.length > 0}
 			<p>Errors detected!</p>
 			<ul>
-				{#each errorArr as error}
+				{#each errors as error}
 					<li>{error}</li>
 				{/each}
 			</ul>

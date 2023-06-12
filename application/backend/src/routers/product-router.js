@@ -189,22 +189,30 @@ router.put("/:id", async function (request, response) {
 
 router.post("/", async function (request, response) {
 	const product = request.body;
+	const validationArr = await validateProductErrors(product.productName, product.description)
+	
+	if (validationArr.length > 0){
+		response.status(400).json(validationArr);
+		return;
+	} else {
+		const connection = await pool.getConnection();
 
-	const connection = await pool.getConnection();
+		try {
+			const createProductQuery = "INSERT INTO Products (productName, description) VALUES (?, ?)";
+			const createProductValues = [product.productName, product.description];
 
-	try {
-		const createProductQuery = "INSERT INTO Products (productName, description) VALUES (?, ?)";
-		const createProductValues = [product.productName, product.description];
+			await connection.query(createProductQuery, createProductValues);
 
-		await connection.query(createProductQuery, createProductValues);
-
-		response.status(201).end();
-	} catch (error) {
-		console.log(error);
-		response.status(500).end();
-	} finally {
-		if (connection) {
-			connection.release();
+			response.status(201).end();
+		} catch (error) {
+			console.log(error);
+			response.status(500).end();
+		} finally {
+			if (connection) {
+				connection.release();
+			}
 		}
 	}
+
+	
 });

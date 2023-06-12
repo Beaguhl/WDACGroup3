@@ -1,12 +1,8 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
 	import { Router, Route, Link, navigate } from "svelte-routing";
-	import StartPage from "./lib/StartPage.svelte";
-
-	import Products from "./lib/Products.svelte";
-
-	import User from "./lib/User.svelte";
-
+	import { onMount } from "svelte";
+	import { user } from "./user-store";
 	import jwt_decode from "jwt-decode";
 	import Following from "./lib/Following.svelte";
 	import MyWishList from "./lib/MyWishList.svelte";
@@ -16,12 +12,12 @@
 	import CreateUser from "./lib/CreateUser.svelte";
 	import MyAccount from "./lib/MyAccount.svelte";
 	import CreateProduct from "./lib/CreateProduct.svelte";
-	import { onMount } from "svelte";
-
-	import { user } from "./user-store";
-
 	import UpdateProduct from "./lib/UpdateProduct.svelte";
 	import DeleteProduct from "./lib/DeleteProduct.svelte";
+	import StartPage from "./lib/StartPage.svelte";
+	import Products from "./lib/Products.svelte";
+	import User from "./lib/User.svelte";
+	
 
 	let currentRoute = "";
 
@@ -43,10 +39,10 @@
 	function logout() {
 		$user.isLoggedIn = false;
 		navigate("/");
-
 	}
+	
 
-	async function login() {
+	async function tryToLogin() {
 		try {
 			const response = await fetch("http://localhost:8080/tokens", {
 				method: "POST",
@@ -169,9 +165,8 @@
 					<button class="dropbtn" on:click={toggleDropDown}>Login</button>
 					{#if dropdownShown}
 						<div class="dropdown-content">
-							<Router>
 								<main>
-									<form on:submit|preventDefault={login}>
+									<form on:submit|preventDefault={tryToLogin}>
 										<div class="form-group">
 											<label class="form-label" for="username"
 												>Username:</label
@@ -219,7 +214,6 @@
 									{/if}
 									<Route path="/create-account" component={CreateUser} />
 								</main>
-							</Router>
 						</div>
 					{/if}
 				</div>
