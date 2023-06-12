@@ -39,11 +39,13 @@
 	function logout() {
 		$user.isLoggedIn = false;
 		navigate("/");
+		Login()
 	}
 	
 
 	async function tryToLogin() {
 		try {
+
 			const response = await fetch("http://localhost:8080/tokens", {
 				method: "POST",
 				headers: {

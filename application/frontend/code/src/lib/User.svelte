@@ -8,6 +8,7 @@
 	let fetchedFollow = null;
 	let resourceForbidden = false;
 	let wishListProducts = [];
+	let errors = []
 
 	async function loadUsersWishList() {
 		try {
@@ -25,6 +26,7 @@
 					wishListProducts = await response.json();
 			}
 		} catch (error) {
+			errors = [errors, error]
 			console.log(error);
 		}
 	}
@@ -61,6 +63,7 @@
 					break;
 			}
 		} catch (error) {
+			errors = [errors, error]
 			console.log(error);
 		}
 	}
@@ -87,6 +90,7 @@
 				case 404:
 			}
 		} catch (error) {
+			errors = [errors, error]
 			console.log(error);
 		}
 	}
@@ -115,6 +119,7 @@
 					break;
 			}
 		} catch (error) {
+			errors = [errors, error]
 			console.log(error);
 		}
 	}
@@ -138,6 +143,7 @@
 					loadUser();
 			}
 		} catch (error) {
+			errors = [errors, error]
 			console.log(error);
 		}
 	}
@@ -163,6 +169,7 @@
 				case 403:
 			}
 		} catch (error) {
+			errors = [errors, error]
 			console.log(error);
 		}
 	}
@@ -224,6 +231,14 @@
 						{/each}
 					{:else}
 						<p>User no not have any wishlist products</p>
+					{/if}
+					{#if errors.length > 0}
+						<p>Errors detected!</p>
+						<ul>
+							{#each errors as error}
+								<li>{error}</li>
+							{/each}
+						</ul>
 					{/if}
 				</div>
 			</div>

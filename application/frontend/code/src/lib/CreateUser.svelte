@@ -4,19 +4,15 @@
 	import StartPage from "./StartPage.svelte";
 	import { user } from "../user-store";
 
-	
-
 	let username = "";
 	let password = "";
 	let errors = [];
 
 	let body = null;
 	let closedDropDown = false;
-	
-	
-	export async function tryToLogin() {
-		try {
-			const response = await fetch("http://localhost:8080/tokens", {
+
+	export async function login(username, password){
+		const response = await fetch("http://localhost:8080/tokens", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -25,6 +21,12 @@
 					username
 				)}&password=${encodeURIComponent(password)}`,
 			});
+			return response
+	}
+	
+	export async function tryToLogin() {
+		try {
+			const response = await login(username, password)
 			switch (response.status) {
 				case 200:
 					body = await response.json();
