@@ -10,35 +10,47 @@ module.exports = router;
 
 //---------------- search followings ------------------------
 router.get("/search", async function (request, response) {
-	const userID = request.get("UserID");
-	const connection = await pool.getConnection();
+	let connection	
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const searchQuery = request.query.q;
-		//gets all users that matches search string
+		connection = await pool.getConnection()
 
-		const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE CONCAT("%", ?, "%")`;
-		const searchedFollowing = await connection.query(getSearchedFollowingQuery, [searchQuery]);
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const searchQuery = request.query.q;
+				//gets all users that matches search string
 
-		let followingSearchedUsers = [];
+				const getSearchedFollowingQuery = `SELECT * FROM Users WHERE username LIKE CONCAT("%", ?, "%")`;
+				const searchedFollowing = await connection.query(getSearchedFollowingQuery, [searchQuery]);
 
-		//checking if a user is a following
-		for (let i = 0; i < searchedFollowing.length; i += 1) {
-			const getSearchedFollowingQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?";
-			const getSearchedFollowingValues = [userID, searchedFollowing[i].userID];
-			const fetchedFollowing = await connection.query(getSearchedFollowingQuery, getSearchedFollowingValues);
+				let followingSearchedUsers = [];
 
-			if (fetchedFollowing.length != 0) {
-				let arrLength = followingSearchedUsers.length;
-				followingSearchedUsers[arrLength] = searchedFollowing[i];
-			}
-		}
+				//checking if a user is a following
+				for (let i = 0; i < searchedFollowing.length; i += 1) {
+					const getSearchedFollowingQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?";
+					const getSearchedFollowingValues = [userID, searchedFollowing[i].userID];
+					const fetchedFollowing = await connection.query(getSearchedFollowingQuery, getSearchedFollowingValues);
 
-		if (followingSearchedUsers.length == 0) {
-			response.status(404).end();
-		} else {
-			response.status(200).json(followingSearchedUsers);
-		}
+					if (fetchedFollowing.length != 0) {
+						let arrLength = followingSearchedUsers.length;
+						followingSearchedUsers[arrLength] = searchedFollowing[i];
+					}
+				}
+
+				if (followingSearchedUsers.length == 0) {
+					response.status(404).end();
+				} else {
+					console.log("searched resutlts are:". followingSearchedUsers)
+					response.status(200).json(followingSearchedUsers);
+				}
+			})
+			.catch(error => {
+				console.error("test", error)
+				response.send(401).end()
+			});
+
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();
@@ -56,6 +68,7 @@ router.get("/", async function (request, response) {
 
 	try {
 		connection = await pool.getConnection()
+
 		authenticateAndAuthorize(accessToken)
 			.then(async userID => {
 				const getAllFollowingQuery = `SELECT followingUserID FROM Follows WHERE userID = ?`;

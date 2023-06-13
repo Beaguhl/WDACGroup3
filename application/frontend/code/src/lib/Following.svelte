@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
 	import { Router, Link, Route } from "svelte-routing";
 	import { user } from "../user-store";
 	import User from "./User.svelte";

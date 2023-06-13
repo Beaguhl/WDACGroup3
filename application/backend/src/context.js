@@ -18,7 +18,6 @@ function authenticateAndAuthorize(accessToken) {
         if (error) {
           reject(error);
         } else {
-          console.log("hämtis:", payload.sub);
           resolve(parseInt(payload.sub));
         }
       });
