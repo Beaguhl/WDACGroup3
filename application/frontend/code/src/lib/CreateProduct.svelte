@@ -4,7 +4,7 @@
 
 	let productName = "";
 	let description = "";
-	let errorArr = [];
+	let errors = [];
 	let productCreated = false;
 
 	async function createProduct() {
@@ -28,45 +28,40 @@
 					break;
 
 				case 400:
-					errorArr = await response.json();
-					errorArr = errorArr;
+					errors = await response.json();
 					break;
 			}
 		} catch (error) {
 			console.log(error);
-			errorArr.push("COMMUNICATION_ERROR");
+			errors = [errors, "COMMUNICATION_ERROR"]
 		}
 	}
 </script>
 
 <Router>
-	<body>
-		<main>
-			<h1>Create Product</h1>
-			<form on:submit|preventDefault={createProduct}>
-				<div>
-					<label for="productName">Product Name:</label>
-					<input type="text" name="" id="" bind:value={productName} />
-				</div>
+	<h1>Create Product</h1>
+	<form on:submit|preventDefault={createProduct}>
+		<div>
+			<label for="productName">Product Name:</label>
+			<input type="text" name="" id="" bind:value={productName} />
+		</div>
 
-				<div>
-					<label for="description">Product Description:</label>
-					<input type="text" name="" id="" bind:value={description} />
-				</div>
-				<input type="submit" value="Create Product" />
-			</form>
+		<div>
+			<label for="description">Product Description:</label>
+			<input type="text" name="" id="" bind:value={description} />
+		</div>
+		<input type="submit" value="Create Product" />
+	</form>
 
-			{#if errorArr.length > 0}
-				<p>Errors detected!</p>
-				<ul>
-					{#each errorArr as error}
-						<li>{error}</li>
-					{/each}
-				</ul>
-			{/if}
-			<Route path="/StartPage" component={StartPage} />
-		</main>
-	</body>
+	{#if errors.length > 0}
+		<p>Errors detected!</p>
+		<ul>
+			{#each errors as error}
+				<li>{error}</li>
+			{/each}
+		</ul>
+	{/if}
+	<Route path="/StartPage" component={StartPage} />
 </Router>
 
 <style>

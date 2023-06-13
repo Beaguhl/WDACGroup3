@@ -1,7 +1,7 @@
 
 CREATE TABLE IF NOT EXISTS Users (
 	userID INT PRIMARY KEY AUTO_INCREMENT,
-	username VARCHAR(24),
+	username VARCHAR(24) UNIQUE,
 	password CHAR(60),
 	admin BOOLEAN
 );
