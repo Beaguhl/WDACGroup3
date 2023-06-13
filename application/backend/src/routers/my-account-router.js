@@ -3,11 +3,14 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { validateUsername, validatePassword } = require("../user-validations");
 const { pool, authenticateAndAuthorize } = require("../context.js");
-const { resolve } = require("path");
+const app = express();
 
 pool.on("error", function (error) {
     console.log("Error from pool", error);
 });
+
+
+app.use(express.json());
 
 module.exports = router;
 
@@ -22,20 +25,31 @@ function hashPassword(password) {
 
 //---------------- get my account -------------------------
 router.get("/", async function (request, response) {
-    const userID = request.get("UserID");
-    const connection = await pool.getConnection();
-    console.log("userid", userID)
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+    console.log("nu kommer accestoken:", accessToken)
 
     try {
-        const getUsernameQuery = "SELECT username FROM Users WHERE userID = ?";
-        const getUsernameValue = [userID];
-        const username = await connection.query(getUsernameQuery, getUsernameValue);
+        connection = await pool.getConnection()
 
-        if (username.length == 0) {
-            response.status(404).end();
-        } else {
-            response.status(200).json(username[0].username);
-        }
+        authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const getUsernameQuery = "SELECT username FROM Users WHERE userID = ?";
+                const getUsernameValue = [userID];
+                const username = await connection.query(getUsernameQuery, getUsernameValue);
+
+                if (username.length == 0) {
+                    response.status(404).end();
+                } else {
+                    response.status(200).json(username[0].username);
+                }
+                    })
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
     } catch (error) {
         console.log(error);
         response.status(500).end();
@@ -48,29 +62,35 @@ router.get("/", async function (request, response) {
 
 //---------------- update password -------------------------
 router.put("/update-password", async function (request, response) {
-    const userID = request.get("UserID");
-    const newPassword = request.get("NewPassword");
-    let connection;
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+    const newPassword = request.body.newPassword
 
     try {
         connection = await pool.getConnection()
 
+        authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const passwordErrors = validatePassword(newPassword);
+
+                if (passwordErrors.length > 0) {
+                    response.status(400).json(passwordErrors);
+                } else {
+                    const hashedNewPassword = await hashPassword(newPassword);
+                    const updatePasswordQuery = "UPDATE Users SET password = ? WHERE userID = ?";
+                    const updatePasswordValues = [hashedNewPassword, userID];
+
+                    await connection.query(updatePasswordQuery, updatePasswordValues);
+
+                    response.status(200).end();
+                }
+            })
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
         
-
-        console.log("kör")
-        const passwordErrors = validatePassword(newPassword);
-
-        if (passwordErrors.length > 0) {
-            response.status(400).json(passwordErrors);
-        } else {
-            const hashedNewPassword = await hashPassword(newPassword);
-            const updatePasswordQuery = "UPDATE Users SET password = ? WHERE userID = ?";
-            const updatePasswordValues = [hashedNewPassword, userID];
-
-            await connection.query(updatePasswordQuery, updatePasswordValues);
-
-            response.status(200).end();
-        }
     } catch (error) {
         console.log(error);
         response.status(500).json({ error: 'Internal Server Error' });
@@ -82,26 +102,34 @@ router.put("/update-password", async function (request, response) {
 });
 
 router.patch("/update-username", async function (request, response) {
-    const userID = request.get("UserID");
-    const newUsername = request.body.newUsername;
     let connection;
-
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+    const newUsername = request.body.newUsername;
+    
     try {
         connection = await pool.getConnection()
 
-        
-        const usernameErrors = await validateUsername(newUsername);
+        authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const usernameErrors = await validateUsername(newUsername);
 
-        if (usernameErrors.length > 0) {
-            response.status(400).json(usernameErrors);
-        } else {
-            const updateUsernameQuery = "UPDATE Users SET Username = ? WHERE userID = ?";
-            const updateUsernameValues = [newUsername, userID];
+                if (usernameErrors.length > 0) {
+                    response.status(400).json(usernameErrors);
+                } else {
+                    const updateUsernameQuery = "UPDATE Users SET Username = ? WHERE userID = ?";
+                    const updateUsernameValues = [newUsername, userID];
 
-            await connection.query(updateUsernameQuery, updateUsernameValues);
+                    await connection.query(updateUsernameQuery, updateUsernameValues);
 
-            response.status(200).end()
-        }
+                    response.status(200).end()
+                }
+            })
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
     } catch (error) {
         console.log(error);
         response.status(500).json({ error: 'Internal Server Error' });
@@ -113,19 +141,27 @@ router.patch("/update-username", async function (request, response) {
 });
 
 router.delete("/delete-account", async function (request, response) {
-    const userID = request.get("UserID");
-    let connection;
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
     try {
         connection = await pool.getConnection()
 
-       
-        const deleteUserQuery = "DELETE FROM Users WHERE userID = ?";
-        const deleteUserValues = [userID];
+        authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const deleteUserQuery = "DELETE FROM Users WHERE userID = ?"
+                const deleteUserValues = [userID]
 
-        await connection.query(deleteUserQuery, deleteUserValues);
+                await connection.query(deleteUserQuery, deleteUserValues)
 
-        response.status(204).end();
+                response.status(204).end()
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
     } catch (error) {
         console.log(error)
         response.status(500).json({ error: "Internal Server Error" });
@@ -137,26 +173,37 @@ router.delete("/delete-account", async function (request, response) {
 });
 
 router.get("/verify-password", async function (request, response) {
-    const userID = request.get("UserID");
-    const connection = await pool.getConnection();
-    const enteredPassword = request.get("EnteredPassword");
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+    const enteredPassword = request.get("EnteredPassword")
 
     try {
-        const getPasswordQuery = "SELECT password FROM Users WHERE userID = ?";
-        const getPasswordValue = [userID];
-        const password = await connection.query(getPasswordQuery, getPasswordValue);
+        connection = await pool.getConnection()
 
-        bcrypt.compare(enteredPassword, password[0].password, (error, result) => {
-            if (error) {
-                response.status(500).end();
-            }
+        authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const getPasswordQuery = "SELECT password FROM Users WHERE userID = ?";
+                const getPasswordValue = [userID];
+                const password = await connection.query(getPasswordQuery, getPasswordValue);
 
-            if (result === true) {
-                response.status(200).end();
-            } else {
-                response.status(403).end();
-            }
-        });
+                bcrypt.compare(enteredPassword, password[0].password, (error, result) => {
+                    if (error) {
+                        response.status(500).end();
+                    }
+
+                    if (result === true) {
+                        response.status(200).end();
+                    } else {
+                        response.status(403).end();
+                    }
+                })
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
     } catch (error) {
         console.log(error);
         response.status(500).end();

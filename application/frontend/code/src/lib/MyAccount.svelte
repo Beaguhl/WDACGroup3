@@ -34,7 +34,6 @@
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 			});
 
@@ -69,8 +68,7 @@
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
-					EnteredPassword: enteredPassword.toString(),
+					EnteredPassword: enteredPassword.toString()
 				},
 			});
 
@@ -101,9 +99,8 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
-					NewPassword: newPassword,
 				},
+				body: JSON.stringify({ newPassword }),
 			});
 
 			switch (response.status) {
@@ -131,7 +128,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 				body: JSON.stringify({ newUsername }),
 			});
@@ -161,7 +157,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 				body: JSON.stringify({}),
 			});
