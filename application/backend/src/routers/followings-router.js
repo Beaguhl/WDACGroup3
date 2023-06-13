@@ -1,19 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const pool = require('../context')
-//const { createPool } = require("mariadb");
-const jwt = require ('jsonwebtoken')
 
-/*const pool = createPool({ //ska bort
-	host: "db",
-	port: 3306,
-	user: "root",
-	password: "abc123",
-	database: "abc",
-});*/
+const { createPool } = require("mariadb");
+const jwt = require('jsonwebtoken')
+
+const pool = require("../context")
 
 const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"; //ska bort
-
 
 pool.on("error", function (error) {
 
@@ -103,6 +96,7 @@ router.get("/", async function (request, response) {
 //---------------------- follow --------------------
 router.post("/", async function (request, response) {
 	const connection = await pool.getConnection();
+
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 	
@@ -137,8 +131,8 @@ router.delete("/", async function (request, response) {
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 
-	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
-		if (error){
+	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function (error, payload) {
+		if (error) {
 			response.send(401).end()
 		} else {
 			try {
@@ -160,5 +154,4 @@ router.delete("/", async function (request, response) {
 			}
 		}
 	})
-});
 

@@ -1,20 +1,11 @@
 const express = require("express");
+const { pool, authenticateAndAuthorizeAdmin } = require("../context")
 
 const router = express.Router();
-const { createPool } = require("mariadb");
+
 const { validateProductErrors } = require("../product-validations");
 
-const pool = createPool({
-	host: "db",
-	port: 3306,
-	user: "root",
-	password: "abc123",
-	database: "abc",
-});
 
-pool.on("error", function (error) {
-	console.log("Error from pool", error);
-});
 
 module.exports = router;
 
@@ -131,9 +122,13 @@ router.get("/:id", async function (request, response) {
 
 router.delete("/:id", async function (request, response) {
 	const productID = parseInt(request.params.id);
-	const connection = await pool.getConnection();
+	let connection;
 
 	try {
+		connection = await pool.getConnection()
+		if (!authenticateAndAuthorizeAdmin(request, response, connection)) {
+			return;
+		}
 		const deleteProductQuery = "DELETE FROM Products WHERE productID = ?";
 		const deleteProductValues = [productID];
 
