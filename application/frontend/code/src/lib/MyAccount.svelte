@@ -9,15 +9,11 @@
 	let username = null;
 	let userNotFound = false;
 	let showDeleteAccount = false;
-
 	let newUsername = "";
 	let newPassword = "";
-
 	let succesfulUsernameUpdate = false;
 	let succesfulPasswordUpdate = false;
-
 	let successfulDelete = false;
-
 	let passwordErrors = [];
 	let usernameErrors = [];
 

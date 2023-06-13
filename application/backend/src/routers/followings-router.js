@@ -1,23 +1,12 @@
 const express = require("express");
 const router = express.Router();
-
-const { createPool } = require("mariadb");
-const jwt = require('jsonwebtoken')
-
-const { pool } = require("../context")
-
-const ACCESS_TOKEN_SECRET = "PN#/(dh6-.E.x-'P2"; //ska bort
+const { pool, authenticateAndAuthorize } = require("../context.js");
 
 pool.on("error", function (error) {
 	console.log("Error from pool", error);
 });
 
-
-
 module.exports = router;
-//const { ACCESS_TOKEN_SECRET } = require('../app');
-
-const app = express();
 
 //---------------- search followings ------------------------
 router.get("/search", async function (request, response) {
@@ -61,27 +50,36 @@ router.get("/search", async function (request, response) {
 });
 //-------------------- all followings ----------------------------
 router.get("/", async function (request, response) {
-	const userID = request.get("UserID");
-	const connection = await pool.getConnection();
+	let connection;
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const getAllFollowingQuery = `SELECT followingUserID FROM Follows WHERE userID = ?`;
+		connection = await pool.getConnection()
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const getAllFollowingQuery = `SELECT followingUserID FROM Follows WHERE userID = ?`;
 
-		const followingsID = await connection.query(getAllFollowingQuery, [userID]);
+				const followingsID = await connection.query(getAllFollowingQuery, [userID]);
 
-		let followingUsers = [];
+				let followingUsers = [];
 
-		for (let i = 0; i < followingsID.length; i += 1) {
-			const getUserQuery = `SELECT * FROM Users WHERE userID = ?`;
+				for (let i = 0; i < followingsID.length; i += 1) {
+					const getUserQuery = `SELECT * FROM Users WHERE userID = ?`;
+					const fetchedUser = await connection.query(getUserQuery, [followingsID[i].followingUserID]);
 
-			const fetchedUser = await connection.query(getUserQuery, [followingsID[i].followingUserID]);
+					followingUsers[i] = fetchedUser[0];
+				}
 
-			followingUsers[i] = fetchedUser[0];
-		}
+				if (followingUsers.length != 0) {
+					response.status(200).json(followingUsers);
+				}
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
 
-		if (followingUsers.length != 0) {
-			response.status(200).json(followingUsers);
-		}
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();
@@ -94,63 +92,69 @@ router.get("/", async function (request, response) {
 
 //---------------------- follow --------------------
 router.post("/", async function (request, response) {
-	const connection = await pool.getConnection();
+	let connection;
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 	
-	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
-		if (error){
-			response.send(401).end()
-		} else {
-			try {
-				const userID = request.get("UserID");
-				const userToFollow = request.body.id;
-				const followQuery = "INSERT INTO Follows (userID, followingUserID) VALUES (?, ?)";
-				const followValues = [userID, userToFollow];
+	try {
+		connection = await pool.getConnection()
+				
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const userToFollow = request.body.id
+				const followQuery = "INSERT INTO Follows (userID, followingUserID) VALUES (?, ?)"
+				const followValues = [userID, userToFollow]
 
-				await connection.query(followQuery, followValues);
+				await connection.query(followQuery, followValues)
 
-				response.status(201).end();
-			} catch (error) {
-				console.log(error);
-				response.status(500).end();
-			} finally {
-				if (connection) {
-					connection.release();
-				}
-			}
+				response.status(201).end()
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+				
+	} catch (error) {
+		console.log(error);
+		response.status(500).end()
+	} finally {
+		if (connection) {
+			connection.release()
 		}
-	})
+	}
 });
 
 //------------------- unfollow ---------------------
 router.delete("/", async function (request, response) {
-	const connection = await pool.getConnection();
+	let connection;
 	const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
 
-	jwt.verify(accessToken, ACCESS_TOKEN_SECRET, async function(error, payload){
-		if (error){
-			response.send(401).end()
-		} else {
-			try {
+	try {
+		connection = await pool.getConnection()
+
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
 				const userToUnfollow = request.body.id;
 				const unfollowQuery = "DELETE FROM Follows WHERE userID = ? AND followingUserID = ?";
-				const userID = parseInt(payload.sub)
 				const unfollowValues = [userID, userToUnfollow];
 
 				await connection.query(unfollowQuery, unfollowValues);
 
 				response.status(204).end();
-			} catch (error) {
-				console.log(error);
-				response.status(500).end();
-			} finally {
-				if (connection) {
-					connection.release();
-				}
-			}
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
+	} catch (error) {
+		console.log(error);
+		response.status(500).end();
+	} finally {
+		if (connection) {
+			connection.release();
 		}
-	})
+	}
 });
 

@@ -24,6 +24,7 @@ function hashPassword(password) {
 router.get("/", async function (request, response) {
     const userID = request.get("UserID");
     const connection = await pool.getConnection();
+    console.log("userid", userID)
 
     try {
         const getUsernameQuery = "SELECT username FROM Users WHERE userID = ?";
@@ -54,10 +55,9 @@ router.put("/update-password", async function (request, response) {
     try {
         connection = await pool.getConnection()
 
-        if (!authenticateAndAuthorize(request, response, connection, userID)) {
-            return;
-        }
+        
 
+        console.log("kör")
         const passwordErrors = validatePassword(newPassword);
 
         if (passwordErrors.length > 0) {
@@ -89,9 +89,7 @@ router.patch("/update-username", async function (request, response) {
     try {
         connection = await pool.getConnection()
 
-        if (!authenticateAndAuthorize(request, response, connection, userID)) {
-            return
-        }
+        
         const usernameErrors = await validateUsername(newUsername);
 
         if (usernameErrors.length > 0) {
@@ -121,10 +119,7 @@ router.delete("/delete-account", async function (request, response) {
     try {
         connection = await pool.getConnection()
 
-        if (!authenticateAndAuthorize(request, response, connection, userID)) {
-            return
-        }
-
+       
         const deleteUserQuery = "DELETE FROM Users WHERE userID = ?";
         const deleteUserValues = [userID];
 
