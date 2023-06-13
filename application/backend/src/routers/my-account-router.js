@@ -1,16 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { createPool } = require("mariadb");
 const bcrypt = require("bcrypt");
 const { validateUsername, validatePassword } = require("../user-validations");
-
-const pool = createPool({
-    host: "db",
-    port: 3306,
-    user: "root",
-    password: "abc123",
-    database: "abc",
-});
+const { pool, authenticateAndAuthorize } = require("../context.js");
+const authenticateAndAuthorize = require("../context")
+const { resolve } = require("path");
 
 pool.on("error", function (error) {
     console.log("Error from pool", error);
@@ -18,30 +12,18 @@ pool.on("error", function (error) {
 
 module.exports = router;
 
-const app = express();
-
 function hashPassword(password) {
     return new Promise((resolve, reject) => {
-        bcrypt.genSalt(12, (error, salt) => {
-            if (error) {
-                reject(error);
-            }
-
-            bcrypt.hash(password, salt, (error, hashedPassword) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(hashedPassword);
-                }
-            });
-        });
-    });
+        bcrypt.genSalt(12)
+            .then((salt) => bcrypt.hash(password, salt))
+            .then((hashedPassword) => resolve(hashedPassword))
+            .catch((error) => reject(error))
+    })
 }
 
 //---------------- get my account -------------------------
 router.get("/", async function (request, response) {
     const userID = request.get("UserID");
-    const enteredPassword = request.get("Password");
     const connection = await pool.getConnection();
 
     try {
@@ -68,9 +50,15 @@ router.get("/", async function (request, response) {
 router.put("/update-password", async function (request, response) {
     const userID = request.get("UserID");
     const newPassword = request.get("NewPassword");
-    const connection = await pool.getConnection();
+    let connection;
 
     try {
+        connection = await pool.getConnection()
+
+        if (!authenticateAndAuthorize(request, response, connection, userID)) {
+            return;
+        }
+
         const passwordErrors = validatePassword(newPassword);
 
         if (passwordErrors.length > 0) {
@@ -86,7 +74,7 @@ router.put("/update-password", async function (request, response) {
         }
     } catch (error) {
         console.log(error);
-        response.status(500).end();
+        response.status(500).json({ error: 'Internal Server Error' });
     } finally {
         if (connection) {
             connection.release();
@@ -97,9 +85,14 @@ router.put("/update-password", async function (request, response) {
 router.patch("/update-username", async function (request, response) {
     const userID = request.get("UserID");
     const newUsername = request.body.newUsername;
-    const connection = await pool.getConnection();
+    let connection;
 
     try {
+        connection = await pool.getConnection()
+
+        if (!authenticateAndAuthorize(request, response, connection, userID)) {
+            return
+        }
         const usernameErrors = await validateUsername(newUsername);
 
         if (usernameErrors.length > 0) {
@@ -110,11 +103,11 @@ router.patch("/update-username", async function (request, response) {
 
             await connection.query(updateUsernameQuery, updateUsernameValues);
 
-            response.status(200).end();
+            response.status(200).end()
         }
     } catch (error) {
         console.log(error);
-        response.status(500).end();
+        response.status(500).json({ error: 'Internal Server Error' });
     } finally {
         if (connection) {
             connection.release();
@@ -124,9 +117,15 @@ router.patch("/update-username", async function (request, response) {
 
 router.delete("/delete-account", async function (request, response) {
     const userID = request.get("UserID");
-    const connection = await pool.getConnection();
+    let connection;
 
     try {
+        connection = await pool.getConnection()
+
+        if (!authenticateAndAuthorize(request, response, connection, userID)) {
+            return
+        }
+
         const deleteUserQuery = "DELETE FROM Users WHERE userID = ?";
         const deleteUserValues = [userID];
 
@@ -134,8 +133,8 @@ router.delete("/delete-account", async function (request, response) {
 
         response.status(204).end();
     } catch (error) {
-        console.log(error);
-        response.status(500).end();
+        console.log(error)
+        response.status(500).json({ error: "Internal Server Error" });
     } finally {
         if (connection) {
             connection.release();
