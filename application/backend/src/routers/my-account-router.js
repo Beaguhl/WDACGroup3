@@ -28,7 +28,6 @@ router.get("/", async function (request, response) {
     let connection
     const authorizationHeaderValue = request.get("Authorization")
 	const accessToken = authorizationHeaderValue.substring(7)
-    console.log("nu kommer accestoken:", accessToken)
 
     try {
         connection = await pool.getConnection()

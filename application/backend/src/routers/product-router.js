@@ -1,5 +1,5 @@
 const express = require("express");
-const { pool, authenticateAndAuthorizeAdmin } = require("../context")
+const { pool, authenticateAndAuthorize } = require("../context.js");
 const router = express.Router();
 const { validateProductErrors } = require("../product-validations");
 
@@ -11,13 +11,25 @@ pool.on("error", function (error) {
 
 //----------------------- get all Products ----------------------
 router.get("/", async function (request, response) {
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const getAllProductsQuery = "SELECT * FROM Products";
-		const products = await connection.query(getAllProductsQuery);
+		connection = await pool.getConnection()
 
-		response.status(200).json(products);
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const getAllProductsQuery = "SELECT * FROM Products";
+				const products = await connection.query(getAllProductsQuery)
+
+				response.status(200).json(products)
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();
@@ -30,19 +42,31 @@ router.get("/", async function (request, response) {
 
 //----------------------- search Products ----------------------
 router.get("/search", async function (request, response) {
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const searchQuery = request.query.q;
+		connection = await pool.getConnection()
 
-		const getSearchedProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`;
-		const searchedProducts = await connection.query(getSearchedProductsQuery);
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const searchQuery = request.query.q
 
-		if (searchedProducts.length == 0) {
-			response.status(404).end();
-		} else {
-			response.status(200).json(searchedProducts);
-		}
+				const getSearchedProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`
+				const searchedProducts = await connection.query(getSearchedProductsQuery)
+
+				if (searchedProducts.length == 0) {
+					response.status(404).end()
+				} else {
+					response.status(200).json(searchedProducts);
+				}
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
 	} catch (error) {
 		console.log(error);
 	} finally {

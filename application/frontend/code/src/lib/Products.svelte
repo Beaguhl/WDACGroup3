@@ -74,6 +74,7 @@
 
 				case 404:
 					isFetchingSearchedProdcucts = false;
+					searchedProducts = []
 					break;
 			}
 		} catch (error) {
