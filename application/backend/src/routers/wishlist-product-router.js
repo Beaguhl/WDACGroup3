@@ -1,17 +1,8 @@
 const express = require("express");
-
+const pool = require("../context")
 const router = express.Router();
-const { createPool } = require("mariadb");
 
-const pool = createPool({
-    host: "db",
-    port: 3306,
-    user: "root",
-    password: "abc123",
-    database: "abc",
-});
-
-pool.on("error", function (error) {
+pool.pool.on("error", function (error) {
     console.log("Error from pool", error);
 });
 

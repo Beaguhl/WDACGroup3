@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { validateUsername, validatePassword } = require("../user-validations");
 const { pool, authenticateAndAuthorize } = require("../context.js");
-const authenticateAndAuthorize = require("../context")
 const { resolve } = require("path");
 
 pool.on("error", function (error) {

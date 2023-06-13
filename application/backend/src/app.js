@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const pool = require('./context')
+const { pool } = require('./context')
 
 const followersRouter = require("./routers/followers-router");
 const followingsRouter = require("./routers/followings-router");

@@ -1,13 +1,13 @@
 const express = require("express");
 const { pool, authenticateAndAuthorizeAdmin } = require("../context")
-
 const router = express.Router();
-
 const { validateProductErrors } = require("../product-validations");
 
-
-
 module.exports = router;
+
+pool.on("error", function (error) {
+	console.log("Error from pool", error);
+});
 
 //----------------------- get all Products ----------------------
 router.get("/", async function (request, response) {
