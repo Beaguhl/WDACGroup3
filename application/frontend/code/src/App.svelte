@@ -1,5 +1,7 @@
 <!--  Svelte port of React example: https://github.com/fireship-io/229-multi-level-dropdown -->
 <script>
+// @ts-nocheck
+
 	import { Router, Route, Link, navigate } from "svelte-routing";
 	import { onMount } from "svelte";
 	import { user } from "./user-store";
@@ -18,7 +20,6 @@
 	import User from "./lib/User.svelte";
 	import Dropdown from "./lib/Dropdown.svelte";
 	
-
 	let currentRoute = "";
 
 	onMount(async () => {
@@ -28,17 +29,11 @@
 		currentRoute = window.location.pathname;
 	});
 
-	
-
 	function logout() {
 		$user.isLoggedIn = false;
 		navigate("/");
 	}
-	
 
-	
-
-	
 </script>
 
 <Router>
@@ -140,8 +135,6 @@
 		background: #151616;
 	}
 
-	
-
 	nav {
 		display: flex;
 		justify-content: space-between;
@@ -155,8 +148,6 @@
 		background-color: gray;
 		color: white;
 	}
-
-	
 
 	main {
 		z-index: 1;
@@ -178,8 +169,6 @@
 		background: #151616;
 		font-family: Helvetica;
 	}
-
-	
 </style>
 
 
