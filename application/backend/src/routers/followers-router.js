@@ -8,22 +8,30 @@ pool.on("error", function (error) {
 
 module.exports = router;
 
-const app = express();
-
 //------------ all followers ----------------
 router.get("/", async function (request, response) {
-	const userID = request.get("UserID");
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const getFollowerUsersQuery = `SELECT Users.* FROM Users JOIN Follows ON Users.userID = Follows.userID WHERE Follows.followingUserID = ?`;
-		const followerUsers = await connection.query(getFollowerUsersQuery, [userID]);
+		connection = await pool.getConnection()
 
-		if (followerUsers.length == 0) {
-			response.status(404).end();
-		} else {
-			response.status(200).json(followerUsers);
-		}
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const getFollowerUsersQuery = `SELECT Users.* FROM Users JOIN Follows ON Users.userID = Follows.userID WHERE Follows.followingUserID = ?`;
+				const followerUsers = await connection.query(getFollowerUsersQuery, [userID]);
+
+				if (followerUsers.length == 0) {
+					response.status(404).end();
+				} else {
+					response.status(200).json(followerUsers);
+				}
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();
@@ -36,31 +44,42 @@ router.get("/", async function (request, response) {
 
 //-------------------- search followers ----------------
 router.get("/search", async function (request, response) {
-	const userID = request.get("UserID");
-	const searchQuery = request.query.q;
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
+	const searchQuery = request.query.q
 
 	try {
-		const getSearchedFollowerQuery = 'SELECT * FROM Users WHERE username LIKE CONCAT("%", ?, "%")';
-		const searchedFollower = await connection.query(getSearchedFollowerQuery, [searchQuery]);
+		connection = await pool.getConnection()
 
-		let followerSearchedUsers = [];
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const getSearchedFollowerQuery = 'SELECT * FROM Users WHERE username LIKE CONCAT("%", ?, "%")';
+				const searchedFollower = await connection.query(getSearchedFollowerQuery, [searchQuery]);
 
-		for (let i = 0; i < searchedFollower.length; i += 1) {
-			const getSearchedFollower = `SELECT * FROM Follows WHERE followingUserID = ? AND userID = ?`;
-			const fetchedFollowing = await connection.query(getSearchedFollower, [userID, searchedFollower[i].userID]);
+				let followerSearchedUsers = [];
 
-			if (fetchedFollowing.length != 0) {
-				let arrLenght = followerSearchedUsers.length;
-				followerSearchedUsers[arrLenght] = searchedFollower[i];
-			}
-		}
+				for (let i = 0; i < searchedFollower.length; i += 1) {
+					const getSearchedFollower = `SELECT * FROM Follows WHERE followingUserID = ? AND userID = ?`;
+					const fetchedFollowing = await connection.query(getSearchedFollower, [userID, searchedFollower[i].userID]);
 
-		if (followerSearchedUsers.length == 0) {
-			response.status(404).end();
-		} else {
-			response.status(200).json(followerSearchedUsers);
-		}
+					if (fetchedFollowing.length != 0) {
+						let arrLenght = followerSearchedUsers.length;
+						followerSearchedUsers[arrLenght] = searchedFollower[i];
+					}
+				}
+
+				if (followerSearchedUsers.length == 0) {
+					response.status(404).end();
+				} else {
+					response.status(200).json(followerSearchedUsers);
+				}
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
 	} catch (error) {
 		console.log(error);
 	} finally {
@@ -72,24 +91,33 @@ router.get("/search", async function (request, response) {
 
 //----------------- get all followers ----------------------
 router.get("/followers", async function (request, response) {
-	const userID = request.get("UserID");
-	const connection = await pool.getConnection();
+	let connection
 
 	try {
-		const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ?`;
-		const followers = await connection.query(getAllFollowersQuery, [userID]);
+		connection = await pool.getConnection()
 
-		let followerUsers = [];
+		authenticateAndAuthorize(accessToken)
+			.then(async userID => {
+				const getAllFollowersQuery = `SELECT userID FROM Follows WHERE followingUserID = ?`;
+				const followers = await connection.query(getAllFollowersQuery, [userID]);
 
-		for (let i = 0; i < followers.length; i += 1) {
-			const getFollowerQuery = `SELECT * FROM Users WHERE userID = ?`;
-			const fetchedFollower = await connection.query(getFollowerQuery, [followers[i].userID]);
-			followerUsers[i] = fetchedFollower[0];
-		}
+				let followerUsers = [];
 
-		if (followerUsers.length != 0) {
-			response.status(200).json(followerUsers);
-		}
+				for (let i = 0; i < followers.length; i += 1) {
+					const getFollowerQuery = `SELECT * FROM Users WHERE userID = ?`;
+					const fetchedFollower = await connection.query(getFollowerQuery, [followers[i].userID]);
+					followerUsers[i] = fetchedFollower[0];
+				}
+
+				if (followerUsers.length != 0) {
+					response.status(200).json(followerUsers);
+				}
+			})
+			.catch(error => {
+				console.error(error)
+				response.send(401).end()
+			});
+
 	} catch {
 		console.log(error);
 		response.status(500).end();
