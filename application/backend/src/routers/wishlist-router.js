@@ -1,5 +1,5 @@
 const express = require("express");
-const { pool } = require("../context")
+const { pool, authenticateAndAuthorize } = require("../context")
 const router = express.Router();
 
 pool.on("error", function (error) {
@@ -8,48 +8,49 @@ pool.on("error", function (error) {
 
 module.exports = router;
 
+//---------------------- get specific wishlist --------------
 router.get("/:id", async function (request, response) {
-    const id = parseInt(request.params.id);
-
-    const connection = await pool.getConnection();
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
     try {
+        connection = await pool.getConnection()
 
-        const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
-        const getWishListValue = [id];
+        authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const id = parseInt(request.params.id);
+                const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
+                const getWishListValue = [id];
 
-        const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue);
-        const wishListID = fetchedWishlistID[0].wishListID;
+                const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue);
+                const wishListID = fetchedWishlistID[0].wishListID;
 
-        try {
+                const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE wishListID = ?";
+                const getWishListProductsValue = [wishListID];
+                const wishListProducts = await connection.query(
+                    getWishListProductsQuery,
+                    getWishListProductsValue
+                );
 
-            const getWishListProductsQuery = "SELECT * FROM WishListProducts WHERE wishListID = ?";
-            const getWishListProductsValue = [wishListID];
-            const wishListProducts = await connection.query(
-                getWishListProductsQuery,
-                getWishListProductsValue
-            );
+                var products = [];
 
-            var products = [];
+                for (let i = 0; i < wishListProducts.length; i += 1) {
 
-            for (let i = 0; i < wishListProducts.length; i += 1) {
+                    const getProductQuery = "SELECT * FROM Products WHERE productID = ?";
+                    const wishListProductID = wishListProducts[i].productID;
+                    const getProductValue = [wishListProductID];
 
-                const getProductQuery = "SELECT * FROM Products WHERE productID = ?";
-                const wishListProductID = wishListProducts[i].productID;
-                const getProductValue = [wishListProductID];
-
-                const product = await connection.query(getProductQuery, getProductValue);
-                products.push([product[0], wishListProducts[i]]);
-            }
-            response.status(200).json(products);
-        } catch (error) {
-            console.log(error);
-            response.status(500).end();
-        } finally {
-            if (connection) {
-                connection.release();
-            }
-        }
+                    const product = await connection.query(getProductQuery, getProductValue);
+                    products.push([product[0], wishListProducts[i]]);
+                }
+                response.status(200).json(products);
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+        
     } catch (error) {
         console.log(error);
         response.status(500).end();
@@ -60,45 +61,57 @@ router.get("/:id", async function (request, response) {
     }
 });
 
+//-------------------- search through wishlist -----------------
 router.get("/:id/search", async function (request, response) {
-    const id = parseInt(request.params.id);
-
-    const connection = await pool.getConnection();
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
     try {
-        const searchQuery = request.query.q;
+        connection = await pool.getConnection()
 
-        const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
-        const getWishListValue = [id];
+        authenticateAndAuthorize(accessToken)
+            .then(async () => {
+                const id = parseInt(request.params.id);
+                const searchQuery = request.query.q;
 
-        const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue);
-        const wishListID = fetchedWishlistID[0].wishListID;
+                const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
+                const getWishListValue = [id];
 
-        const getProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`;
+                const fetchedWishlistID = await connection.query(getWishListQuery, getWishListValue);
+                const wishListID = fetchedWishlistID[0].wishListID;
 
-        const searchedProducts = await connection.query(getProductsQuery);
-        var searchResults = [];
+                const getProductsQuery = `SELECT * FROM Products WHERE productName LIKE '%${searchQuery}%'`;
 
-        for (let i = 0; i < searchedProducts.length; i += 1) {
-            const getWishListProductsQuery =
-                "SELECT * FROM WishListProducts WHERE productID = ? AND wishListID = ?";
-            const getWishListProductsValue = [searchedProducts[i].productID, wishListID];
-            const wishListProduct = await connection.query(
-                getWishListProductsQuery,
-                getWishListProductsValue
-            );
+                const searchedProducts = await connection.query(getProductsQuery);
+                var searchResults = [];
 
-            if (wishListProduct.length != 0) {
-                let arrLenght = searchResults.length;
-                searchResults[arrLenght] = [searchedProducts[i], wishListProduct[0]];
-            }
-        }
+                for (let i = 0; i < searchedProducts.length; i += 1) {
+                    const getWishListProductsQuery =
+                        "SELECT * FROM WishListProducts WHERE productID = ? AND wishListID = ?";
+                    const getWishListProductsValue = [searchedProducts[i].productID, wishListID];
+                    const wishListProduct = await connection.query(
+                        getWishListProductsQuery,
+                        getWishListProductsValue
+                    );
 
-        if (searchResults.length == 0) {
-            response.status(404).end();
-        } else {
-            response.status(200).json(searchResults);
-        }
+                    if (wishListProduct.length != 0) {
+                        let arrLenght = searchResults.length;
+                        searchResults[arrLenght] = [searchedProducts[i], wishListProduct[0]];
+                    }
+                }
+
+                if (searchResults.length == 0) {
+                    response.status(404).end();
+                } else {
+                    response.status(200).json(searchResults);
+                }
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
     } catch (error) {
         console.log(error);
     } finally {

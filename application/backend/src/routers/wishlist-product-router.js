@@ -1,5 +1,5 @@
 const express = require("express");
-const { pool } = require("../context")
+const { pool, authenticateAndAuthorize } = require("../context")
 const router = express.Router();
 
 pool.on("error", function (error) {
@@ -8,19 +8,31 @@ pool.on("error", function (error) {
 
 module.exports = router;
 
+//------------------- purchase --------------------
 router.patch("/:id/purchase", async function (request, response) {
-    const id = parseInt(request.params.id);
-    const userID = request.get("UserID");
-    const connection = await pool.getConnection();
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
     try {
-        const updatePurchasedQuery =
-            "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?";
-        const updatePurchasedValues = [true, userID, id];
+        connection = await pool.getConnection()
 
-        await connection.query(updatePurchasedQuery, updatePurchasedValues);
+        authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const id = parseInt(request.params.id);
+                const updatePurchasedQuery =
+                    "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?";
+                const updatePurchasedValues = [true, userID, id];
 
-        response.status(200).end();
+                await connection.query(updatePurchasedQuery, updatePurchasedValues);
+
+                response.status(200).end();
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
     } catch (error) {
         console.log(error);
     } finally {
@@ -30,32 +42,45 @@ router.patch("/:id/purchase", async function (request, response) {
     }
 });
 
+//------------------- undo purchase --------------------
 router.patch("/:id/undo-purchase", async function (request, response) {
-    const id = parseInt(request.params.id);
-    const userID = request.get("UserID");
-    const connection = await pool.getConnection();
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
     try {
-        const getUserPurchasedQuery =
-            "SELECT userPurchased FROM WishListProducts WHERE wishListProductID = ?";
-        const getUserPurchasedValues = [id];
+        connection = await pool.getConnection()
 
-        const userPurchasedID = await connection.query(
-            getUserPurchasedQuery,
-            getUserPurchasedValues
-        );
+        authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const id = parseInt(request.params.id);
+                
+                const getUserPurchasedQuery =
+                    "SELECT userPurchased FROM WishListProducts WHERE wishListProductID = ?";
+                const getUserPurchasedValues = [id];
 
-        if (userPurchasedID[0].userPurchased == userID) {
-            const updatePurchasedQuery =
-                "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?";
-            const updatePurchasedValues = [false, null, id];
+                const userPurchasedID = await connection.query(
+                    getUserPurchasedQuery,
+                    getUserPurchasedValues
+                );
 
-            await connection.query(updatePurchasedQuery, updatePurchasedValues);
+                if (userPurchasedID[0].userPurchased == userID) {
+                    const updatePurchasedQuery =
+                        "UPDATE WishListProducts SET purchased = ?, userPurchased = ? WHERE wishListProductID = ?";
+                    const updatePurchasedValues = [false, null, id];
 
-            response.status(200).end();
-        } else {
-            response.status(403).end();
-        }
+                    await connection.query(updatePurchasedQuery, updatePurchasedValues);
+
+                    response.status(200).end();
+                } else {
+                    response.status(403).end();
+                }
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
     } catch (error) {
         console.log(error);
     } finally {
@@ -65,28 +90,41 @@ router.patch("/:id/undo-purchase", async function (request, response) {
     }
 });
 
+//------------------- add product to my wishlist --------------------
 router.post("/:id", async function (request, response) {
-    const connection = await pool.getConnection();
+    let connection
+    const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
     try {
-        const productID = parseInt(request.params.id);
-        const userID = request.get("UserID");
+        connection = await pool.getConnection()
 
-        const getWishListIDQuery = "SELECT wishListID FROM WishLists WHERE userID = ?";
-        const getWishListIDValue = [userID];
+        authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const productID = parseInt(request.params.id);
 
-        const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue);
+                const getWishListIDQuery = "SELECT wishListID FROM WishLists WHERE userID = ?";
+                const getWishListIDValue = [userID];
 
-        if (fetchedWishListID != null) {
-            const wishListID = fetchedWishListID[0].wishListID;
+                const fetchedWishListID = await connection.query(getWishListIDQuery, getWishListIDValue);
 
-            const addProductQuery =
-                "INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)";
-            const addProductValues = [productID, wishListID, false, null];
+                if (fetchedWishListID != null) {
+                    const wishListID = fetchedWishListID[0].wishListID;
 
-            await connection.query(addProductQuery, addProductValues);
-            response.status(200).end();
-        }
+                    const addProductQuery =
+                        "INSERT INTO WishListProducts (productID, wishListID, purchased, userPurchased) VALUES (?, ?, ?, ?)";
+                    const addProductValues = [productID, wishListID, false, null];
+
+                    await connection.query(addProductQuery, addProductValues);
+                    response.status(200).end();
+                }
+
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
     } catch (error) {
         console.log(error);
         response.status(500).end();
