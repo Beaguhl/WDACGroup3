@@ -29,8 +29,6 @@ function hashPassword(password) {
 	});
 }
 
-
-
 //----------------- all users ----------------
 router.get("/", async function (request, response) {
 	let connection
@@ -110,21 +108,31 @@ router.post("/", async function (request, response) {
 
 //------------------- search users ----------------
 router.get("/search", async function (request, response) {
-	const userID = request.get("UserID");
-
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const searchQuery = request.query.q;
+		connection = await pool.getConnection()
 
-		const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${userID} AND username LIKE '%${searchQuery}%'`;
-		const searchedUsers = await connection.query(getSearchedUsersQuery);
+		authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const searchQuery = request.query.q;
 
-		if (searchedUsers.length == 0) {
-			response.status(404).end();
-		} else {
-			response.status(200).json(searchedUsers);
-		}
+				const getSearchedUsersQuery = `SELECT * FROM Users WHERE userID != ${userID} AND username LIKE '%${searchQuery}%'`;
+				const searchedUsers = await connection.query(getSearchedUsersQuery);
+
+				if (searchedUsers.length == 0) {
+					response.status(404).end();
+				} else {
+					response.status(200).json(searchedUsers);
+				}
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+		
 	} catch (error) {
 		console.log(error);
 	} finally {
@@ -136,38 +144,48 @@ router.get("/search", async function (request, response) {
 
 //---------------------- users/id -------------------------
 router.get("/:id", async function (request, response) {
-	const userID = request.get("UserID");
-
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const otherUsersID = parseInt(request.params.id);
+		connection = await pool.getConnection()
 
-		if (userID == otherUsersID) {
-			response.status(403).end();
-		}
+		authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const otherUsersID = parseInt(request.params.id);
 
-		const userQuery = "SELECT userID, username FROM Users WHERE userID = ?";
-		const userValues = [otherUsersID];
-		const user = await connection.query(userQuery, userValues);
-		const userToSend = user[0];
+				if (userID == otherUsersID) {
+					response.status(403).end();
+				}
 
-		const followQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?";
-		const followValues = [userID, otherUsersID];
+				const userQuery = "SELECT userID, username FROM Users WHERE userID = ?";
+				const userValues = [otherUsersID];
+				const user = await connection.query(userQuery, userValues);
+				const userToSend = user[0];
 
-		const follow = await connection.query(followQuery, followValues);
-		var followToSend = follow[0];
+				const followQuery = "SELECT * FROM Follows WHERE userID = ? AND followingUserID = ?";
+				const followValues = [userID, otherUsersID];
 
-		if (!followToSend) {
-			followToSend = null;
-		}
+				const follow = await connection.query(followQuery, followValues);
+				var followToSend = follow[0];
 
-		const model = {
-			userToSend,
-			followToSend,
-		};
+				if (!followToSend) {
+					followToSend = null;
+				}
 
-		response.status(200).json(model);
+				const model = {
+					userToSend,
+					followToSend,
+				};
+
+				response.status(200).json(model);
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();

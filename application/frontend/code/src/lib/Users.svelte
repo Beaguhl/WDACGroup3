@@ -1,4 +1,6 @@
 <script>
+// @ts-nocheck
+
 	import User from "./User.svelte";
 	import { user } from "../user-store";
 
@@ -22,7 +24,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 			});
 
@@ -63,7 +64,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 			});
 
@@ -71,10 +71,12 @@
 				case 200:
 					noSearchResults = false;
 					searchedUsers = await response.json();
+					console.log("serarched users: ", searchedUsers)
 					isFetchingSearchedUsers = false;
 					break;
 
 				case 404:
+					searchedUsers = []
 					isFetchingSearchedUsers = false;
 					noSearchResults = true;
 					break;
@@ -118,6 +120,11 @@
 									{/if}
 								{/if}
 							{:else if showAllUsers == true}
+								{#each users as user}
+									<Link class="Links" to="/users/{user.userID}">
+										<h3>{user.username}</h3>
+									</Link>
+								{/each}
 								{#if isFetchingUsers}
 									<p>Wait, I'm loading</p>
 								{:else if isUnAuthorized}
@@ -126,11 +133,7 @@
 									<p>Website has server errors. Try again later</p>
 								{/if}
 							{/if}
-							{#each users as theSearchedUser}
-								<Link class="Links" to="/users/{theSearchedUser.userID}">
-									<h3>{theSearchedUser.username}</h3>
-								</Link>
-							{/each}
+							
 						</div>
 					</div>
 				</div>
