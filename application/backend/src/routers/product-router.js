@@ -236,7 +236,6 @@ router.put("/:id", async function (request, response) {
 router.post("/", async function (request, response) {
 	let connection
 	const authorizationHeaderValue = request.get("Authorization")
-	console.log("auth is:", authorizationHeaderValue)
 	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {

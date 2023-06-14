@@ -2,7 +2,6 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { pool, ACCESS_TOKEN_SECRET } = require('./context')
-
 const followersRouter = require("./routers/followers-router");
 const followingsRouter = require("./routers/followings-router");
 const productRouter = require("./routers/product-router");
@@ -15,7 +14,7 @@ pool.on("error", function (error) {
 	console.log("Error from pool", error);
 });
 
-const app = express();
+const app = express(); 
 
 app.use(express.json());
 app.use(express.urlencoded());

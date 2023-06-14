@@ -17,7 +17,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 			});
 
@@ -38,7 +37,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 			});
 
@@ -77,7 +75,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 				body: JSON.stringify({ id }),
 			});
@@ -104,7 +101,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 				body: JSON.stringify({ id }),
 			});
@@ -133,7 +129,6 @@
 					headers: {
 						"Content-Type": "application/json",
 						Authorization: "bearer " + $user.accessToken,
-						UserID: $user.userID,
 					},
 				}
 			);
@@ -157,7 +152,6 @@
 					headers: {
 						"Content-Type": "application/json",
 						Authorization: "bearer " + $user.accessToken,
-						UserID: $user.userID,
 					},
 				}
 			);

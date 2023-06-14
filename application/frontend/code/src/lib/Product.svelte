@@ -13,8 +13,7 @@
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
+					Authorization: "bearer " + $user.accessToken
 				},
 			});
 
@@ -43,7 +42,6 @@
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: "bearer " + $user.accessToken,
-					UserID: $user.userID,
 				},
 			});
 
