@@ -1,6 +1,7 @@
 const express = require("express");
-const { pool } = require("../context")
+const { pool, authenticateAndAuthorize } = require("../context")
 const router = express.Router();
+const { validateUser } = require("../user-validations");
 
 pool.on("error", function (error) {
 	console.log("Error from pool", error);
@@ -28,21 +29,29 @@ function hashPassword(password) {
 	});
 }
 
-const { validateUser } = require("../user-validations");
 
-const app = express();
 
-//----------- all users ----------------
+//----------------- all users ----------------
 router.get("/", async function (request, response) {
-	const userID = request.get("UserID");
-
-	const connection = await pool.getConnection();
+	let connection
+	const authorizationHeaderValue = request.get("Authorization")
+	const accessToken = authorizationHeaderValue.substring(7)
 
 	try {
-		const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?";
-		const getAllUsersValues = [userID];
-		const users = await connection.query(getAllUsersQuery, getAllUsersValues);
-		response.status(200).json(users);
+		connection = await pool.getConnection()
+
+		authenticateAndAuthorize(accessToken)
+            .then(async userID => {
+                const getAllUsersQuery = "SELECT * FROM Users WHERE userID != ?";
+				const getAllUsersValues = [userID];
+				const users = await connection.query(getAllUsersQuery, getAllUsersValues);
+				response.status(200).json(users);
+            })
+            .catch(error => {
+                console.error(error)
+                response.send(401).end()
+            });
+
 	} catch (error) {
 		console.log(error);
 		response.status(500).end();
@@ -53,49 +62,53 @@ router.get("/", async function (request, response) {
 	}
 });
 
+//------------------- create user ----------------
 router.post("/", async function (request, response) {
-	const user = request.body;
+	let connection
 
-	const validationArr = await validateUser(user);
+	try {
+		connection = await pool.getConnection()
 
-	const connection = await pool.getConnection();
+		const user = request.body;
+		const validationArr = await validateUser(user)
 
-	if (validationArr.length > 0) {
-		response.status(400).json(validationArr);
-		return;
-	} else {
-		try {
+		if (validationArr.length > 0) {
+			response.status(400).json(validationArr);
+			return;
+		} else {
+			
 			const createUserQuery =
 				"INSERT INTO Users (username, password, admin) VALUES (?, ?, ?)";
 			const hashedPassword = await hashPassword(user.password);
 			const createUserValues = [user.username, hashedPassword, false];
-
+	
 			await connection.query(createUserQuery, createUserValues);
-
+	
 			const getUserIDQUery = "SELECT userID FROM Users WHERE username = ?";
 			const getUserIDValues = [user.username];
-
+	
 			const fetchedUserID = await connection.query(getUserIDQUery, getUserIDValues);
 			const userID = fetchedUserID[0].userID;
-
+	
 			const createWishListQuery = "INSERT INTO WishLists (userID) VALUES (?)";
 			const createWishListValue = [userID];
-
+	
 			await connection.query(createWishListQuery, createWishListValue);
-
+	
 			response.status(201).end();
-		} catch (error) {
-			console.log(error);
-			response.status(500).end();
-		} finally {
-			if (connection) {
-				connection.release();
-			}
+		}
+
+	} catch (error) {
+		console.log(error);
+		response.status(500).end();
+	} finally {
+		if (connection) {
+			connection.release();
 		}
 	}
 });
 
-//----------- search users ----------------
+//------------------- search users ----------------
 router.get("/search", async function (request, response) {
 	const userID = request.get("UserID");
 

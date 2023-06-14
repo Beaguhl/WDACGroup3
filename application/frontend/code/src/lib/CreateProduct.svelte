@@ -16,7 +16,6 @@
 			description,
 		};
 
-
 		console.log("accestoken är: ", $user.accessToken)
 		try {
 			const response = await fetch("http://localhost:8080/products", {
