@@ -1,8 +1,8 @@
 const express = require("express");
-const pool = require("../context")
+const { pool } = require("../context")
 const router = express.Router();
 
-pool.pool.on("error", function (error) {
+pool.on("error", function (error) {
     console.log("Error from pool", error);
 });
 

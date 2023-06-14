@@ -112,6 +112,8 @@
 					{/if}
 				</div>
 			{/if}
+		{:else}
+			<p>You need to be logged in to an account to this product</p>	
 		{/if}
 	</div>
 </Router>
@@ -129,6 +131,11 @@
 			". mid ."
 			". . .";
 	}
+
+	p {
+		color: white;
+	}
+
 	.card {
 		grid-area: mid;
 		display: grid;

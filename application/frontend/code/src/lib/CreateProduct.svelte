@@ -1,6 +1,9 @@
 <script>
-	import { Router, Link, Route, navigate } from "svelte-routing";
+// @ts-nocheck
+
+	import { Router, Route, navigate } from "svelte-routing";
 	import StartPage from "./StartPage.svelte";
+	import { user } from "../user-store";
 
 	let productName = "";
 	let description = "";
@@ -13,11 +16,14 @@
 			description,
 		};
 
+
+		console.log("accestoken är: ", $user.accessToken)
 		try {
 			const response = await fetch("http://localhost:8080/products", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: "bearer " + $user.accessToken,
 				},
 				body: JSON.stringify(product),
 			});
@@ -29,6 +35,7 @@
 
 				case 400:
 					errors = await response.json();
+					console.log(errors)
 					break;
 			}
 		} catch (error) {
@@ -38,31 +45,41 @@
 	}
 </script>
 
-<Router>
-	<h1>Create Product</h1>
-	<form on:submit|preventDefault={createProduct}>
-		<div>
-			<label for="productName">Product Name:</label>
-			<input type="text" name="" id="" bind:value={productName} />
-		</div>
-
-		<div>
-			<label for="description">Product Description:</label>
-			<input type="text" name="" id="" bind:value={description} />
-		</div>
-		<input type="submit" value="Create Product" />
-	</form>
-
-	{#if errors.length > 0}
-		<p>Errors detected!</p>
-		<ul>
-			{#each errors as error}
-				<li>{error}</li>
-			{/each}
-		</ul>
+{#if $user.isLoggedIn}
+	{#if $user.admin}
+		<Router>
+			<h1>Create Product</h1>
+			<form on:submit|preventDefault={createProduct}>
+				<div>
+					<label for="productName">Product Name:</label>
+					<input type="text" name="" id="" bind:value={productName} />
+				</div>
+		
+				<div>
+					<label for="description">Product Description:</label>
+					<input type="text" name="" id="" bind:value={description} />
+				</div>
+				<input type="submit" value="Create Product" />
+			</form>
+		
+			{#if errors.length > 0}
+				<p>Errors detected!</p>
+				<ul>
+					{#each errors as error}
+						<li>{error}</li>
+					{/each}
+				</ul>
+			{/if}
+			
+			<Route path="/StartPage" component={StartPage} />
+		</Router>
+	{:else}
+		<p>You need to be an admin to create product</p>
 	{/if}
-	<Route path="/StartPage" component={StartPage} />
-</Router>
+
+{:else}
+	<p>You need to be logged in to create product</p>
+{/if}
 
 <style>
 	h1,
