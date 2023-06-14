@@ -1,12 +1,4 @@
-const { createPool } = require("mariadb");
-
-const pool = createPool({
-    host: "db",
-    port: 3306,
-    user: "root",
-    password: "abc123",
-    database: "abc",
-});
+const { pool } = require("./context");
 
 pool.on("error", function (error) {
     console.log("Error from pool", error);

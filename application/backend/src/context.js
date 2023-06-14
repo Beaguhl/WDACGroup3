@@ -1,6 +1,5 @@
 const { createPool } = require("mariadb")
 const jwt = require("jsonwebtoken");
-const { response } = require("express");
 
 const pool = createPool({
     host: "db",
@@ -26,5 +25,6 @@ function authenticateAndAuthorize(accessToken) {
 
 module.exports = {
     pool,
-    authenticateAndAuthorize
+    authenticateAndAuthorize,
+    ACCESS_TOKEN_SECRET: ACCESS_TOKEN_SECRET
 }

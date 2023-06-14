@@ -18,7 +18,7 @@ router.get("/:id", async function (request, response) {
         connection = await pool.getConnection()
 
         authenticateAndAuthorize(accessToken)
-            .then(async userID => {
+            .then(async () => {
                 const id = parseInt(request.params.id);
                 const getWishListQuery = "SELECT * FROM WishLists WHERE userID = ?";
                 const getWishListValue = [id];
