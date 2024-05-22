@@ -17,7 +17,7 @@
 	async function loadAllUsers() {
 		showAllUsers = true;
 		try {
-			const response = await fetch("http://localhost:8080/users", {
+			const response = await fetch("http://13.53.123.120:8080/users", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -58,7 +58,7 @@
 		const searchString = formData.get("q");
 
 		try {
-			const response = await fetch("http://localhost:8080/users/search?q=" + searchString, {
+			const response = await fetch("http://13.53.123.120:8080/users/search?q=" + searchString, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

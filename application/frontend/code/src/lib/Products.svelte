@@ -15,7 +15,7 @@
 	async function loadAllProducts() {
 		showAllProducts = true;
 		try {
-			const response = await fetch("http://localhost:8080/products", {
+			const response = await fetch("http://13.53.123.120:8080/products", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -55,7 +55,7 @@
 
 		try {
 			const response = await fetch(
-				"http://localhost:8080/products/search?q=" + searchString,
+				"http://13.53.123.120:8080/products/search?q=" + searchString,
 				{
 					method: "GET",
 					headers: {

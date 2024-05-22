@@ -12,7 +12,7 @@
 	let closedDropDown = false;
 	async function login() {
 		try {
-			const response = await fetch("http://localhost:8080/tokens", {
+			const response = await fetch("http://13.53.123.120:8080/tokens", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -52,7 +52,7 @@
 		};
 
 		try {
-			const response = await fetch("http://localhost:8080/users", {
+			const response = await fetch("http://13.53.123.120:8080/users", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

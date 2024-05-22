@@ -9,7 +9,7 @@
 
 	async function loadProduct() {
 		try {
-			const response = await fetch("http://localhost:8080/products/" + id, {
+			const response = await fetch("http://13.53.123.120:8080/products/" + id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -38,7 +38,7 @@
 
 	async function addProductToWishList(productID) {
 		try {
-			const response = await fetch("http://localhost:8080/wishlist-product/" + productID, {
+			const response = await fetch("http://13.53.123.120:8080/wishlist-product/" + productID, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
