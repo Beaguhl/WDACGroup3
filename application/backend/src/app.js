@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.use(function (request, response, next) {
-	response.set("Access-Control-Allow-Origin", "http://13.53.123.120:5173");
+	response.set("Access-Control-Allow-Origin", "http://localhost:5173");
 	response.set("Access-Control-Allow-Methods", "*");
 	response.set("Access-Control-Allow-Headers", "*");
 	response.set("Access-Control-Expose-Headers", "*");
@@ -83,7 +83,7 @@ app.post("/tokens", async function (request, response) {
 						} else {
 							const payloadIDToken = {
 								sub: `${result[0].userID}`,
-								iss: `http://13.53.123.120:8080`,
+								iss: `http://localhost:8080`,
 								aud: `wishes.com`,
 								exp: Math.floor(Date.now() / 1000) + 600,
 							};

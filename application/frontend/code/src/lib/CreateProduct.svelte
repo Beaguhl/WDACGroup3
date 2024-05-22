@@ -14,7 +14,7 @@
 		};
 
 		try {
-			const response = await fetch("http://13.53.123.120:8080/products", {
+			const response = await fetch("http://localhost:8080/products", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

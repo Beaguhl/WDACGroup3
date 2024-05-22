@@ -16,7 +16,7 @@
 	async function loadAllFollowers() {
 		showAllFollowers = true;
 		try {
-			const response = await fetch("http://13.53.123.120:8080/followers", {
+			const response = await fetch("http://localhost:8080/followers", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -59,7 +59,7 @@
 
 		try {
 			const response = await fetch(
-				"http://13.53.123.120:8080/followers/search?q=" + searchString,
+				"http://localhost:8080/followers/search?q=" + searchString,
 				{
 					method: "GET",
 					headers: {

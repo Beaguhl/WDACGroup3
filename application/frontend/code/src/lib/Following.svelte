@@ -15,7 +15,7 @@
 	async function loadAllFollowings() {
 		showAllFollowings = true;
 		try {
-			const response = await fetch("http://13.53.123.120:8080/followings", {
+			const response = await fetch("http://localhost:8080/followings", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -58,7 +58,7 @@
 
 		try {
 			const response = await fetch(
-				"http://13.53.123.120:8080/followings/search?q=" + searchString,
+				"http://localhost:8080/followings/search?q=" + searchString,
 				{
 					method: "GET",
 					headers: {
