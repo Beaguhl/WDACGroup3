@@ -48,7 +48,7 @@
 
 	async function login() {
 		try {
-			const response = await fetch("http://localhost:8080/tokens", {
+			const response = await fetch("http://16.16.193.202:8080/tokens", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
