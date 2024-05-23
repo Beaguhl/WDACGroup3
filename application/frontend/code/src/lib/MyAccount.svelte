@@ -33,7 +33,7 @@
 
 	async function getUsername() {
 		try {
-			const response = await fetch("http://localhost:8080/my-account", {
+			const response = await fetch("http://16.16.193.202:8080/my-account", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -68,7 +68,7 @@
 		const enteredPassword = formData.get("password");
 
 		try {
-			const response = await fetch("http://localhost:8080/my-account/verify-password", {
+			const response = await fetch("http://16.16.193.202:8080/my-account/verify-password", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -100,7 +100,7 @@
 
 	async function updatePassword() {
 		try {
-			const response = await fetch("http://localhost:8080/my-account/update-password", {
+			const response = await fetch("http://16.16.193.202:8080/my-account/update-password", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -130,7 +130,7 @@
 
 	async function updateUsername() {
 		try {
-			const response = await fetch("http://localhost:8080/my-account/update-username", {
+			const response = await fetch("http://16.16.193.202:8080/my-account/update-username", {
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
@@ -160,7 +160,7 @@
 
 	async function deleteUser() {
 		try {
-			const response = await fetch("http://localhost:8080/my-account/delete-account", {
+			const response = await fetch("http://16.16.193.202:8080/my-account/delete-account", {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",

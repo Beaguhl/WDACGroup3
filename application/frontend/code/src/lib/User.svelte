@@ -11,7 +11,7 @@
 
 	async function loadUsersWishList() {
 		try {
-			const response = await fetch("http://localhost:8080/wishlist/" + id, {
+			const response = await fetch("http://16.16.193.202:8080/wishlist/" + id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -31,7 +31,7 @@
 
 	async function loadUser() {
 		try {
-			const response = await fetch("http://localhost:8080/users/" + id, {
+			const response = await fetch("http://16.16.193.202:8080/users/" + id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -69,7 +69,7 @@
 
 	async function followUser() {
 		try {
-			const response = await fetch("http://localhost:8080/followings", {
+			const response = await fetch("http://16.16.193.202:8080/followings", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -95,7 +95,7 @@
 
 	async function unfollowUser() {
 		try {
-			const response = await fetch("http://localhost:8080/followings", {
+			const response = await fetch("http://16.16.193.202:8080/followings", {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",
@@ -122,7 +122,7 @@
 	async function purchaseProduct(wishListProductID) {
 		try {
 			const response = await fetch(
-				"http://localhost:8080/wishlist-product/" + wishListProductID + "/purchase",
+				"http://16.16.193.202:8080/wishlist-product/" + wishListProductID + "/purchase",
 				{
 					method: "PATCH",
 					headers: {
@@ -145,7 +145,7 @@
 	async function undoPurchaseProduct(wishListProductID) {
 		try {
 			const response = await fetch(
-				"http://localhost:8080/wishlist-product/" + wishListProductID + "/undo-purchase",
+				"http://16.16.193.202:8080/wishlist-product/" + wishListProductID + "/undo-purchase",
 				{
 					method: "PATCH",
 					headers: {

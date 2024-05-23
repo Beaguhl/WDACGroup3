@@ -11,7 +11,7 @@
 
 	async function loadProductToDelete() {
 		try {
-			const response = await fetch(`http://localhost:8080/products/${id}`, {
+			const response = await fetch(`http://16.16.193.202:8080/products/${id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -39,7 +39,7 @@
 
 	async function deleteProduct() {
 		try {
-			const response = await fetch(`http://localhost:8080/products/${id}`, {
+			const response = await fetch(`http://16.16.193.202:8080/products/${id}`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json",

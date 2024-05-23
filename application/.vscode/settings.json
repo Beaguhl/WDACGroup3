@@ -5,7 +5,7 @@
                 "authProtocol": "default"
             },
             "previewLimit": 50,
-            "server": "localhost",
+            "server": "16.16.193.202",
             "port": 5555,
             "driver": "MariaDB",
             "name": "test",

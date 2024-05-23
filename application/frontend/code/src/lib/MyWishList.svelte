@@ -10,7 +10,7 @@
 
 	async function loadWishList() {
 		try {
-			const response = await fetch("http://localhost:8080/wishlist/" + id, {
+			const response = await fetch("http://16.16.193.202:8080/wishlist/" + id, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -47,7 +47,7 @@
 
 		try {
 			const response = await fetch(
-				"http://localhost:8080/wishlist/" + id + "/search?q=" + searchString,
+				"http://16.16.193.202:8080/wishlist/" + id + "/search?q=" + searchString,
 				{
 					method: "GET",
 					headers: {
